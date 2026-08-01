@@ -1,4 +1,4 @@
-import { AuthConfig } from "convex/server";
+import type { AuthConfig } from "convex/server";
 
 /**
  * U1: Clerk → Convex token validation.
