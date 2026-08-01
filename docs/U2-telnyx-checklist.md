@@ -41,8 +41,9 @@ Owner: portal actions below are user-side (account + legal info).
 
 ## 4. Branded Call Display (lead-gen: caller ID shows "Harbor")
 
-- [ ] Mission Control → Identity → Branded Calling → register brand + STIR/SHAKEN
-- [ ] Verify on a T-Mobile + Verizon handset
+- [x] STIR/SHAKEN verification **requested** for +18774455580 (`POST /v2/verified_numbers`, method `call`, accepted)
+- [ ] **Code delivery blocked**: the verification code arrives by call to the toll-free number, but no voice app answers it yet (that's U6). Paths: (a) check Mission Control → Verified Numbers for a displayed code, (b) answer the call if it rings the number, (c) complete after U6 voice agent or after toll-free SMS approval (then `sms` method). Then: `POST /v2/verified_numbers/{phone_number}/actions/verify {verification_code}`.
+- [ ] Verify on a T-Mobile + Verizon handset that the caller ID name displays
 
 ## 5. Webhook (configured)
 
