@@ -8,8 +8,8 @@ Owner: portal actions below are user-side (account + legal info).
 - [x] Number **+1-689-225-8286** provisioned (id `3016894309799561006`, active)
 - [x] Voice connection assigned: **Default Credential Connection** (id `3016892976782640902`)
 - [x] Messaging profile **"mybiz"** created with webhook → `https://moonlit-spider-468.convex.site/telnyx-webhook`
-- [ ] Number → messaging profile assignment: **BLOCKED — account balance $0** (error: "not enough funds"). Add funds in Mission Control → Billing.
-- [ ] `TELNYX_WEBHOOK_SECRET` in `.env` (Telnyx signs webhooks via JWT; HMAC verification is a stub until U6)
+- [x] Number → messaging profile assignment: **BLOCKED — account balance $0** (error: "not enough funds"). Add funds in Mission Control → Billing.
+- [x] **Webhook signature verification: DONE** — Ed25519 over `${telnyx-timestamp}|${rawBody}` verified against `TELNYX_PUBLIC_KEY` (Web Crypto, fail-closed 401, 5-min replay window). Deployed + live-tested (missing/garbage sig → 401).
 
 ## ⚠️ Number type finding
 
@@ -56,5 +56,5 @@ Options:
 
 ## 6. Env keys (in `.env` + GitHub secrets)
 
-- [x] `TELNYX_API_KEY` / `TELNYX_PUBLIC_KEY` / `TELNYX_NUMBER`
-- [ ] `TELNYX_WEBHOOK_SECRET` (U6: JWT signature verification)
+- [x] `TELNYX_API_KEY` / `TELNYX_PUBLIC_KEY` (Ed25519 webhook key) / `TELNYX_NUMBER`
+- [x] `TELNYX_PUBLIC_KEY` set on Convex prod deployment (`convex env set --prod`)

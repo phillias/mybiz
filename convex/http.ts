@@ -1,7 +1,7 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { hmacSha256 } from "./lib/hmac";
+import { verifyTelnyxSignature } from "./lib/ed25519";
 
 const http = httpRouter();
 
@@ -47,21 +47,28 @@ http.route({
 });
 
 /**
- * U2/U6: Telnyx inbound SMS/voice webhook → conversations table.
+ * U2: Telnyx inbound SMS/voice webhook → conversations table.
  * Point Mission Control → Webhooks → outbound to `${CONVEX_URL}/telnyx-webhook`.
- * HMAC-SHA256 verified against TELNYX_WEBHOOK_SECRET (Web Crypto, edge-safe).
- * TODO(U6): port to jose JWT verification if signed payloads are enabled.
+ *
+ * Signature: Ed25519 over `${telnyx-timestamp}|${rawBody}`, verified against
+ * TELNYX_PUBLIC_KEY (Mission Control → API Keys → Public Key). Fail-closed:
+ * when the key is set, unsigned/bad signatures get 401. Replay window: 5 min.
  */
 http.route({
   path: "/telnyx-webhook",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
-    const secret = process.env.TELNYX_WEBHOOK_SECRET;
     const raw = await request.text();
-    if (secret) {
-      const sig = request.headers.get("x-telnyx-signature") ?? "";
-      const expected = await hmacSha256(secret, raw);
-      if (sig !== expected) {
+    const publicKey = process.env.TELNYX_PUBLIC_KEY;
+    if (publicKey) {
+      const ts = request.headers.get("telnyx-timestamp");
+      const sig = request.headers.get("telnyx-signature-ed25519");
+      if (!ts || !sig) {
+        return json(401, { success: false, error: "missing signature headers" }, request);
+      }
+      const valid = await verifyTelnyxSignature(publicKey, sig, `${ts}|${raw}`);
+      const fresh = Math.abs(Date.now() / 1000 - Number(ts)) < 300;
+      if (!valid || !fresh) {
         return json(401, { success: false, error: "invalid signature" }, request);
       }
     }
