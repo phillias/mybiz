@@ -17,7 +17,7 @@ import TurnstileWidget from "../components/TurnstileWidget.astro";
       <h1>Ship SEO content that ranks.</h1>
       <p>Paste your site. Harbor reads your sitemap, understands your business, and hands you three ranked opportunities in under a minute.</p>
 
-      <form id="analyze-form" style="display: grid; gap: 1rem; max-width: 480px">
+      <form id="analyze-form" data-convex-url={import.meta.env.PUBLIC_CONVEX_URL} style="display: grid; gap: 1rem; max-width: 480px">
         <input
           type="url"
           name="siteUrl"
@@ -33,7 +33,7 @@ import TurnstileWidget from "../components/TurnstileWidget.astro";
       <script>
         const form = document.getElementById("analyze-form") as HTMLFormElement | null;
         const result = document.getElementById("result") as HTMLParagraphElement | null;
-        const convexUrl = "https://placeholder.convex.site";
+        const convexUrl = form?.dataset.convexUrl;
 
         form?.addEventListener("submit", async (e) => {
           e.preventDefault();

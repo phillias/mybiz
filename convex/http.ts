@@ -5,6 +5,13 @@ import { hmacSha256 } from "./lib/hmac";
 
 const http = httpRouter();
 
+/** OPTIONS preflight for cross-origin browser calls (Cloudflare Pages → Convex). */
+http.route({
+  pathPrefix: "/",
+  method: "OPTIONS",
+  handler: httpAction(async (_ctx, request) => new Response(null, { status: 204, headers: corsHeaders(request) })),
+});
+
 /**
  * U1: Cloudflare Turnstile server-side verification.
  * Frontend posts { token } to `${CONVEX_URL}/turnstile/verify`.
@@ -16,13 +23,13 @@ http.route({
   handler: httpAction(async (_ctx, request) => {
     const secret = process.env.TURNSTILE_SECRET_KEY;
     if (!secret) {
-      return json(400, { success: false, error: "TURNSTILE_SECRET_KEY not set" });
+      return json(400, { success: false, error: "TURNSTILE_SECRET_KEY not set" }, request);
     }
     let token: string;
     try {
       ({ token } = await request.json());
     } catch {
-      return json(400, { success: false, error: "invalid JSON body" });
+      return json(400, { success: false, error: "invalid JSON body" }, request);
     }
     const body = new URLSearchParams({ secret, response: token });
     const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
@@ -33,7 +40,7 @@ http.route({
     return json(data.success ? 200 : 400, {
       success: data.success,
       errors: data["error-codes"] ?? [],
-    });
+    }, request);
   }),
 });
 
@@ -53,7 +60,7 @@ http.route({
       const sig = request.headers.get("x-telnyx-signature") ?? "";
       const expected = await hmacSha256(secret, raw);
       if (sig !== expected) {
-        return json(401, { success: false, error: "invalid signature" });
+        return json(401, { success: false, error: "invalid signature" }, request);
       }
     }
     const payload = JSON.parse(raw) as {
@@ -78,14 +85,24 @@ http.route({
       });
       // TODO(U6): STOP/START keyword handling + auto-reply via Telnyx API
     }
-    return json(200, { success: true });
+    return json(200, { success: true }, request);
   }),
 });
 
-function json(status: number, body: unknown): Response {
+function corsHeaders(request: Request): Record<string, string> {
+  const origin = request.headers.get("origin");
+  return {
+    "access-control-allow-origin": origin ?? "*",
+    "access-control-allow-methods": "POST, OPTIONS",
+    "access-control-allow-headers": "content-type",
+    vary: "origin",
+  };
+}
+
+function json(status: number, body: unknown, request?: Request): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", ...(request ? corsHeaders(request) : {}) },
   });
 }
 
