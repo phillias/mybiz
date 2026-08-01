@@ -8,7 +8,8 @@ Owner: portal actions below are user-side (account + legal info).
 - [x] **Toll-free number +1-877-445-5580** purchased by user (id `3017003223971005577`, active) — the earlier local +1-689-225-8286 was cancelled during verification
 - [x] Voice connection assigned: **Default Credential Connection** (id `3016892976782640902`)
 - [x] Messaging profile **"mybiz"** assigned with webhook → `https://moonlit-spider-468.convex.site/telnyx-webhook`
-- [ ] **Toll-free SMS verification form** (Mission Control → Messaging → Toll-free, ~1–5 days) — required before SMS to real numbers flows
+- [x] **Toll-free SMS verification SUBMITTED** (request `e89288f0-ed15-5705-ad1e-f90e34f082d4`, 2026-08-01, via API — business "Harbor", use-case "Conversational / Alerts", volume 1,000). Clock running: ~1–5 business days; approval emails to admin@phillias.us. Draft + curl in `docs/tollfree-verification-draft.md`.
+- [ ] After approval: text **+1-877-445-5580** → `conversations` row lands in Convex (webhook round-trip test)
 - [x] **Webhook signature verification: DONE** — Ed25519 over `${telnyx-timestamp}|${rawBody}` verified against `TELNYX_PUBLIC_KEY` (fail-closed 401, 5-min replay window). Live-tested.
 
 ## ⚠️ Number type finding
