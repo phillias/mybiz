@@ -50,7 +50,9 @@ src/
 ## Deployment
 
 - Convex: `npx convex deploy`
-- Pages: push to GitHub → CI builds → Pages deploys `dist/` (see `.github/workflows/ci.yml`)
+- Cloudflare Pages: `npx wrangler login` (once) → `./scripts/deploy-pages.sh` (creates the project on first run, then deploys `dist/`)
+- Or connect the repo in the Cloudflare dashboard → Pages → Create project → GitHub repo `phillias/harbor-seo` → build output `dist/` (CI artifact uploads already configured)
+- CI: `.github/workflows/ci.yml` (codegen → check → typecheck → tests → build → Pages artifact)
 
 ## Status
 
