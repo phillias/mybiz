@@ -1,0 +1,40 @@
+---
+/**
+ * Cloudflare Turnstile widget (U1: bot protection on the Analyze form).
+ * Renders the CF widget and stores the token in a data attribute on the
+ * parent form's hidden field via the callback. Server-side verification
+ * happens in the Convex HTTP route /turnstile/verify (convex/http.ts).
+ */
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+---
+
+<div class="cf-turnstile" data-sitekey={siteKey || "dummy"} data-callback="harborTurnstileCallback"></div>
+<input type="hidden" name="turnstileToken" id="turnstile-token" />
+
+<script>
+  declare global {
+    interface Window {
+      harborTurnstileToken?: string;
+      onloadTurnstileCallback?: () => void;
+    }
+  }
+
+  function loadTurnstile() {
+    if (window.harborTurnstileToken !== undefined) return;
+    window.onloadTurnstileCallback = () => {
+      // token arrives via the widget callback below
+    };
+    const s = document.createElement("script");
+    s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback";
+    s.async = true;
+    s.defer = true;
+    document.head.appendChild(s);
+  }
+  loadTurnstile();
+
+  // Widget callback → hidden field (name must match data-callback)
+  (window as unknown as Record<string, unknown>).harborTurnstileCallback = (token: string) => {
+    const field = document.getElementById("turnstile-token") as HTMLInputElement | null;
+    if (field) field.value = token;
+  };
+</script>

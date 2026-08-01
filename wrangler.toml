@@ -1,0 +1,6 @@
+# Cloudflare Pages build output (Astro + @astrojs/cloudflare adapter).
+name = "harbor"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-07-01"
+# @clerk/astro server code imports node:fs/path/async_hooks
+compatibility_flags = ["nodejs_compat"]

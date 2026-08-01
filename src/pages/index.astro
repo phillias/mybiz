@@ -1,0 +1,66 @@
+---
+// Landing — "Analyze your site" entry (mirrors harborseo.ai hero).
+// The Analyze pipeline (sitemap crawl → keyword gaps) lands in U3/U4;
+// today the form proves the Turnstile → Convex verification chain.
+import TurnstileWidget from "../components/TurnstileWidget.astro";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Harbor — AI SEO content that ranks</title>
+  </head>
+  <body>
+    <main style="max-width: 720px; margin: 0 auto; padding: 2rem 1rem">
+      <h1>Ship SEO content that ranks.</h1>
+      <p>Paste your site. Harbor reads your sitemap, understands your business, and hands you three ranked opportunities in under a minute.</p>
+
+      <form id="analyze-form" style="display: grid; gap: 1rem; max-width: 480px">
+        <input
+          type="url"
+          name="siteUrl"
+          placeholder="https://yoursite.com"
+          required
+          style="padding: 0.75rem; font-size: 1rem"
+        />
+        <TurnstileWidget />
+        <button type="submit" style="padding: 0.75rem; font-size: 1rem">Analyze</button>
+        <p id="result" role="status"></p>
+      </form>
+
+      <script>
+        const form = document.getElementById("analyze-form") as HTMLFormElement | null;
+        const result = document.getElementById("result") as HTMLParagraphElement | null;
+        const convexUrl = "https://placeholder.convex.site";
+
+        form?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (!result) return;
+          const token = (document.getElementById("turnstile-token") as HTMLInputElement | null)?.value;
+          if (!token) {
+            result.textContent = "Complete the Turnstile challenge first.";
+            return;
+          }
+          result.textContent = "Verifying…";
+          try {
+            const res = await fetch(`${convexUrl}/turnstile/verify`, {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify({ token }),
+            });
+            const data = (await res.json()) as { success: boolean; errors?: string[] };
+            if (res.ok && data.success) {
+              result.textContent = "Verified. Analyze pipeline lands in U3/U4.";
+            } else {
+              result.textContent = `Challenge failed: ${(data.errors ?? []).join(", ")}`;
+            }
+          } catch (err) {
+            result.textContent = `Error: ${err instanceof Error ? err.message : String(err)}`;
+          }
+        });
+      </script>
+    </main>
+  </body>
+</html>

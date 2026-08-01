@@ -1,0 +1,25 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# env files (real secrets never committed; .env.example is the template)
+.env
+.env.*
+!.env.example
+
+# convex local data
+.convex/
+convex/_generated/
+
+# logs
+npm-debug.log*
+*.log
+.wrangler/
+
+# editor
+.DS_Store
+.idea/
+.vscode/
