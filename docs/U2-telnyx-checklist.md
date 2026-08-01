@@ -42,7 +42,7 @@ Owner: portal actions below are user-side (account + legal info).
 
 ## 5. Webhook → Convex wiring
 
-- [ ] Mission Control → Webhooks → Create → URL: `https://<your-project>.convex.site/telnyx-webhook`
+- [ ] Mission Control → Webhooks → Create → URL: `https://moonlit-spider-468.convex.cloud/telnyx-webhook`
 - [ ] Events: `message.received` (SMS), `call.*` (voice; U6 wires these)
 - [ ] QA (plan U2): reply to the number → `conversations` row appears in Convex dashboard with valid HMAC (401 without secret)
 
