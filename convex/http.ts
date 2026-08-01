@@ -98,6 +98,28 @@ http.route({
   }),
 });
 
+/**
+ * U1: authenticated identity via Authorization: Bearer <Clerk session token>.
+ * Returns the validated identity (subject/email/org) or 401.
+ */
+http.route({
+  path: "/auth/me",
+  method: "GET",
+  handler: httpAction(async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return json(401, { success: false, error: "Not authenticated" });
+    }
+    return json(200, {
+      success: true,
+      subject: identity.subject,
+      email: identity.email,
+      name: identity.name,
+      orgId: identity.orgId ?? null,
+    });
+  }),
+});
+
 function corsHeaders(request: Request): Record<string, string> {
   const origin = request.headers.get("origin");
   return {
