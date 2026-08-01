@@ -1,5 +1,6 @@
 import { httpRouter } from "convex/server";
-import { action, mutation } from "./_generated/server";
+import { httpAction } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { hmacSha256 } from "./lib/hmac";
 
 const http = httpRouter();
@@ -12,7 +13,7 @@ const http = httpRouter();
 http.route({
   path: "/turnstile/verify",
   method: "POST",
-  handler: action(async ({ request }) => {
+  handler: httpAction(async (_ctx, request) => {
     const secret = process.env.TURNSTILE_SECRET_KEY;
     if (!secret) {
       return json(400, { success: false, error: "TURNSTILE_SECRET_KEY not set" });
@@ -39,16 +40,13 @@ http.route({
 /**
  * U2/U6: Telnyx inbound SMS/voice webhook → conversations table.
  * Point Mission Control → Webhooks → outbound to `${CONVEX_URL}/telnyx-webhook`.
- *
- * Signature verification: Telnyx signs webhooks with a JWT (RS256, their public
- * key) or an HMAC secret. This stub verifies HMAC-SHA256 (Web Crypto, edge-safe)
- * against TELNYX_WEBHOOK_SECRET; switch to JWT verification (jose) if you
- * enable "signed payloads" in Mission Control. TODO(U6): port to jose JWT.
+ * HMAC-SHA256 verified against TELNYX_WEBHOOK_SECRET (Web Crypto, edge-safe).
+ * TODO(U6): port to jose JWT verification if signed payloads are enabled.
  */
 http.route({
   path: "/telnyx-webhook",
   method: "POST",
-  handler: mutation(async ({ db, request }) => {
+  handler: httpAction(async (ctx, request) => {
     const secret = process.env.TELNYX_WEBHOOK_SECRET;
     const raw = await request.text();
     if (secret) {
@@ -72,14 +70,10 @@ http.route({
     };
     const event = payload.data?.event_type ?? "";
     const p = payload.data?.payload ?? {};
-    // inbound SMS events only; voice events arrive as call.* events (U6 wires them)
     if (event === "message.received" && p.from) {
-      await db.insert("conversations", {
+      await ctx.runMutation(internal.messaging.insertInboundSms, {
         phoneNumber: p.from,
-        direction: "inbound",
-        channel: "sms",
         body: p.text,
-        optedOut: false,
         metadata: { event, messageId: p.id, to: p.to },
       });
       // TODO(U6): STOP/START keyword handling + auto-reply via Telnyx API

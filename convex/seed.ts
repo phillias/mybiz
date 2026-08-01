@@ -44,7 +44,7 @@ export default internalMutation({
         .withIndex("by_slug", (q) => q.eq("slug", b.slug))
         .first();
       if (!existing) {
-        await ctx.db.insert("pageBlueprint", b);
+        await ctx.db.insert("pageBlueprint", { ...b, internalLinks: [...b.internalLinks] });
       }
     }
     return { inserted: blueprints.length };
