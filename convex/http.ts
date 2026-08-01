@@ -21,9 +21,9 @@ http.route({
   path: "/turnstile/verify",
   method: "POST",
   handler: httpAction(async (_ctx, request) => {
-    const secret = process.env.TURNSTILE_SECRET_KEY;
+    const secret = process.env.TURNSTILE_SECRET;
     if (!secret) {
-      return json(400, { success: false, error: "TURNSTILE_SECRET_KEY not set" }, request);
+      return json(400, { success: false, error: "TURNSTILE_SECRET not set" }, request);
     }
     let token: string;
     try {
@@ -31,7 +31,9 @@ http.route({
     } catch {
       return json(400, { success: false, error: "invalid JSON body" }, request);
     }
+    const remoteip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
     const body = new URLSearchParams({ secret, response: token });
+    if (remoteip) body.set("remoteip", remoteip);
     const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
       method: "POST",
       body,

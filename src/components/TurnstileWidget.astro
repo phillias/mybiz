@@ -8,7 +8,7 @@
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
-<div class="cf-turnstile" data-sitekey={siteKey || "dummy"} data-callback="harborTurnstileCallback"></div>
+<div class="cf-turnstile" data-sitekey={siteKey || "dummy"} data-action="turnstile-spin-v2" data-callback="harborTurnstileCallback"></div>
 <input type="hidden" name="turnstileToken" id="turnstile-token" />
 
 <script>

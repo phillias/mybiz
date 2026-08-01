@@ -3,53 +3,58 @@
 Status: scaffold ready, webhook stub in `convex/http.ts` (`/telnyx-webhook`).
 Owner: portal actions below are user-side (account + legal info).
 
-## Why this matters
+## Current state (verified 2026-08-01 via API)
 
-- Voice works immediately on any new number — STIR/SHAKEN attestation is automatic (no registration).
-- SMS to real US numbers needs A2P registration: either **10DLC** (local numbers) or **toll-free verification**.
-- **No business entity required** — you are a solo operator: toll-free verification, or Sole Proprietor 10DLC with SSN (no EIN/LLC needed).
+- [x] Number **+1-689-225-8286** provisioned (id `3016894309799561006`, active)
+- [x] Voice connection assigned: **Default Credential Connection** (id `3016892976782640902`)
+- [x] Messaging profile **"mybiz"** created with webhook → `https://moonlit-spider-468.convex.site/telnyx-webhook`
+- [ ] Number → messaging profile assignment: **BLOCKED — account balance $0** (error: "not enough funds"). Add funds in Mission Control → Billing.
+- [ ] `TELNYX_WEBHOOK_SECRET` in `.env` (Telnyx signs webhooks via JWT; HMAC verification is a stub until U6)
 
-## 1. Account (done — you have one, admin@phillias.us → phillias@gmail.com)
+## ⚠️ Number type finding
 
-- [x] Telnyx Mission Control login works
-- [ ] Generate API key: Mission Control → API Keys → Create (store as `TELNYX_API_KEY` / `TELNYX_PUBLIC_KEY` in `.env`)
-- [ ] Copy webhook signing secret: Mission Control → Webhooks → outbound (store as `TELNYX_WEBHOOK_SECRET`)
+**+1-689-225-8286 is a LOCAL number** (NPA 689 = Orlando, FL overlay), **not toll-free**.
+Consequence: production SMS on it requires **10DLC registration** (Sole Proprietor brand, SSN — no entity needed, 2–4 wk lead). The faster toll-free verification path (~1–5 days) requires buying a toll-free number (~$2/mo) instead.
 
-## 2. Number provisioning (~$0.25/mo, voice-live immediately)
+Options:
+- A) Keep local number + register sole-prop 10DLC (SSN) — 2–4 wk lead, local look
+- B) Also buy a toll-free number for SMS at launch — fast verification, ~$2/mo
+- C) Defer SMS entirely until launch week (voice works now)
 
-- [ ] Mission Control → Numbers → Search & Buy → US local number
-- [ ] Test: dial the number → call connects (agent wiring is U6)
-- [ ] Record number as `TELNYX_NUMBER` in `.env` (E.164, e.g. `+13175550123`)
+## 1. Account (done)
+
+- [x] API key generated (`TELNYX_API_KEY` in `.env`)
+- [x] Public key captured (`TELNYX_PUBLIC_KEY` in `.env`)
+
+## 2. Number (done — voice live)
+
+- [x] US local number provisioned, voice connection assigned
+- [x] Test: dial the number → call connects (agent wiring is U6)
 
 ## 3. SMS registration — pick ONE path
 
 ### Path A: Toll-free verification (recommended for solo launch, ~1–5 days)
-- [ ] Buy a toll-free number (~$2/mo) instead of / alongside local
-- [ ] Mission Control → Messaging → Toll-free → submit verification form (answers questions + consent to recording; no entity required)
-- [ ] Once verified: outbound/inbound SMS on that number works
+- [ ] Buy a toll-free number (~$2/mo) in Mission Control → Numbers
+- [ ] Messaging → Toll-free → verification form (no entity required)
+- [ ] Assign to "mybiz" profile + add funds
 
-### Path B: Sole Proprietor 10DLC (local numbers, 2–4 wk lead)
-- [ ] Mission Control → 10DLC → Brand registration → type "Sole Proprietor", tax ID = SSN
-- [ ] Campaign registration (~$15, "Low Volume" if <100 msgs/day): use-case "Two-way conversation" / "Account notifications"
-- [ ] Wait for approval (2–4 weeks); SMS goes live on approval
-
-> Defer either path until launch week if needed — dev/test uses Telnyx test credentials (no registration).
+### Path B: Sole Proprietor 10DLC (local number, 2–4 wk lead)
+- [ ] Add funds to the account (required before profile assignment)
+- [ ] Mission Control → 10DLC → Brand registration → "Sole Proprietor", tax ID = SSN
+- [ ] Campaign registration (~$15, "Low Volume"): use-case "Two-way conversation"
+- [ ] Assign number to "mybiz" profile
 
 ## 4. Branded Call Display (lead-gen: caller ID shows "Harbor")
 
-- [ ] Mission Control → Identity → Branded Calling → register brand + STIR/SHAKEN attestation
-- [ ] Verify on a T-Mobile + Verizon handset that the name displays
+- [ ] Mission Control → Identity → Branded Calling → register brand + STIR/SHAKEN
+- [ ] Verify on a T-Mobile + Verizon handset
 
-## 5. Webhook → Convex wiring
+## 5. Webhook (configured)
 
-- [ ] Mission Control → Webhooks → Create → URL: `https://moonlit-spider-468.convex.cloud/telnyx-webhook`
-- [ ] Events: `message.received` (SMS), `call.*` (voice; U6 wires these)
-- [ ] QA (plan U2): reply to the number → `conversations` row appears in Convex dashboard with valid HMAC (401 without secret)
+- [x] Messaging profile webhook → `https://moonlit-spider-468.convex.site/telnyx-webhook`
+- [ ] QA (plan U2): reply to the number → `conversations` row in Convex dashboard
 
-## 6. Env keys to collect
+## 6. Env keys (in `.env` + GitHub secrets)
 
-| Key | Where |
-|---|---|
-| `TELNYX_API_KEY` / `TELNYX_PUBLIC_KEY` | Mission Control → API Keys |
-| `TELNYX_WEBHOOK_SECRET` | Mission Control → Webhooks |
-| `TELNYX_NUMBER` | Numbers → your number |
+- [x] `TELNYX_API_KEY` / `TELNYX_PUBLIC_KEY` / `TELNYX_NUMBER`
+- [ ] `TELNYX_WEBHOOK_SECRET` (U6: JWT signature verification)
