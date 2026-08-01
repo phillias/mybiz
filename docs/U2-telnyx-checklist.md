@@ -5,21 +5,15 @@ Owner: portal actions below are user-side (account + legal info).
 
 ## Current state (verified 2026-08-01 via API)
 
-- [x] Number **+1-689-225-8286** provisioned (id `3016894309799561006`, active)
+- [x] **Toll-free number +1-877-445-5580** purchased by user (id `3017003223971005577`, active) — the earlier local +1-689-225-8286 was cancelled during verification
 - [x] Voice connection assigned: **Default Credential Connection** (id `3016892976782640902`)
-- [x] Messaging profile **"mybiz"** created with webhook → `https://moonlit-spider-468.convex.site/telnyx-webhook`
-- [x] Number → messaging profile assignment: **BLOCKED — account balance $0** (error: "not enough funds"). Add funds in Mission Control → Billing.
-- [x] **Webhook signature verification: DONE** — Ed25519 over `${telnyx-timestamp}|${rawBody}` verified against `TELNYX_PUBLIC_KEY` (Web Crypto, fail-closed 401, 5-min replay window). Deployed + live-tested (missing/garbage sig → 401).
+- [x] Messaging profile **"mybiz"** assigned with webhook → `https://moonlit-spider-468.convex.site/telnyx-webhook`
+- [ ] **Toll-free SMS verification form** (Mission Control → Messaging → Toll-free, ~1–5 days) — required before SMS to real numbers flows
+- [x] **Webhook signature verification: DONE** — Ed25519 over `${telnyx-timestamp}|${rawBody}` verified against `TELNYX_PUBLIC_KEY` (fail-closed 401, 5-min replay window). Live-tested.
 
 ## ⚠️ Number type finding
 
-**+1-689-225-8286 is a LOCAL number** (NPA 689 = Orlando, FL overlay), **not toll-free**.
-Consequence: production SMS on it requires **10DLC registration** (Sole Proprietor brand, SSN — no entity needed, 2–4 wk lead). The faster toll-free verification path (~1–5 days) requires buying a toll-free number (~$2/mo) instead.
-
-Options:
-- A) Keep local number + register sole-prop 10DLC (SSN) — 2–4 wk lead, local look
-- B) Also buy a toll-free number for SMS at launch — fast verification, ~$2/mo
-- C) Defer SMS entirely until launch week (voice works now)
+**+1-877-445-5580 is TOLL-FREE** — the fastest SMS path: toll-free verification form (~1–5 days, no entity/brand registration needed), unlike the 10DLC requirement for local numbers. The original local +1-689-225-8286 (Orlando FL) was cancelled during verification — no 10DLC needed on the current plan.
 
 ## 1. Account (done)
 
