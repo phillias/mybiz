@@ -1,5 +1,6 @@
 import { httpRouter } from "convex/server";
 import { action, mutation } from "./_generated/server";
+import { hmacSha256 } from "./lib/hmac";
 
 const http = httpRouter();
 
@@ -92,20 +93,6 @@ function json(status: number, body: unknown): Response {
     status,
     headers: { "content-type": "application/json" },
   });
-}
-
-/** HMAC-SHA256 via Web Crypto — safe on Convex's edge runtime. */
-async function hmacSha256(secret: string, data: string): Promise<string> {
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    enc.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(data));
-  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 export default http;

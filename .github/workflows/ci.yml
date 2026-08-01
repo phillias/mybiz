@@ -31,6 +31,9 @@ jobs:
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
 
+      - name: Unit tests
+        run: npm test
+
       - name: Build (Cloudflare Pages output)
         run: npm run build
         env:
