@@ -9,6 +9,7 @@ Owner: portal actions below are user-side (account + legal info).
 - [x] Voice connection assigned: **Default Credential Connection** (id `3016892976782640902`)
 - [x] Messaging profile **"mybiz"** assigned with webhook → `https://moonlit-spider-468.convex.site/telnyx-webhook`
 - [x] **Toll-free SMS verification SUBMITTED** (request `e89288f0-ed15-5705-ad1e-f90e34f082d4`, 2026-08-01, via API — business "Harbor", use-case "Conversational / Alerts", volume 1,000). Clock running: ~1–5 business days; approval emails to admin@phillias.us. Draft + curl in `docs/tollfree-verification-draft.md`.
+- [x] Probe (2026-08-01): outbound SMS submits (queued) but **delivery fails with 40329 "Tollfree number is not verified"** — enforcement is at delivery time. Reliable approval signal = GET /v2/messages/{id} → to[].status. **Still PENDING.**
 - [ ] After approval: text **+1-877-445-5580** → `conversations` row lands in Convex (webhook round-trip test)
 - [x] **Webhook signature verification: DONE** — Ed25519 over `${telnyx-timestamp}|${rawBody}` verified against `TELNYX_PUBLIC_KEY` (fail-closed 401, 5-min replay window). Live-tested.
 
