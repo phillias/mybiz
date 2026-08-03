@@ -23,3 +23,14 @@ npm-debug.log*
 .DS_Store
 .idea/
 .vscode/
+
+# OmO: track omo.jsonc + plans/drafts; ignore runtime state
+.omo/runtime/
+.omo/evidence/
+.omo/worktrees/
+.omo/run-continuation/
+.omo/teams/
+.omo/boulder.json
+.omo/state/
+.omo/locks/
+.omo/*.log
