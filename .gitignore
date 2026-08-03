@@ -29,7 +29,6 @@ npm-debug.log*
 .omo/evidence/
 .omo/worktrees/
 .omo/run-continuation/
-.omo/teams/
 .omo/boulder.json
 .omo/state/
 .omo/locks/
