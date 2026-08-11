@@ -48,14 +48,17 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
   scriptable yet — harvest manually into `source: "trendstr"` payloads.
 - **Scheduled**: `.github/workflows/harvest.yml` runs the harvest daily (06:00
   UTC) + on demand (`workflow_dispatch`) via GH Actions (uses `CONVEX_DEPLOY_KEY`).
-- **Downstream (U3+)**: nicheScore gate = DataForSEO SERP API
-  (`DATAFORSEO_LOGIN`/`PASSWORD`, key not acquired yet) → `nicheScore.verdict
-  PASS` && `demandSignal.providerVerdict PROCEED` → content generation via
-  `scripts/generate-article.mjs` (Harbor API, `HARBOR_API_KEY` in `.env`,
-  site id `nd7amxhtnt94bx5er1ygvm4rbx8c97yz` = phillias.us, 1 credit/article,
-  ~3-5 min, output → `content/drafts/`, gitignored) → render as Astro pages →
-  Pages deploy. For the harbor MCP in opencode, `HARBOR_API_KEY` must be in the
-  opencode process env (export it before launch), not just `.env`.
+- **Downstream (U3+)**: nicheScore gate = `npx convex run --prod
+  actions/checkNiche:checkNiche '{"keyword":"..."}'` (DataForSEO SERP API;
+  `DATAFORSEO_API_KEY` = base64("email:password") set on the Convex prod
+  deployment; account must be verified at app.dataforseo.com first) →
+  `nicheScore.verdict PASS` && `demandSignal.providerVerdict PROCEED` →
+  content generation via `scripts/generate-article.mjs` (Harbor API,
+  `HARBOR_API_KEY` in `.env`, site id `nd7amxhtnt94bx5er1ygvm4rbx8c97yz` =
+  phillias.us, 1 credit/article, ~3-5 min, output → `content/drafts/`,
+  gitignored) → render as Astro pages → Pages deploy. For the harbor MCP in
+  opencode, `HARBOR_API_KEY` must be in the opencode process env (export it
+  before launch), not just `.env`.
 - Do NOT use harborseo.ai's MCP as an idea source until it's available; it's a
   billable content-generation input, not free discovery.
 
