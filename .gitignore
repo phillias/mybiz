@@ -39,3 +39,6 @@ npm-debug.log*
 
 # generated content drafts (scripts/generate-article.mjs output)
 content/drafts/
+
+# harbor key file (never commit)
+.harbor-key
