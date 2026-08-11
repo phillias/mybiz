@@ -1,0 +1,379 @@
+---
+// CTIA-compliant SMS opt-in for the Phileas Fogg content-alert program.
+// Branded, SMS use-case expressed, checkbox starts UNCHECKED, phone number
+// field required, standard disclosures (frequency, data rates, STOP/HELP,
+// privacy, terms). Part of the Telnyx toll-free verification resubmission.
+const contactEmail = "admin@phillias.us";
+const phoneValue = import.meta.env.PUBLIC_OPTIN_PHONE || "+18774455580";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SMS opt-in — Phileas Fogg</title>
+    <meta name="robots" content="index" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="/" aria-label="Phileas Fogg — home">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+          <ellipse cx="12" cy="12" rx="4" ry="9.5" fill="none" stroke="currentColor" stroke-width="1.1" />
+          <line x1="2.5" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.1" />
+          <circle cx="19" cy="6" r="2.2" fill="currentColor" />
+        </svg>
+        <span>Phileas&nbsp;Fogg</span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="/#route">The route</a>
+        <a href="/#everywhere">Everywhere</a>
+        <a href="/app">Workspace</a>
+        <a class="nav-cta" href={`mailto:${contactEmail}`}>Contact</a>
+      </nav>
+    </header>
+
+    <main class="optin">
+      <section class="card" aria-labelledby="optin-title">
+        <p class="eyebrow">SMS opt-in</p>
+        <h1 id="optin-title">Get content alerts by text</h1>
+        <p class="lede">
+          We'll text you when your content is published or its rankings move, and
+          for appointment or event reminders. No marketing blasts, ever.
+        </p>
+
+        <form id="optin-form" novalidate>
+          <label for="phone">Mobile number</label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            inputmode="tel"
+            autocomplete="tel"
+            required
+            placeholder="+1 (555) 555-5555"
+          />
+
+          <label class="consent">
+            <input type="checkbox" name="consent" required />
+            <span>
+              I agree to receive transactional SMS alerts from Phileas Fogg at the
+              number above. This covers publish and rank-change notifications,
+              appointment and event reminders, and replies to messages I send.
+              Consent is not a condition of any purchase.
+            </span>
+          </label>
+
+          <p class="disclosure">
+            Message frequency varies. Message and data rates may apply.
+            Reply <strong>HELP</strong> for help, or <strong>STOP</strong> to
+            cancel at any time.
+          </p>
+
+          <p class="policies">
+            By opting in you agree to our
+            <a href="/privacy">Privacy Policy</a> and
+            <a href="/terms">Terms of Service</a>.
+          </p>
+
+          <button class="btn" type="submit">Subscribe to alerts</button>
+          <p id="result" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <p class="footnote">
+        Questions? <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+      </p>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Phileas Fogg</span>
+      <nav aria-label="Footer">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href={`mailto:${contactEmail}`}>Contact</a>
+      </nav>
+    </footer>
+
+    <script>
+      const form = document.getElementById("optin-form") as HTMLFormElement | null;
+      const result = document.getElementById("result") as HTMLElement | null;
+      form?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const phone = (document.getElementById("phone") as HTMLInputElement | null)?.value.trim();
+        const consent = (document.getElementById("consent") as HTMLInputElement | null)?.checked;
+        if (!result) return;
+        if (!phone || !/^\+?[0-9\s().-]{7,15}$/.test(phone)) {
+          result.textContent = "Enter a valid mobile number.";
+          return;
+        }
+        if (!consent) {
+          result.textContent = "Please check the consent box to subscribe.";
+          return;
+        }
+        result.textContent = `Thanks — we'll text ${phone} when there's something to see. (Consent recording backend lands with the U-series.)`;
+      });
+    </script>
+
+    <style>
+      :root {
+        --ink: #0b1f33;
+        --ink-2: #12314f;
+        --paper: #f6f2ea;
+        --paper-2: #ece5d7;
+        --text: #18222d;
+        --muted: #5c6671;
+        --accent: #e56b2b;
+        --accent-strong: #b6480f;
+        --btn: #c4520f;
+        --btn-hover: #a8430b;
+        --line: rgba(11, 31, 51, 0.14);
+        --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+        --font-body: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--font-body);
+        color: var(--text);
+        background: var(--paper);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: var(--accent-strong);
+        text-underline-offset: 3px;
+      }
+
+      :focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+
+      .site-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 5vw;
+        background: rgba(246, 242, 234, 0.9);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .wordmark {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--ink);
+        text-decoration: none;
+      }
+
+      .wordmark svg {
+        color: var(--accent);
+      }
+
+      .site-header nav,
+      .site-footer nav {
+        display: flex;
+        gap: 1.4rem;
+        align-items: center;
+      }
+
+      .site-header nav a {
+        color: var(--ink);
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+
+      .site-header nav a:hover {
+        color: var(--accent-strong);
+      }
+
+      .nav-cta {
+        border: 1px solid var(--ink);
+        border-radius: 999px;
+        padding: 0.4rem 1rem;
+      }
+
+      .optin {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: clamp(3rem, 8vw, 5rem) 1.25rem;
+      }
+
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: clamp(1.6rem, 5vw, 2.5rem);
+        box-shadow: 0 1px 0 rgba(11, 31, 51, 0.05);
+      }
+
+      .eyebrow {
+        margin: 0 0 0.6rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent-strong);
+      }
+
+      h1 {
+        margin: 0 0 0.6rem;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: clamp(1.8rem, 4vw, 2.4rem);
+        line-height: 1.05;
+        letter-spacing: -0.015em;
+        color: var(--ink);
+      }
+
+      .lede {
+        margin: 0 0 1.6rem;
+        color: var(--muted);
+        font-size: 1.05rem;
+      }
+
+      form {
+        display: grid;
+        gap: 1.1rem;
+      }
+
+      label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--ink);
+      }
+
+      input[type="tel"] {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        font-size: 1.05rem;
+        font-family: inherit;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--paper);
+        color: var(--text);
+      }
+
+      input[type="tel"]:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      .consent {
+        display: flex;
+        gap: 0.7rem;
+        align-items: flex-start;
+        font-weight: 400;
+        font-size: 0.95rem;
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .consent input[type="checkbox"] {
+        width: 1.15rem;
+        height: 1.15rem;
+        margin-top: 0.25rem;
+        accent-color: var(--btn);
+        cursor: pointer;
+      }
+
+      .consent input[type="checkbox"]:not(:checked) {
+        /* explicitly blank by default (CTIA requirement) */
+      }
+
+      .disclosure {
+        margin: 0;
+        padding: 0.9rem 1rem;
+        background: var(--paper-2);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: var(--text);
+      }
+
+      .policies {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      .btn {
+        display: inline-flex;
+        justify-content: center;
+        padding: 0.85rem 1.6rem;
+        border: none;
+        border-radius: 999px;
+        background: var(--btn);
+        color: #fff;
+        font-family: inherit;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.15s ease;
+      }
+
+      .btn:hover {
+        background: var(--btn-hover);
+        transform: translateY(-1px);
+      }
+
+      #result {
+        margin: 0;
+        font-size: 0.95rem;
+        color: var(--accent-strong);
+      }
+
+      .footnote {
+        text-align: center;
+        margin: 1.4rem 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .site-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 1.4rem 5vw;
+        background: var(--ink);
+        color: rgba(246, 242, 234, 0.7);
+        font-size: 0.9rem;
+      }
+
+      .site-footer nav a {
+        color: rgba(246, 242, 234, 0.7);
+        text-decoration: none;
+      }
+
+      .site-footer nav a:hover {
+        color: var(--paper);
+      }
+
+      @media (max-width: 480px) {
+        .site-header {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </body>
+</html>
