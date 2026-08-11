@@ -20,13 +20,7 @@ npm run build
 # that `wrangler pages deploy` rejects (reserved ASSETS binding + main/rules/images
 # keys). Pages injects the ASSETS binding at runtime, so deploy in single-file
 # Pages mode: wrap the server entry in dist/_worker.js and drop the worker config.
-rm -f dist/server/wrangler.json
-printf 'export { default } from "./server/entry.mjs";\n' > dist/_worker.js
-rm -rf .wrangler/deploy   # clear stale redirected-config state
-
-# dist/ is the Pages deploy root, so client assets must sit at root too —
-# otherwise /_astro/*, /sitemap-index.xml and /robots.txt land under /client/*.
-cp -a dist/client/. dist/
+./scripts/prepare-pages-dist.sh
 
 if ! npx wrangler pages project list 2>/dev/null | grep -q "$PROJECT"; then
   npx wrangler pages project create "$PROJECT" --production-branch "$BRANCH"
