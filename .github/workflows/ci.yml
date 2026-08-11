@@ -31,6 +31,9 @@ jobs:
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
 
+      - name: Impeccable design gate (60 anti-pattern rules)
+        run: npx impeccable detect src --quiet
+
       - name: Unit tests
         run: npm test
 
