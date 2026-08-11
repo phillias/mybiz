@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="${1:-phillias/harbor-seo}"
+REPO="${1:-phillias/mybiz}"
 ENV_FILE="${2:-.env}"
 [ -f "$ENV_FILE" ] || { echo "no $ENV_FILE — copy .env.example and fill in real keys first"; exit 1; }
 
