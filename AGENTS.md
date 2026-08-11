@@ -46,6 +46,13 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
 - **Trendstr** (trendstr.io) — free to browse, 5-factor validated ideas from
   Reddit/HN/ProductHunt/GitHub/IndieHackers; client-rendered (bot shell) so not
   scriptable yet — harvest manually into `source: "trendstr"` payloads.
+- **Scheduled**: `.github/workflows/harvest.yml` runs the harvest daily (06:00
+  UTC) + on demand (`workflow_dispatch`) via GH Actions (uses `CONVEX_DEPLOY_KEY`).
+- **Downstream (U3+)**: nicheScore gate = DataForSEO SERP API
+  (`DATAFORSEO_LOGIN`/`PASSWORD`, key not acquired yet) → `nicheScore.verdict
+  PASS` && `demandSignal.providerVerdict PROCEED` → content generation via the
+  harbor MCP (`HARBOR_API_KEY`, mint at harborseo.ai → dashboard/developers,
+  add https://phillias.us as the site first) → Astro pages → Pages deploy.
 - Do NOT use harborseo.ai's MCP as an idea source until it's available; it's a
   billable content-generation input, not free discovery.
 

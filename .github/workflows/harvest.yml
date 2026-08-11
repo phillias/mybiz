@@ -1,0 +1,37 @@
+name: Harvest demand signals
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # daily 06:00 UTC — keeps demandSignal fresh
+  workflow_dispatch:      # manual run
+
+permissions:
+  contents: read
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Convex codegen
+        run: npx convex codegen
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+
+      - name: Push latest code to prod
+        run: npx convex deploy --yes
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+
+      - name: Harvest MonetScope ideas into demandSignal
+        run: node scripts/harvest-ideas.mjs --source sitemap --limit 40 --apply --prod
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
