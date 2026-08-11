@@ -39,9 +39,10 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
 - **MonetScope** (monetscope.com) — free, no-account catalog of validated
   opportunities (Reddit/HN/X signals scored on pain/WTP/market/validation/confidence).
   Harvest with `node scripts/harvest-ideas.mjs` (dry-run emits JSON; `--apply`
-  imports via `npx convex run importDemandSignal --push`, which pushes the
-  demandSignal code then runs). Sources: `thisweek` (default, fresh) or
-  `sitemap` (full ~1900-page catalog, capped at 100 unless `--limit`).
+  imports via `npx convex run importDemandSignal`). Prod flow: `npx convex deploy --yes`
+  FIRST (convex run won't `--push` to prod), then `--apply --prod`. Sources:
+  `thisweek` (default, fresh) or `sitemap` (full ~1900-page catalog, capped at 100
+  unless `--limit`; index pages like /types and /tags are filtered out).
 - **Trendstr** (trendstr.io) — free to browse, 5-factor validated ideas from
   Reddit/HN/ProductHunt/GitHub/IndieHackers; client-rendered (bot shell) so not
   scriptable yet — harvest manually into `source: "trendstr"` payloads.

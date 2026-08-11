@@ -38,7 +38,8 @@ async function fetchText(url) {
   return res.text();
 }
 
-// Collect opportunity URLs from a listing page.
+// Collect opportunity URLs from a listing page. Real opportunity slugs always
+// contain a hyphen; index pages like /opportunities/types and /tags do not.
 async function collectUrls(source) {
   const page = source === "sitemap"
     ? `${BASE}/sitemap.xml`
@@ -50,6 +51,8 @@ async function collectUrls(source) {
   const urls = new Set();
   let m;
   while ((m = pattern.exec(html)) !== null) {
+    const slug = m[1].split("/").pop() ?? "";
+    if (!slug.includes("-")) continue; // skip index pages (types, tags)
     const u = m[1].startsWith("/") ? `${BASE}${m[1]}` : m[1];
     urls.add(u);
   }
@@ -153,9 +156,11 @@ async function main() {
 
   const target = prod ? "--prod" : "";
   const { execFileSync } = await import("node:child_process");
+  // `convex run --push` is dev-only; for prod, `npx convex deploy` must run first.
+  const push = prod ? [] : ["--push"];
   execFileSync(
     "npx",
-    ["convex", "run", "actions/importDemandSignal:importDemandSignal", ...(target ? [target] : []), "--push", JSON.stringify({ payload })],
+    ["convex", "run", "actions/importDemandSignal:importDemandSignal", ...(target ? [target] : []), ...push, JSON.stringify({ payload })],
     { stdio: "inherit" },
   );
   console.error(`imported ${records.length} demandSignal records`);
