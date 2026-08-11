@@ -62,7 +62,7 @@ npm run check / typecheck / test / build # astro check, tsc+convex, vitest, buil
 npx wrangler login && ./scripts/deploy-pages.sh   # browser auth; or headless: CLOUDFLARE_API_TOKEN+ACCOUNT_ID in .env
 NODE_OPTIONS=--dns-result-order=ipv6first ./scripts/deploy-pages.sh  # headless (token is IPv6-restricted)
 node scripts/harvest-ideas.mjs           # MonetScope free catalog → demandSignal JSON (dry-run)
-node scripts/harvest-ideas.mjs --apply --prod  # + import via importDemandSignal (needs deploy first)
+node scripts/harvest-ideas.mjs --apply --prod  # prod: run `npx convex deploy --yes` first (convex run won't --push to prod)
 ```
 
 ## Hard-won gotchas (the golden paths)
