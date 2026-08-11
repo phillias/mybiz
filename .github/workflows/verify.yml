@@ -20,8 +20,6 @@ jobs:
             | python3 -c "import json,sys; print((json.load(sys.stdin).get('data') or {}).get('verificationStatus','?'))")
           echo "verification status: $STATUS"
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
-
-      - name: Flag approval
-        if: steps.poll.outputs.status == 'verified' || steps.poll.outputs.status == 'approved'
-        run: |
-          echo "::warning::Toll-free verification ${{ steps.poll.outputs.status }} - SMS is live. Run webhook round-trip QA (text the number -> conversations row)."
+          if [ "$STATUS" = "verified" ] || [ "$STATUS" = "approved" ]; then
+            echo "::warning::SMS is LIVE - run webhook round-trip QA (text the number -> conversations row)."
+          fi
