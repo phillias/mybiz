@@ -52,7 +52,8 @@ export const nicheScore = defineTable({
   /** data source + timestamp for auditability */
   source: v.string(),
 })
-  .index("by_verdict", ["verdict"]);
+  .index("by_verdict", ["verdict"])
+  .index("by_keyword", ["keyword"]);
 
 /**
  * Demand-side validation signals (MonetScope / Trendstr / manual import).
