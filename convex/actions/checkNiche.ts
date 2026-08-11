@@ -21,11 +21,28 @@ import { v } from "convex/values";
 
 const DFS_ENDPOINT = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced";
 
-function median(nums: number[]): number | undefined {
-  if (nums.length === 0) return undefined;
-  const s = [...nums].sort((a, b) => a - b);
-  const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+/** DataForSEO's live endpoint intermittently returns empty results for the same
+ *  query — retry a few times before giving up to PENDING. */
+async function fetchSerp(apiKey: string, keyword: string): Promise<{
+  items: Array<Record<string, unknown>>;
+}> {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await fetch(DFS_ENDPOINT, {
+      method: "POST",
+      headers: {
+        authorization: `Basic ${apiKey}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify([{ keyword, location_code: 2840, language_code: "en", depth: 10 }]),
+    });
+    const data = await res.json();
+    const task = (data.tasks ?? [])[0];
+    const result = (task?.result ?? [])[0];
+    const items = (result?.items ?? []) as Array<Record<string, unknown>>;
+    if (res.ok && result && items.length > 0) return { items };
+    if (attempt < 2) await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+  }
+  return { items: [] };
 }
 
 export const checkNiche = action({
@@ -46,22 +63,9 @@ export const checkNiche = action({
     const apiKey = process.env.DATAFORSEO_API_KEY;
     if (!apiKey) throw new Error("DATAFORSEO_API_KEY not set on the Convex deployment");
 
-    const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(keyword)}`;
-    const res = await fetch(DFS_ENDPOINT, {
-      method: "POST",
-      headers: {
-        authorization: `Basic ${apiKey}`,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify([{ url: googleUrl, location_code: 2840, language_code: "en" }]),
-    });
-    const data = await res.json();
+    const { items } = await fetchSerp(apiKey, keyword);
 
-    const task = (data.tasks ?? [])[0];
-    const result = (task?.result ?? [])[0];
-    const items = (result?.items ?? []) as Array<Record<string, unknown>>;
-
-    if (!res.ok || !result || items.length === 0) {
+    if (items.length === 0) {
       await ctx.runMutation(internal.nicheScoreWrite.upsert, {
         keyword,
         sponsoredCount: 0,
@@ -81,13 +85,14 @@ export const checkNiche = action({
 
     const sponsoredCount = items.filter((i) => i.type === "paid").length;
     const mapPack = items.some((i) => i.type === "local_pack");
-    const organic = items.filter((i) => i.type === "organic").slice(0, 10);
-    const authorities = organic
-      .map((i) => (typeof i.referred_domains === "number" ? i.referred_domains : undefined))
-      .filter((n): n is number => typeof n === "number");
-    const top10AuthorityMedian = median(authorities);
-    const related = result.related_results;
-    const longTailClusters = Array.isArray(related) ? related.length : 0;
+    // The advanced SERP endpoint returns no authority metric per result — leave
+    // top10AuthorityMedian unset unless a backlinks/domain-rank source is added.
+    const top10AuthorityMedian = undefined;
+    // Google's related searches arrive as items of type `related_searches`,
+    // each carrying a list of phrase entries (low-competition long-tail proxies).
+    const longTailClusters = items
+      .filter((i) => i.type === "related_searches")
+      .reduce((n, i) => n + (Array.isArray(i.items) ? i.items.length : 0), 0);
 
     const verdict =
       sponsoredCount === 0 && !mapPack && longTailClusters >= 3
