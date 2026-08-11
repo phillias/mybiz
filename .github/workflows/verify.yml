@@ -1,0 +1,27 @@
+name: Telnyx verification watch
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # daily 12:00 UTC
+  workflow_dispatch:
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Poll toll-free verification status
+        id: poll
+        env:
+          TELNYX_API_KEY: ${{ secrets.TELNYX_API_KEY }}
+        run: |
+          STATUS=$(curl -s --max-time 30 \
+            "https://api.telnyx.com/v2/messaging_tollfree/verification/requests/e89288f0-ed15-5705-ad1e-f90e34f082d4" \
+            -H "Authorization: Bearer $TELNYX_API_KEY" \
+            | python3 -c "import json,sys; print((json.load(sys.stdin).get('data') or {}).get('verificationStatus','?'))")
+          echo "verification status: $STATUS"
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+
+      - name: Flag approval
+        if: steps.poll.outputs.status == 'verified' || steps.poll.outputs.status == 'approved'
+        run: |
+          echo "::warning::Toll-free verification ${{ steps.poll.outputs.status }} - SMS is live. Run webhook round-trip QA (text the number -> conversations row)."

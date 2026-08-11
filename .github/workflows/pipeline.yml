@@ -1,0 +1,45 @@
+name: Content pipeline
+
+on:
+  schedule:
+    - cron: '0 8 * * *'   # daily 08:00 UTC, after the 06:00 harvest
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Convex codegen
+        run: npx convex codegen
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+
+      - name: Run pipeline (pick PROCEED signal -> niche gate -> generate)
+        run: node scripts/run-pipeline.mjs --auto
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+          HARBOR_API_KEY: ${{ secrets.HARBOR_API_KEY }}
+
+      - name: Render + commit article (publishes via the deploy job on main)
+        run: |
+          set -euo pipefail
+          latest=$(ls -t content/drafts/*.html 2>/dev/null | head -1 || true)
+          if [ -z "$latest" ]; then echo "no draft generated (niche FAIL or none)"; exit 0; fi
+          node scripts/render-article.mjs --draft "$latest"
+          git config user.name "phileas-fogg-bot"
+          git config user.email "bot@phillias.us"
+          git add src/pages/articles
+          git commit -m "pipeline: publish $(basename "$latest" .html)" || echo "nothing new to commit"
+          git push origin main
