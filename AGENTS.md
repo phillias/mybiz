@@ -50,9 +50,12 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
   UTC) + on demand (`workflow_dispatch`) via GH Actions (uses `CONVEX_DEPLOY_KEY`).
 - **Downstream (U3+)**: nicheScore gate = DataForSEO SERP API
   (`DATAFORSEO_LOGIN`/`PASSWORD`, key not acquired yet) → `nicheScore.verdict
-  PASS` && `demandSignal.providerVerdict PROCEED` → content generation via the
-  harbor MCP (`HARBOR_API_KEY`, mint at harborseo.ai → dashboard/developers,
-  add https://phillias.us as the site first) → Astro pages → Pages deploy.
+  PASS` && `demandSignal.providerVerdict PROCEED` → content generation via
+  `scripts/generate-article.mjs` (Harbor API, `HARBOR_API_KEY` in `.env`,
+  site id `nd7amxhtnt94bx5er1ygvm4rbx8c97yz` = phillias.us, 1 credit/article,
+  ~3-5 min, output → `content/drafts/`, gitignored) → render as Astro pages →
+  Pages deploy. For the harbor MCP in opencode, `HARBOR_API_KEY` must be in the
+  opencode process env (export it before launch), not just `.env`.
 - Do NOT use harborseo.ai's MCP as an idea source until it's available; it's a
   billable content-generation input, not free discovery.
 
