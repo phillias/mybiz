@@ -268,7 +268,7 @@ llma-skill-get → note version → pick the smallest primitive:
 
 The bridge is intentionally minimal — it just routes to the MCP tools. The real instructions live in PostHog and update without touching local files.
 
-> **Agent-specific setup:** Where to save this depends on your agent. For OpenCode (Sisyphus stack), save as `~/mybiz/.agents/skills/phs/SKILL.md` (project-local) or `~/.agents/skills/phs/SKILL.md` (global). For Claude Code, save as `~/.claude/skills/phs/SKILL.md`. For other agents, consult your agent's docs on local skill or slash command configuration.
+> **Agent-specific setup:** Where to save this depends on your agent. For OpenCode (Sisyphus stack), save as `./.agents/skills/phs/SKILL.md` (project-local) or `~/.agents/skills/phs/SKILL.md` (global). For Claude Code, save as `~/.claude/skills/phs/SKILL.md`. For other agents, consult your agent's docs on local skill or slash command configuration.
 
 ## Default behavior
 

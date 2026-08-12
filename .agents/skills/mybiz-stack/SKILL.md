@@ -9,7 +9,7 @@ description: >
   Cloudflare Pages + Turnstile + GitHub + Telnyx voice/SMS), the hard-won
   technical gotchas (Convex HTTP actions, Ed25519 webhook verification,
   Clerk->Convex auth, deploy flows), and the standing plan.
-  Load when working on ~/mybiz, Harbor, the SEO content SaaS, the agency
+  Load when working on this repo (`./`), Harbor, the SEO content SaaS, the agency
   stack, or any of its components.
 ---
 
@@ -33,12 +33,12 @@ sites, event marketing).
 | Payments | **Stripe** (EUR) | plans Solo €24 / Growth €39 / Powerhouse €83 in `convex/actions/billing.ts` |
 | Email | **Resend** | action in `convex/actions/email.ts` (no-op until RESEND_API_KEY set) |
 | Bot protection | **Cloudflare Turnstile** | env `TURNSTILE_SECRET`; `data-action="turnstile-spin-v2"`; verify route `/turnstile/verify` |
-| Repo/CI | **GitHub** `phillias/mybiz` (private) | local `~/mybiz`; CI: codegen → astro check → typecheck → vitest → build → Pages artifact |
+| Repo/CI | **GitHub** `phillias/mybiz` (private) | this repo (`./`); CI: codegen → astro check → typecheck → vitest → build → Pages artifact |
 | Voice + SMS | **Telnyx** | toll-free **+1-877-445-5580** (id 3017003223971005577); voice conn `3016892976782640902`; messaging profile `40019fbd-5276-4c72-b4fc-6d6c281010fd` (webhook → `moonlit-spider-468.convex.site/telnyx-webhook`) |
 | SEO data (future) | DataForSEO SERP API (MCP), rankexpand | U3 niche pipeline |
 | Plan | `.omo/plans/2026-07-31-001-harbor-ai-business-stack.md` | 7 units: U1 foundation · U2 10DLC/comms · U3 niche · U4 site blueprint · U5 Harbor gate · U6 agents · U7 obs/sales |
 
-## Repo layout (`~/mybiz`)
+## Repo layout (`./`)
 
 ```
 convex/            backend: schema.ts (pageBlueprint/nicheScore/conversations),
@@ -53,7 +53,7 @@ docs/              U2-telnyx-checklist.md · tollfree-verification-draft.md
 ## Key commands
 
 ```bash
-cd ~/mybiz
+# run from the repo root (`./`)
 npx convex dev --once                    # codegen + typecheck (non-interactive project check)
 npx convex deploy                        # push to prod (targets PROD unless CONVEX_DEPLOY_KEY is in .env!)
 npx convex env set <KEY> <val> --prod    # prod env var (default targets dev)
@@ -101,4 +101,4 @@ node scripts/harvest-ideas.mjs --apply --prod  # prod: run `npx convex deploy --
 
 ## Environment / credentials
 
-Real secret VALUES live in `~/mybiz/.env` and GitHub secrets (via `scripts/sync-secrets.sh`) — never inline them. Key env vars: `PUBLIC_CONVEX_URL`, `CONVEX_DEPLOY_KEY` (CI), `PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `CLERK_JWT_ISSUER_DOMAIN`, `PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET`, `TELNYX_API_KEY`, `TELNYX_PUBLIC_KEY`, `TELNYX_NUMBER`, `RESEND_API_KEY`, `STRIPE_SECRET_KEY`.
+Real secret VALUES live in `./.env` and GitHub secrets (via `scripts/sync-secrets.sh`) — never inline them. Key env vars: `PUBLIC_CONVEX_URL`, `CONVEX_DEPLOY_KEY` (CI), `PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `CLERK_JWT_ISSUER_DOMAIN`, `PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET`, `TELNYX_API_KEY`, `TELNYX_PUBLIC_KEY`, `TELNYX_NUMBER`, `RESEND_API_KEY`, `STRIPE_SECRET_KEY`.
