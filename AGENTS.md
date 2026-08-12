@@ -9,7 +9,7 @@ operational depth; this file is the short version.
 
 Owned vs consumed — this distinction matters for every decision here:
 
-- **Owned**: this Astro + Convex app (the Harbor product) at `~/mybiz`; our
+- **Owned**: this Astro + Convex app (the Harbor product) — this repo (`./`); our
   homelab at `*.phillias.us` (Cloudflare tunnel, host `kali`); `phillias.us` is
   our primary domain and the intended CTIA corporate website.
 - **Consumed SaaS — harborseo.ai ("Harbor" the service)**: a THIRD-PARTY AI SEO
