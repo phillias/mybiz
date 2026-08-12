@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "@astrojs/cloudflare": "^14.1.7",
+    "@astrojs/cloudflare": "^14.2.0",
     "@types/node": "^24.0.0",
     "@types/three": "^0.185.4",
     "impeccable": "^3.5.0",
