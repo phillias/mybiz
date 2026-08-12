@@ -1,0 +1,145 @@
+---
+// Terms of Service for Phileas Fogg (phillias.us). Part of the CTIA SMS
+// verification resubmission (termsAndConditionURL).
+const contactEmail = "admin@phillias.us";
+const updated = "August 10, 2026";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Terms of Service — Phileas Fogg</title>
+    <meta name="robots" content="index" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="/">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6" /><ellipse cx="12" cy="12" rx="4" ry="9.5" fill="none" stroke="currentColor" stroke-width="1.1" /><line x1="2.5" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.1" /><circle cx="19" cy="6" r="2.2" fill="currentColor" /></svg>
+        <span>Phileas&nbsp;Fogg</span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="/#route">The route</a>
+        <a href="/#everywhere">Everywhere</a>
+        <a href="/app">Workspace</a>
+        <a href="/opt-in">SMS opt-in</a>
+      </nav>
+    </header>
+
+    <main class="legal">
+      <h1>Terms of Service</h1>
+      <p class="meta">Effective {updated}</p>
+
+      <h2>1. Agreement</h2>
+      <p>
+        By using phillias.us and the Phileas Fogg AI content workspace you agree
+        to these terms. If you do not agree, do not use the service. Contact:
+        {contactEmail}.
+      </p>
+
+      <h2>2. The service</h2>
+      <p>
+        Phileas Fogg provides AI-assisted content research, drafting, and
+        publishing for the sites and content you submit. You are responsible for
+        the content you produce and publish and for complying with any platform
+        policies that govern where it is published.
+      </p>
+
+      <h2>3. Accounts</h2>
+      <p>
+        You must provide accurate account information and keep your credentials
+        secure. You are responsible for activity on your account. We may suspend
+        accounts that violate these terms or applicable law.
+      </p>
+
+      <h2>4. Acceptable use</h2>
+      <ul>
+        <li>No spam, bulk unsolicited messaging, or unlawful or misleading content.</li>
+        <li>Honor recipients' <strong>STOP</strong> (opt-out) requests immediately and permanently.</li>
+        <li>Do not use the service to infringe others' rights or interfere with its operation.</li>
+      </ul>
+
+      <h2>5. SMS messaging</h2>
+      <p>
+        Text messages are sent only to numbers that have opted in through our
+        <a href="/opt-in">SMS opt-in</a>. Message frequency varies; message and
+        data rates may apply. Reply <strong>HELP</strong> for help or
+        <strong>STOP</strong> to cancel. Consent may be withdrawn at any time.
+      </p>
+
+      <h2>6. Payments</h2>
+      <p>
+        Paid plans are billed through Stripe on the terms presented at signup.
+        Plan changes apply immediately; fees already paid are non-refundable
+        except as required by law.
+      </p>
+
+      <h2>7. Intellectual property</h2>
+      <p>
+        We retain rights in the service and software. You retain rights in the
+        content you create. You grant us a limited license to process your content
+        to provide the service.
+      </p>
+
+      <h2>8. Disclaimers &amp; liability</h2>
+      <p>
+        The service is provided "as is" without warranties of any kind. To the
+        maximum extent permitted by law, we are not liable for indirect,
+        incidental, or consequential damages, or for losses arising from use of or
+        reliance on AI-generated content.
+      </p>
+
+      <h2>9. Changes &amp; law</h2>
+      <p>
+        We may update these terms; continued use after changes means acceptance.
+        These terms are governed by the laws of the State of Michigan, United
+        States.
+      </p>
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Phileas Fogg</span>
+      <nav aria-label="Footer">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href={`mailto:${contactEmail}`}>Contact</a>
+      </nav>
+    </footer>
+
+    <style>
+      :root {
+        --ink: #0b1f33; --paper: #f6f2ea; --paper-2: #ece5d7; --text: #18222d;
+        --muted: #5c6671; --accent: #e56b2b; --accent-strong: #b6480f; --line: rgba(11,31,51,0.14);
+        --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+        --font-body: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: var(--font-body); color: var(--text); background: var(--paper); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+      a { color: var(--accent-strong); text-underline-offset: 3px; }
+      :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+      .site-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 5vw; background: rgba(246,242,234,0.9); border-bottom: 1px solid var(--line); }
+      .wordmark { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: var(--ink); text-decoration: none; }
+      .wordmark svg { color: var(--accent); }
+      .site-header nav, .site-footer nav { display: flex; gap: 1.4rem; align-items: center; }
+      .site-header nav a { color: var(--ink); text-decoration: none; font-size: 0.95rem; font-weight: 500; }
+      .site-header nav a:hover { color: var(--accent-strong); }
+      .legal { max-width: 760px; margin: 0 auto; padding: clamp(3rem, 8vw, 5rem) 1.25rem; }
+      .legal h1 { margin: 0 0 0.3rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 4vw, 2.6rem); letter-spacing: -0.015em; color: var(--ink); }
+      .meta { margin: 0 0 1.6rem; color: var(--muted); font-size: 0.9rem; }
+      .legal h2 { margin: 1.8rem 0 0.4rem; font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: var(--ink); }
+      .legal p, .legal li { color: var(--text); font-size: 1rem; }
+      .legal ul { padding-left: 1.2rem; }
+      .legal li { margin-bottom: 0.4rem; }
+      .site-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.4rem 5vw; background: var(--ink); color: rgba(246,242,234,0.7); font-size: 0.9rem; }
+      .site-footer nav a { color: rgba(246,242,234,0.7); text-decoration: none; }
+      .site-footer nav a:hover { color: var(--paper); }
+    </style>
+  </body>
+</html>

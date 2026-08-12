@@ -1,8 +1,17 @@
 ---
-// Landing — "Analyze your site" entry (mirrors harborseo.ai hero).
-// The Analyze pipeline (sitemap crawl → keyword gaps) lands in U3/U4;
-// today the form proves the Turnstile → Convex verification chain.
-import TurnstileWidget from "../components/TurnstileWidget.astro";
+// Phileas Fogg — corporate landing for the phillias.us primary property.
+// Modern "around the world" theme: global reach, great-circle routes, waypoints.
+// CTIA contact is published here (admin@phillias.us); no mybiz/Harbor branding.
+const contactEmail = "admin@phillias.us";
+
+const waypoints = [
+  { name: "London", coord: "51.5°N · 0.1°W" },
+  { name: "New York", coord: "40.7°N · 74.0°W" },
+  { name: "Nairobi", coord: "1.3°S · 36.8°E" },
+  { name: "Singapore", coord: "1.35°N · 103.8°E" },
+  { name: "Sydney", coord: "33.9°S · 151.2°E" },
+  { name: "São Paulo", coord: "23.5°S · 46.6°W" },
+];
 ---
 
 <!doctype html>
@@ -10,57 +19,588 @@ import TurnstileWidget from "../components/TurnstileWidget.astro";
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Harbor — AI SEO content that ranks</title>
+    <title>Phileas Fogg — Content that goes around the world</title>
+    <meta
+      name="description"
+      content="Phileas Fogg researches real demand, writes AI-native content for search intent, and publishes it everywhere your customers are. Content that goes around the world."
+    />
+    <meta property="og:title" content="Phileas Fogg — Content that goes around the world" />
+    <meta
+      property="og:description"
+      content="Real demand. Written to be found. Published everywhere. Your content, around the world."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://phillias.us" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <main style="max-width: 720px; margin: 0 auto; padding: 2rem 1rem">
-      <h1>Ship SEO content that ranks.</h1>
-      <p>Paste your site. Harbor reads your sitemap, understands your business, and hands you three ranked opportunities in under a minute.</p>
+    <header class="site-header">
+      <a class="wordmark" href="/" aria-label="Phileas Fogg — home">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+          <ellipse cx="12" cy="12" rx="4" ry="9.5" fill="none" stroke="currentColor" stroke-width="1.1" />
+          <line x1="2.5" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.1" />
+          <circle cx="19" cy="6" r="2.2" fill="currentColor" />
+        </svg>
+        <span>Phileas&nbsp;Fogg</span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="#route">The route</a>
+        <a href="#everywhere">Everywhere</a>
+        <a href="/app">Workspace</a>
+        <a class="nav-cta" href="#contact">Contact</a>
+      </nav>
+    </header>
 
-      <form id="analyze-form" data-convex-url={import.meta.env.PUBLIC_CONVEX_URL} style="display: grid; gap: 1rem; max-width: 480px">
-        <input
-          type="url"
-          name="siteUrl"
-          placeholder="https://yoursite.com"
-          required
-          style="padding: 0.75rem; font-size: 1rem"
-        />
-        <TurnstileWidget />
-        <button type="submit" style="padding: 0.75rem; font-size: 1rem">Analyze</button>
-        <p id="result" role="status"></p>
-      </form>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">AI content &amp; SEO · the modern circumnavigation</p>
+          <h1 id="hero-title">Your content, everywhere on Earth.</h1>
+          <p class="lede">
+            We research real demand, write for search intent, and publish where your
+            customers already are. Around the world, in minutes, not months.
+          </p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#contact">Start the journey</a>
+            <a class="btn btn-ghost" href="/app">Enter the workspace</a>
+          </div>
+        </div>
 
-      <script>
-        const form = document.getElementById("analyze-form") as HTMLFormElement | null;
-        const result = document.getElementById("result") as HTMLParagraphElement | null;
-        const convexUrl = form?.dataset.convexUrl;
+        <div class="hero-visual" aria-hidden="true">
+          <svg class="globe" viewBox="0 0 400 400" role="img" aria-label="A great-circle route around the world">
+            <circle class="globe-rim" cx="200" cy="200" r="150" />
+            <ellipse class="globe-line" cx="200" cy="200" rx="150" ry="52" />
+            <ellipse class="globe-line" cx="200" cy="200" rx="96" ry="150" />
+            <ellipse class="globe-line" cx="200" cy="200" rx="150" ry="108" />
+            <path class="route" d="M 96 108 C 120 150, 150 128, 168 164 C 190 208, 250 220, 290 288" />
+            <circle class="waypoint" cx="96" cy="108" r="7" />
+            <circle class="waypoint" cx="290" cy="288" r="7" />
+            <circle class="traveler" cx="96" cy="108" r="4" />
+          </svg>
+        </div>
+      </section>
 
-        form?.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          if (!result) return;
-          const token = (document.getElementById("turnstile-token") as HTMLInputElement | null)?.value;
-          if (!token) {
-            result.textContent = "Complete the Turnstile challenge first.";
-            return;
-          }
-          result.textContent = "Verifying…";
-          try {
-            const res = await fetch(`${convexUrl}/turnstile/verify`, {
-              method: "POST",
-              headers: { "content-type": "application/json" },
-              body: JSON.stringify({ token }),
-            });
-            const data = (await res.json()) as { success: boolean; errors?: string[] };
-            if (res.ok && data.success) {
-              result.textContent = "Verified. Analyze pipeline lands in U3/U4.";
-            } else {
-              result.textContent = `Challenge failed: ${(data.errors ?? []).join(", ")}`;
-            }
-          } catch (err) {
-            result.textContent = `Error: ${err instanceof Error ? err.message : String(err)}`;
-          }
-        });
-      </script>
+      <section class="route-section" id="route" aria-labelledby="route-title">
+        <h2 id="route-title">One route around the world</h2>
+        <p class="section-lede">
+          From first signal to published, the journey runs through three waypoints.
+        </p>
+        <ol class="steps">
+          <li class="step">
+            <span class="step-num">01</span>
+            <h3>Discover</h3>
+            <p>Demand, not guesses. We scan live signals from real conversations and rank the topics worth your time.</p>
+          </li>
+          <li class="step">
+            <span class="step-num">02</span>
+            <h3>Draft</h3>
+            <p>Written to be found. AI-native drafting tuned for search intent and the people you want to reach.</p>
+          </li>
+          <li class="step">
+            <span class="step-num">03</span>
+            <h3>Ship</h3>
+            <p>Published everywhere. One click to the CMS you already use, or your own stack; then we watch it rank.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="everywhere-section" id="everywhere" aria-labelledby="everywhere-title">
+        <div class="everywhere-copy">
+          <h2 id="everywhere-title">Everywhere people search.</h2>
+          <p>
+            Phileas Fogg went around the world in eighty days. That was the
+            Victorian way: leisurely, and one traveller at a time.
+          </p>
+          <p>
+            Ours runs on real demand. Content travels to every market at once,
+            ranked and measured, while you stay put.
+          </p>
+        </div>
+        <ul class="waypoints">
+          {waypoints.map((w) => (
+            <li>
+              <span class="wp-name">{w.name}</span>
+              <span class="wp-coord">{w.coord}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="final-cta" id="contact" aria-labelledby="cta-title">
+        <h2 id="cta-title">Ready to go around the world?</h2>
+        <p>Tell us where you want to be found. We plot the route from there.</p>
+        <a class="btn btn-primary btn-large" href={`mailto:${contactEmail}`}>Start the journey</a>
+        <p class="contact-line">
+          <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+        </p>
+      </section>
     </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Phileas Fogg</span>
+      <nav aria-label="Footer">
+        <a href="#route">The route</a>
+        <a href="#everywhere">Everywhere</a>
+        <a href="/app">Workspace</a>
+        <a href={`mailto:${contactEmail}`}>Contact</a>
+      </nav>
+    </footer>
+
+    <script>
+      const revealTargets = document.querySelectorAll<HTMLElement>("[data-reveal]");
+      const routeSection = document.querySelector<HTMLElement>("#route");
+      const route = document.querySelector<SVGPathElement>(".route");
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-in");
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.15 },
+        );
+        document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => observer.observe(el));
+        if (routeSection) observer.observe(routeSection);
+      }
+
+      const traveler = document.querySelector<SVGCircleElement>(".traveler");
+      if (traveler && route) {
+        const len = route.getTotalLength();
+        route.style.strokeDasharray = String(len);
+        route.style.strokeDashoffset = String(len);
+        const onScroll = () => {
+          const rect = routeSection?.getBoundingClientRect();
+          if (!rect) return;
+          const progress = Math.min(Math.max((window.innerHeight - rect.top) / (rect.height + window.innerHeight), 0), 1);
+          route.style.strokeDashoffset = String(len * (1 - progress));
+          const pt = route.getPointAtLength(len * progress);
+          traveler.setAttribute("cx", String(pt.x));
+          traveler.setAttribute("cy", String(pt.y));
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+      }
+    </script>
+
+    <style>
+      :root {
+        --ink: #0b1f33;
+        --ink-2: #12314f;
+        --paper: #f6f2ea;
+        --paper-2: #ece5d7;
+        --text: #18222d;
+        --muted: #5c6671;
+        --accent: #e56b2b;
+        --accent-strong: #b6480f;
+        --accent-on-dark: #f59a5c;
+        --btn: #c4520f;
+        --btn-hover: #a8430b;
+        --line: rgba(11, 31, 51, 0.14);
+        --globe-line: rgba(255, 255, 255, 0.28);
+        --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+        --font-body: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--font-body);
+        color: var(--text);
+        background: var(--paper);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: var(--accent-strong);
+        text-underline-offset: 3px;
+      }
+
+      :focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 5vw;
+        background: rgba(246, 242, 234, 0.9);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .wordmark {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--ink);
+        text-decoration: none;
+      }
+
+      .wordmark svg {
+        color: var(--accent);
+      }
+
+      .site-header nav,
+      .site-footer nav {
+        display: flex;
+        gap: 1.4rem;
+        align-items: center;
+      }
+
+      .site-header nav a {
+        color: var(--ink);
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+
+      .site-header nav a:hover {
+        color: var(--accent-strong);
+      }
+
+      .nav-cta {
+        border: 1px solid var(--ink);
+        border-radius: 999px;
+        padding: 0.4rem 1rem;
+      }
+
+      .nav-cta:hover {
+        background: var(--ink);
+        color: var(--paper) !important;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        align-items: center;
+        gap: 2rem;
+        padding: clamp(3rem, 8vw, 6rem) 5vw;
+        background: var(--ink);
+        color: var(--paper);
+        min-height: 78vh;
+      }
+
+      .hero-copy {
+        max-width: 34rem;
+      }
+
+      .eyebrow {
+        margin: 0 0 1.1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent-on-dark);
+      }
+
+      .hero h1 {
+        margin: 0 0 1.2rem;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: clamp(2.6rem, 6vw, 4.4rem);
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+      }
+
+      .lede {
+        margin: 0 0 2rem;
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+        color: rgba(246, 242, 234, 0.82);
+        max-width: 30rem;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.5rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        background: var(--btn);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: var(--btn-hover);
+      }
+
+      .btn-ghost {
+        color: var(--paper);
+        border: 1px solid rgba(246, 242, 234, 0.4);
+      }
+
+      .btn-ghost:hover {
+        border-color: var(--paper);
+        background: rgba(246, 242, 234, 0.08);
+      }
+
+      .btn-large {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+      }
+
+      .hero-visual {
+        display: flex;
+        justify-content: center;
+      }
+
+      .globe {
+        width: min(38vw, 420px);
+        height: auto;
+      }
+
+      .globe-rim {
+        fill: none;
+        stroke: var(--globe-line);
+        stroke-width: 2;
+      }
+
+      .globe-line {
+        fill: none;
+        stroke: var(--globe-line);
+        stroke-width: 1;
+      }
+
+      .route {
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-dasharray: 600;
+        stroke-dashoffset: 600;
+      }
+
+      .waypoint {
+        fill: var(--accent);
+      }
+
+      .traveler {
+        fill: #fff;
+        stroke: var(--accent);
+        stroke-width: 2;
+      }
+
+      .route-section,
+      .everywhere-section {
+        padding: clamp(3.5rem, 8vw, 6rem) 5vw;
+      }
+
+      .route-section h2,
+      .everywhere-section h2,
+      .final-cta h2 {
+        margin: 0 0 0.6rem;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: clamp(1.9rem, 4vw, 2.8rem);
+        letter-spacing: -0.015em;
+        color: var(--ink);
+      }
+
+      .section-lede {
+        margin: 0 0 3rem;
+        color: var(--muted);
+        font-size: 1.1rem;
+      }
+
+      .steps {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2rem;
+      }
+
+      .step {
+        border-top: 2px solid var(--ink);
+        padding-top: 1.25rem;
+      }
+
+      .step-num {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 0.9rem;
+        color: var(--accent-strong);
+        letter-spacing: 0.08em;
+      }
+
+      .step h3 {
+        margin: 0.4rem 0 0.5rem;
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 1.35rem;
+        color: var(--ink);
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.98rem;
+      }
+
+      .everywhere-section {
+        background: var(--paper-2);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 3rem;
+        align-items: start;
+      }
+
+      .everywhere-copy p {
+        color: var(--muted);
+        font-size: 1.05rem;
+        max-width: 34rem;
+      }
+
+      .waypoints {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 0.9rem;
+      }
+
+      .waypoints li {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem 1.1rem;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--paper);
+      }
+
+      .wp-name {
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .wp-coord {
+        font-size: 0.85rem;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .final-cta {
+        padding: clamp(4rem, 10vw, 7rem) 5vw;
+        text-align: center;
+        background: var(--ink);
+        color: var(--paper);
+      }
+
+      .final-cta h2 {
+        color: var(--paper);
+      }
+
+      .final-cta p {
+        color: rgba(246, 242, 234, 0.82);
+        margin: 0 0 2rem;
+      }
+
+      .contact-line {
+        margin: 1.4rem 0 0 !important;
+        font-size: 0.95rem;
+      }
+
+      .contact-line a {
+        color: rgba(246, 242, 234, 0.82);
+      }
+
+      .site-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 1.4rem 5vw;
+        background: var(--ink);
+        color: rgba(246, 242, 234, 0.7);
+        border-top: 1px solid rgba(246, 242, 234, 0.12);
+        font-size: 0.9rem;
+      }
+
+      .site-footer nav a {
+        color: rgba(246, 242, 234, 0.7);
+        text-decoration: none;
+      }
+
+      .site-footer nav a:hover {
+        color: var(--paper);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        .route {
+          stroke-dashoffset: 0;
+        }
+        .btn,
+        .btn:hover {
+          transform: none;
+        }
+      }
+
+      @media (max-width: 860px) {
+        .hero {
+          grid-template-columns: 1fr;
+          padding-top: 3rem;
+        }
+        .globe {
+          width: min(70vw, 320px);
+        }
+        .everywhere-section {
+          grid-template-columns: 1fr;
+        }
+        .site-header {
+          flex-wrap: wrap;
+        }
+      }
+    </style>
   </body>
 </html>

@@ -33,3 +33,12 @@ npm-debug.log*
 .omo/state/
 .omo/locks/
 .omo/*.log
+
+# envsitter tool state (contains a security pepper — never commit)
+.envsitter/
+
+# generated content drafts (scripts/generate-article.mjs output)
+content/drafts/
+
+# harbor key file (never commit)
+.harbor-key
