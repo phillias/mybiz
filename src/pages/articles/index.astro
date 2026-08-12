@@ -1,0 +1,106 @@
+---
+// Published articles index (phillias.us/articles). Lists every rendered
+// article page via their exported frontmatter, newest first.
+const articles = (await import.meta.glob("./*.astro", { eager: true })) as Record<
+  string,
+  { frontmatter?: { title?: string; slug?: string; publishedAt?: string } }
+>;
+
+const list = Object.entries(articles)
+  .filter(([, mod]) => mod.frontmatter?.title && mod.frontmatter.slug)
+  .map(([path, mod]) => ({ path, ...mod.frontmatter! }))
+  .sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
+
+const contactEmail = "admin@phillias.us";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Articles — Phileas Fogg</title>
+    <meta name="robots" content="index" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="/">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6" /><ellipse cx="12" cy="12" rx="4" ry="9.5" fill="none" stroke="currentColor" stroke-width="1.1" /><line x1="2.5" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.1" /><circle cx="19" cy="6" r="2.2" fill="currentColor" /></svg>
+        <span>Phileas&nbsp;Fogg</span>
+      </a>
+      <nav aria-label="Primary">
+        <a href="/#route">The route</a>
+        <a href="/#everywhere">Everywhere</a>
+        <a href="/opt-in">SMS opt-in</a>
+        <a href={`mailto:${contactEmail}`}>Contact</a>
+      </nav>
+    </header>
+
+    <main class="index">
+      <p class="eyebrow">The journal</p>
+      <h1>Articles</h1>
+      <p class="lede">
+        Content that goes around the world — written from validated demand,
+        published here as it ships.
+      </p>
+
+      <ul class="list">
+        {list.map((a) => (
+          <li>
+            <a href={`/articles/${a.slug}/`}>
+              <span class="date">{a.publishedAt}</span>
+              <span class="title">{a.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      {list.length === 0 && <p class="empty">No articles published yet.</p>}
+    </main>
+
+    <footer class="site-footer">
+      <span>© 2026 Phileas Fogg</span>
+      <nav aria-label="Footer">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href={`mailto:${contactEmail}`}>Contact</a>
+      </nav>
+    </footer>
+
+    <style>
+      :root {
+        --ink: #0b1f33; --paper: #f6f2ea; --paper-2: #ece5d7; --text: #18222d;
+        --muted: #5c6671; --accent: #e56b2b; --accent-strong: #b6480f; --line: rgba(11,31,51,0.14);
+        --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+        --font-body: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: var(--font-body); color: var(--text); background: var(--paper); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+      a { color: var(--accent-strong); text-underline-offset: 3px; }
+      :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+      .site-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 5vw; background: rgba(246,242,234,0.92); border-bottom: 1px solid var(--line); }
+      .wordmark { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: var(--ink); text-decoration: none; }
+      .wordmark svg { color: var(--accent); }
+      .site-header nav, .site-footer nav { display: flex; gap: 1.4rem; align-items: center; }
+      .site-header nav a { color: var(--ink); text-decoration: none; font-size: 0.95rem; font-weight: 500; }
+      .site-header nav a:hover { color: var(--accent-strong); }
+      .index { max-width: 760px; margin: 0 auto; padding: clamp(3rem, 8vw, 5rem) 1.25rem; }
+      .eyebrow { margin: 0 0 0.5rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent-strong); }
+      .index h1 { margin: 0 0 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -0.02em; color: var(--ink); }
+      .lede { margin: 0 0 2.5rem; color: var(--muted); font-size: 1.1rem; }
+      .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+      .list li { border-bottom: 1px solid var(--line); }
+      .list a { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; padding: 1rem 0; text-decoration: none; color: var(--ink); }
+      .list a:hover .title { color: var(--accent-strong); }
+      .date { font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+      .title { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+      .empty { color: var(--muted); }
+      .site-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.4rem 5vw; background: var(--ink); color: rgba(246,242,234,0.7); font-size: 0.9rem; }
+      .site-footer nav a { color: rgba(246,242,234,0.7); text-decoration: none; }
+      .site-footer nav a:hover { color: var(--paper); }
+    </style>
+  </body>
+</html>
