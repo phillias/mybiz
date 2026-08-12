@@ -52,7 +52,42 @@ export const nicheScore = defineTable({
   /** data source + timestamp for auditability */
   source: v.string(),
 })
-  .index("by_verdict", ["verdict"]);
+  .index("by_verdict", ["verdict"])
+  .index("by_keyword", ["keyword"]);
+
+/**
+ * Demand-side validation signals (MonetScope / Trendstr / manual import).
+ * Provider verdict kept verbatim; Harbor's own gate is computed at read time —
+ * nicheScore.verdict === "PASS" && demandSignal.providerVerdict === "PROCEED"
+ * → commit content strategy. Do not collapse the enums in storage.
+ * Dimension columns carry the weighted factors from each provider's export
+ * (MonetScope PROCEED/PIVOT/PAUSE; Trendstr 5-factor weighted scores).
+ */
+export const demandSignal = defineTable({
+  keyword: v.string(),
+  source: v.union(
+    v.literal("monetscope"),
+    v.literal("trendstr"),
+    v.literal("manual"),
+  ),
+  /** provider's own verdict, verbatim */
+  providerVerdict: v.union(
+    v.literal("PROCEED"),
+    v.literal("PIVOT"),
+    v.literal("PAUSE"),
+  ),
+  /** provider factor scores (0-100) */
+  buyerIntent: v.optional(v.number()),
+  pain: v.optional(v.number()),
+  urgency: v.optional(v.number()),
+  /** raw provider payload, for auditability */
+  raw: v.optional(v.any()),
+  /** epoch ms of ingestion */
+  ingestedAt: v.number(),
+})
+  .index("by_keyword", ["keyword"])
+  .index("by_source_ingested", ["source", "ingestedAt"])
+  .index("by_verdict", ["providerVerdict"]);
 
 /**
  * U2/U6: two-way SMS + voice conversation log. Webhook target for Telnyx.
@@ -72,4 +107,4 @@ export const conversations = defineTable({
   .index("by_phone", ["phoneNumber"])
   .index("by_optedOut", ["optedOut"]);
 
-export default defineSchema({ pageBlueprint, nicheScore, conversations });
+export default defineSchema({ pageBlueprint, nicheScore, demandSignal, conversations });
