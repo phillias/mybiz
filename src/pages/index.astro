@@ -59,6 +59,29 @@ const waypoints = [
 
     <main>
       <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-bg" aria-hidden="true">
+          <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+            <g class="bg-grid" stroke="rgba(255,255,255,0.05)" fill="none">
+              <path d="M0 150 H1600 M0 300 H1600 M0 450 H1600 M0 600 H1600 M0 750 H1600" />
+              <path d="M200 0 V900 M400 0 V900 M600 0 V900 M800 0 V900 M1000 0 V900 M1200 0 V900 M1400 0 V900" />
+            </g>
+            <g class="bg-arcs" fill="none" stroke-linecap="round">
+              <path d="M -60 620 C 320 260, 820 340, 1180 120 S 1560 60, 1660 220" />
+              <path d="M -60 260 C 420 640, 900 700, 1660 320" />
+              <path d="M 240 900 C 520 560, 1080 520, 1600 780" />
+            </g>
+            <g class="bg-dots" fill="rgba(245,154,92,0.55)">
+              <circle cx="310" cy="420" r="6" />
+              <circle cx="700" cy="300" r="4.5" />
+              <circle cx="1000" cy="195" r="5" />
+              <circle cx="1250" cy="330" r="4.5" />
+              <circle cx="520" cy="640" r="5" />
+              <circle cx="1360" cy="590" r="4.5" />
+              <circle cx="900" cy="760" r="5" />
+            </g>
+          </svg>
+        </div>
+
         <div class="hero-copy">
           <p class="eyebrow">AI content &amp; SEO · the modern circumnavigation</p>
           <h1 id="hero-title">Your content, everywhere on Earth.</h1>
@@ -73,6 +96,7 @@ const waypoints = [
         </div>
 
         <div class="hero-visual" aria-hidden="true">
+          <canvas class="globe-webgl"></canvas>
           <svg class="globe" viewBox="0 0 400 400" role="img" aria-label="A great-circle route around the world">
             <circle class="globe-rim" cx="200" cy="200" r="150" />
             <ellipse class="globe-line" cx="200" cy="200" rx="150" ry="52" />
@@ -153,6 +177,8 @@ const waypoints = [
     </footer>
 
     <script>
+      import { mountGlobe } from "../scripts/globe";
+
       const revealTargets = document.querySelectorAll<HTMLElement>("[data-reveal]");
       const routeSection = document.querySelector<HTMLElement>("#route");
       const route = document.querySelector<SVGPathElement>(".route");
@@ -189,6 +215,35 @@ const waypoints = [
         };
         window.addEventListener("scroll", onScroll, { passive: true });
         onScroll();
+      }
+
+      // Parallax: the hero background drifts at ~0.4x scroll speed.
+      const heroBg = document.querySelector<HTMLElement>(".hero-bg");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (heroBg && !reduceMotion) {
+        let ticking = false;
+        const update = () => {
+          heroBg.style.transform = `translate3d(0, ${Math.round(window.scrollY * 0.4)}px, 0)`;
+          ticking = false;
+        };
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (!ticking) {
+              requestAnimationFrame(update);
+              ticking = true;
+            }
+          },
+          { passive: true },
+        );
+        update();
+      }
+
+      // Overdrive: WebGL globe upgrade (keeps the SVG globe as the fallback).
+      const globeCanvas = document.querySelector<HTMLCanvasElement>(".globe-webgl");
+      const heroVisual = document.querySelector<HTMLElement>(".hero-visual");
+      if (globeCanvas && heroVisual) {
+        mountGlobe({ canvas: globeCanvas, container: heroVisual });
       }
     </script>
 
@@ -298,6 +353,8 @@ const waypoints = [
       }
 
       .hero {
+        position: relative;
+        overflow: hidden;
         display: grid;
         grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
         align-items: center;
@@ -306,6 +363,32 @@ const waypoints = [
         background: var(--ink);
         color: var(--paper);
         min-height: 78vh;
+      }
+
+      .hero-bg {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -25%;
+        height: 150%;
+        will-change: transform;
+        pointer-events: none;
+      }
+
+      .hero-bg svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .bg-arcs path {
+        stroke: rgba(245, 154, 92, 0.22);
+        stroke-width: 2;
+      }
+
+      .hero-copy,
+      .hero-visual {
+        position: relative;
+        z-index: 1;
       }
 
       .hero-copy {
@@ -391,6 +474,20 @@ const waypoints = [
       .globe {
         width: min(38vw, 420px);
         height: auto;
+      }
+
+      .globe-webgl {
+        width: min(38vw, 420px);
+        height: min(38vw, 420px);
+        display: none;
+      }
+
+      .globe-upgraded .globe-webgl {
+        display: block;
+      }
+
+      .globe-upgraded .globe {
+        display: none;
       }
 
       .globe-rim {

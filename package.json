@@ -19,12 +19,14 @@
     "astro": "^7.1.6",
     "convex": "^1.43.0",
     "resend": "^6.18.1",
-    "stripe": "^22.4.0"
+    "stripe": "^22.4.0",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@astrojs/cloudflare": "^14.1.7",
     "@types/node": "^24.0.0",
+    "@types/three": "^0.185.4",
     "impeccable": "^3.5.0",
     "typescript": "~5.9.3",
     "vitest": "^4.1.10",
