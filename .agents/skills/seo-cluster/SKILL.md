@@ -198,7 +198,7 @@ When `/seo cluster execute` is invoked:
 ### Check for blog skill
 
 ```
-Test: Does ~/.agents/skills/blog/SKILL.md exist? (project-local: ~/firstmate/projects/mybiz/.agents/skills/blog/SKILL.md)
+Test: Does ~/.agents/skills/blog/SKILL.md exist? (project-local: ./.agents/skills/blog/SKILL.md)
 ```
 
 **If claude-blog IS installed:**
