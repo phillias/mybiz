@@ -29,12 +29,12 @@ export function mountGlobe({ canvas, container }: GlobeOptions): boolean {
   // Faint wireframe sphere
   const wire = new THREE.LineSegments(
     new THREE.WireframeGeometry(new THREE.SphereGeometry(1, 40, 26)),
-    new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.16 }),
+    new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.3 }),
   );
   globe.add(wire);
 
   // Latitude rings
-  const ringMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.1 });
+  const ringMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.2 });
   for (const lat of [-45, -22.5, 0, 22.5, 45]) {
     const r = Math.cos((lat * Math.PI) / 180);
     const y = Math.sin((lat * Math.PI) / 180);
@@ -88,6 +88,10 @@ export function mountGlobe({ canvas, container }: GlobeOptions): boolean {
   );
   globe.add(dots);
 
+  // Reveal the canvas BEFORE sizing so clientWidth reflects the visible CSS box
+  // (otherwise the buffer renders at the 300px fallback and gets scaled up).
+  container.classList.add("globe-upgraded");
+
   const resize = () => {
     const w = canvas.clientWidth || 300;
     const h = canvas.clientHeight || w;
@@ -97,8 +101,6 @@ export function mountGlobe({ canvas, container }: GlobeOptions): boolean {
   };
   resize();
   window.addEventListener("resize", resize);
-
-  container.classList.add("globe-upgraded");
 
   // Pause the loop while the hero is off-screen.
   let visible = false;
@@ -110,7 +112,7 @@ export function mountGlobe({ canvas, container }: GlobeOptions): boolean {
   );
   io.observe(container);
 
-  const SPEED = reduceMotion ? 0 : 0.0016;
+  const SPEED = reduceMotion ? 0 : 0.003;
   const loop = () => {
     if (visible) {
       globe.rotation.y += SPEED;
