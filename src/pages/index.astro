@@ -381,7 +381,7 @@ const waypoints = [
       }
 
       .bg-arcs path {
-        stroke: rgba(245, 154, 92, 0.22);
+        stroke: rgba(245, 154, 92, 0.38);
         stroke-width: 2;
       }
 
@@ -688,8 +688,25 @@ const waypoints = [
           grid-template-columns: 1fr;
           padding-top: 3rem;
         }
-        .globe {
-          width: min(70vw, 320px);
+        .hero-visual {
+          order: -1;
+          margin-bottom: 1.5rem;
+        }
+        .globe,
+        .globe-webgl {
+          width: min(85vw, 360px);
+          height: auto;
+        }
+        .globe-webgl {
+          height: min(85vw, 360px);
+        }
+        .btn {
+          padding: 0.8rem 1.1rem;
+          text-align: center;
+        }
+        .cta-row .btn {
+          flex: 1 1 100%;
+          justify-content: center;
         }
         .everywhere-section {
           grid-template-columns: 1fr;
