@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
-    "@clerk/astro": "^4.0.5",
+    "@clerk/astro": "^4.0.8",
     "astro": "^7.1.6",
     "convex": "^1.43.0",
     "resend": "^6.18.1",
