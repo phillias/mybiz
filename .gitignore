@@ -42,3 +42,6 @@ content/drafts/
 
 # harbor key file (never commit)
 .harbor-key
+
+# repo-local tooling (never ships in the production bundle)
+.tools/
