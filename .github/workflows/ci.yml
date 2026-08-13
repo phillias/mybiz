@@ -57,6 +57,7 @@ jobs:
     needs: build
     permissions:
       contents: read
+      deployments: write
     steps:
       - uses: actions/checkout@v4
 
