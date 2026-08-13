@@ -60,6 +60,24 @@ const waypoints = [
     <main>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-bg" aria-hidden="true">
+          <!-- Background footage: "Clouds at sunset (time lapse)" (Wikimedia Commons, CC BY 3.0). See docs/hero-video.md -->
+          <video
+            class="hero-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            poster="/hero/hero-bg-poster.jpg"
+            tabindex="-1"
+            disablepictureinpicture
+            disableRemotePlayback
+            aria-hidden="true"
+          >
+            <source src="/hero/hero-bg.webm" type="video/webm" />
+            <source src="/hero/hero-bg.mp4" type="video/mp4" />
+          </video>
+          <div class="hero-scrim" aria-hidden="true"></div>
           <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
             <g class="bg-grid" stroke="rgba(255,255,255,0.05)" fill="none">
               <path d="M0 150 H1600 M0 300 H1600 M0 450 H1600 M0 600 H1600 M0 750 H1600" />
@@ -167,7 +185,12 @@ const waypoints = [
     </main>
 
     <footer class="site-footer">
-      <span>© 2026 Phileas Fogg</span>
+      <span class="footer-left">
+        <span>© 2026 Phileas Fogg</span>
+        <span class="media-credit">
+          Background footage: <a href="https://commons.wikimedia.org/wiki/File:Clouds_at_sunset_(time_lapse).webm" rel="noopener noreferrer">Wikimedia Commons</a> · CC BY 3.0
+        </span>
+      </span>
       <nav aria-label="Footer">
         <a href="#route">The route</a>
         <a href="#everywhere">Everywhere</a>
@@ -244,6 +267,24 @@ const waypoints = [
       const heroVisual = document.querySelector<HTMLElement>(".hero-visual");
       if (globeCanvas && heroVisual) {
         mountGlobe({ canvas: globeCanvas, container: heroVisual });
+      }
+
+      // Background video: autoplay while the hero is on screen, pause offscreen.
+      const heroVideo = document.querySelector<HTMLVideoElement>(".hero-video");
+      if (heroVideo && !reduceMotion && "IntersectionObserver" in window) {
+        const videoObserver = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                heroVideo.play().catch(() => {});
+              } else {
+                heroVideo.pause();
+              }
+            }
+          },
+          { threshold: 0.05 },
+        );
+        videoObserver.observe(heroVideo);
       }
     </script>
 
@@ -373,9 +414,29 @@ const waypoints = [
         height: 150%;
         will-change: transform;
         pointer-events: none;
+        background: #0b1f33 url("/hero/hero-bg-poster.jpg") center / cover no-repeat;
+      }
+
+      .hero-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.9) blur(2px);
+      }
+
+      .hero-scrim {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(120deg, rgba(11, 31, 51, 0.94) 0%, rgba(11, 31, 51, 0.66) 42%, rgba(11, 31, 51, 0.28) 72%, rgba(11, 31, 51, 0.12) 100%),
+          linear-gradient(to top, rgba(11, 31, 51, 0.55), transparent 45%);
       }
 
       .hero-bg svg {
+        position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
       }
@@ -661,6 +722,21 @@ const waypoints = [
         font-size: 0.9rem;
       }
 
+      .footer-left {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .media-credit {
+        font-size: 0.8rem;
+        color: rgba(246, 242, 234, 0.5);
+      }
+
+      .media-credit a {
+        color: rgba(246, 242, 234, 0.7);
+      }
+
       .site-footer nav a {
         color: rgba(246, 242, 234, 0.7);
         text-decoration: none;
@@ -673,6 +749,9 @@ const waypoints = [
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-behavior: auto;
+        }
+        .hero-video {
+          display: none;
         }
         .route {
           stroke-dashoffset: 0;
