@@ -80,6 +80,14 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
 - **CI cost**: GitHub Actions is free on private repos (2,000 min/month + 500 MB
   storage) — no paid GitHub subscription needed.
 
+## Content ops (LinkedIn self-improvement pilot)
+
+- The sylph-loop pilot (§8 of the scout report): `.agents/skills/harbor-content-ops/SKILL.md`
+  + `docs/content-ops/` workspace. Draft → captain approval → publish → update
+  `_insights.md` → promote to `_examples/`, with a mandatory post-approval
+  self-improvement step. LinkedIn-only for now; generalize after ~4 cycles if
+  second drafts need fewer edits. Full lifecycle: `docs/content-ops/README.md`.
+
 ## Golden paths (quick)
 
 - Convex HTTP actions serve on `.convex.site`, NOT `.convex.cloud` — `PUBLIC_CONVEX_URL` must be the `.convex.site` URL.
@@ -104,3 +112,10 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
 - `npx convex dev --once` · `npx convex deploy` · `npx convex env set <K> <V> --prod`
 - `./scripts/sync-secrets.sh` · `./scripts/deploy-pages.sh`
 - `npx impeccable detect` (design gate) · `npx impeccable live` (browser iteration)
+
+## Maintaining this file
+
+Keep this file for knowledge useful to almost every future agent session in this project.
+Do not repeat what the codebase already shows; point to the authoritative file or command instead.
+Prefer rewriting or pruning existing entries over appending new ones.
+When updating this file, preserve this bar for all agents and keep entries concise.
