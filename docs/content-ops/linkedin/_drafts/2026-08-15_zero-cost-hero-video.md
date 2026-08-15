@@ -6,23 +6,21 @@ format: post
 status: draft
 cycle: 1
 performance:
-notes: "Cycle 1 of the LinkedIn pilot. _insights.md and _examples/ are empty, so this draft is from the skill's baseline Voice rules only. Source: phillias/mybiz PR #14 (merged) — the 8s looping dusk-cloud hero video built with the repo-local OpenMontage free pipeline; reproducible commands in docs/hero-video.md."
+notes: "Cycle 1 of the LinkedIn pilot. _insights.md and _examples/ are empty, so this draft is from the skill's baseline Voice rules only. Source: phillias/mybiz PR #14 (merged) — the 8s looping dusk-cloud hero video built with the repo-local OpenMontage free pipeline; reproducible commands in docs/hero-video.md. Rev 2 (2026-08-15, captain review): cut the seam/loop-math sentence entirely, added honest tradeoffs of the free approach (generic CC footage, no on-brand art direction, time spent hunting footage, pipeline complexity, reliance on Wikimedia Commons), and replaced the closing question with a concrete next step."
 ---
 
 The background video on my landing page cost $0. No stock subscription. No AI video tool. No account at all.
 
-It's CC-licensed footage from Wikimedia Commons, pulled through a keyless pipeline, cut with a local ffmpeg. Five commands in total, documented so the whole thing rebuilds from a clean clone.
+It's CC-licensed footage from Wikimedia Commons, pulled through a keyless pipeline, cut with a local ffmpeg. Five commands, documented so the whole thing rebuilds from a clean clone.
 
-The part that surprised me: a seamless loop isn't magic. It's math.
+Free has a bill, it just isn't in dollars.
 
-I trimmed an 8-second window, slowed it to 0.7x, and crossfaded the tail into the head. Then I measured the seam. Join error ~6.3, against the clip's own natural drift of ~15.7. When the join is tighter than the footage's own variation, nothing reads as a loop.
+The clip is generic. Dusk clouds from a stranger's camera, not art-directed for Harbor. The motion is whatever I could find, not what I'd have designed. I spent real hours hunting footage and fighting a pipeline before the first frame rendered. And the whole thing leans on Wikimedia Commons staying up and keeping its license. That's a third party I don't control.
 
-The finished asset ships at 588KB. MP4, WebM, and poster frame combined.
+The asset itself is tight, and that part isn't a trade. 588KB across MP4, WebM, and a poster frame. Poster first, video metadata deferred, so the headline stays the page's LCP element. People who prefer reduced motion get the static poster.
 
-And it costs nothing on performance. Poster first, video metadata deferred, so the headline stays the page's Largest Contentful Paint element. People who prefer reduced motion get the static poster instead.
+So the honest next step for Harbor is to stop treating free as the finish line. The loop works and costs nothing to run. Now I want the version that's ours. Original footage, on-brand motion. Same performance, none of the trade-offs.
 
-A 588KB cinematic hero, zero secrets, zero accounts, and it doesn't slow the page down.
-
-What's the most expensive-looking thing on your site that actually cost nothing to make?
+If you're building in public, try the same five commands once. It costs a few hours of your time, and you'll see exactly what free buys. Then decide if that's a trade worth making.
 
 #buildinpublic #indiedev #webperf #indiehackers #astro
