@@ -83,7 +83,7 @@ node scripts/harvest-ideas.mjs --apply --prod  # prod: run `npx convex deploy --
 ## Comms layer state (Telnyx)
 
 - Toll-free **+1-877-445-5580** purchased + wired (voice connection + mybiz messaging profile).
-- **Toll-free verification RESUBMITTED — status "Waiting For Telnyx"** (request `e89288f0-ed15-5705-ad1e-f90e34f082d4`, PATCHed 2026-08-10). First submission was RETURNED (2026-08-04) because it claimed `corporateWebsite: https://harborseo.ai` (a domain we don't control) → CTIA demanded contact = `hamish@harborseo.ai` + branded opt-in + SMS use-case + blank checkbox + phone field. Resubmission fixed it: corporateWebsite `https://phillias.us` (now live), businessName **Phileas Fogg**, contact `admin@phillias.us`, on-domain `/opt-in` (branded, blank checkbox, phone field, disclosures, STOP/HELP), `/privacy`, `/terms`, and a real `/opt-in-workflow.png` screenshot. Approval emails to admin@phillias.us. After approval: text the number → `conversations` row in Convex (webhook round-trip QA).
+- **Toll-free verification VERIFIED 2026-08-13** (request `e89288f0-ed15-5705-ad1e-f90e34f082d4`). First submission was RETURNED (2026-08-04) because it claimed `corporateWebsite: https://harborseo.ai` → corrected and resubmitted 2026-08-10. Current caveat: verified use case is "Conversational / Alerts" (transactional); review solicitation may need a re-file before campaigns. See `docs/U2-telnyx-checklist.md` for full compliance state.
 - STIR/SHAKEN verified-number verification requested (method `call`) — code delivery needs an answering voice app (U6) or the code from Mission Control.
 - Local number +1-689-225-8286 was cancelled during verification — toll-free means NO 10DLC needed (faster SMS path).
 
@@ -94,7 +94,7 @@ node scripts/harvest-ideas.mjs --apply --prod  # prod: run `npx convex deploy --
 
 ## Open items (user-gated)
 
-1. Telnyx toll-free approval (~1–5 business days) → webhook round-trip QA
+1. Telnyx toll-free post-verify QA → outbound SMS delivery test + Aftercall use-case re-file (if needed)
 2. Cloudflare `npx wrangler login` → `./scripts/deploy-pages.sh` → first sign-in = auth positive proof
 3. Resend + Stripe keys when email/billing flows start
 4. Placeholder image URL in the toll-free verification — DONE: real `/opt-in-workflow.png` screenshot hosted at phillias.us

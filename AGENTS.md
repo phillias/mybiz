@@ -59,6 +59,9 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
   gitignored) → render as Astro pages → Pages deploy. For the harbor MCP in
   opencode, `HARBOR_API_KEY` must be in the opencode process env (export it
   before launch), not just `.env`.
+- **Core 30 generation**: `node scripts/generate-core30.mjs --blueprints content/blueprints/core30-sample.json --dry-run` (1 credit/page on `--apply`).
+- **Prospect Radar**: `node scripts/prospect-score.mjs --city <city> --category <cat> --dry-run` (DataForSEO on `--apply`; Maps endpoint is a TODO-verify stub).
+- **The Aftercall probe**: `node scripts/aftercall-probe.mjs --phone ... --service ... --city ... --dry-run` (places real call on `--apply`).
 - Do NOT use harborseo.ai's MCP as an idea source until it's available; it's a
   billable content-generation input, not free discovery.
 
@@ -88,15 +91,11 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
 - Deploy: `./scripts/deploy-pages.sh` → Cloudflare Pages project `mybiz` (apex custom domain `phillias.us`). Headless: `CLOUDFLARE_API_TOKEN`+`CLOUDFLARE_ACCOUNT_ID` in `.env`, run with `NODE_OPTIONS=--dns-result-order=ipv6first` (token is IPv6-restricted). Adapter@14 is Workers-targeted — the script wraps `dist/_worker.js` + copies client assets to the deploy root to make `wrangler pages deploy` work. CI deploys will need the same handling + an IP-unrestricted token.
 - Secrets: `./scripts/sync-secrets.sh` pushes `.env` → GitHub secrets/variables. Real values live in `.env` (gitignored); never write secret VALUES into code, skills, or memory — record locations only.
 
-## CTIA toll-free verification (resubmitted)
+## CTIA toll-free verification
 
-- Request `e89288f0-ed15-5705-ad1e-f90e34f082d4` was rejected 2026-08-04
-  (claimed `corporateWebsite: https://harborseo.ai`, which we don't control) and
-  **resubmitted 2026-08-10 — status "Waiting For Telnyx"**. Corrected:
-  corporateWebsite `https://phillias.us` (live), businessName **Phileas Fogg**,
-  contact `admin@phillias.us`, on-domain `/opt-in` (branded, blank checkbox,
-  phone field, disclosures, STOP/HELP), `/privacy`, `/terms`, and a real
-  `/opt-in-workflow.png`. Approval emails to admin@phillias.us.
+- Status and compliance caveats (including the Aftercall use-case warning) are
+  owned by `docs/U2-telnyx-checklist.md` — read that for current state. As of
+  2026-08-13 request `e89288f0-ed15-5705-ad1e-f90e34f082d4` is **Verified**.
 
 ## Commands
 

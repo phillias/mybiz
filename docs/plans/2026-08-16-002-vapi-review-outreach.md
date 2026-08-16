@@ -42,7 +42,7 @@ Decision: **v1 = Option A**. Keep the agent prompt + rotation policy portable so
 
 ## 4. Compliance guardrails (design-in, not after)
 
-1. **TCPA/CTIA consent** — review solicitation is marketing-grade messaging: prior express consent required. The current toll-free verification (request `e89288f0-ed15-5705-ad1e-f90e34f082d4`, "Waiting For Telnyx") declares a use case — **re-file/add the review-solicitation use case** before any campaign. STOP handling already enforced in `conversations.optedOut`.
+1. **TCPA/CTIA consent** — review solicitation is marketing-grade messaging: prior express consent required. The toll-free verification (request `e89288f0-ed15-5705-ad1e-f90e34f082d4`) was **approved 2026-08-13** with use case "Conversational / Alerts" (transactional). Confirm this covers review solicitation or **re-file/add the review-solicitation use case** before any campaign. STOP handling already enforced in `conversations.optedOut`.
 2. **Google review policy** — no incentives, no gating to happy customers, no request for specific services/reviewers. Keep the general framing; never coach content.
 3. **Voice is a prompt, not an author** — the customer types the review. Never transcribe-and-post; the agent only frames the narrative and sends the link.
 4. **Per-platform ask limits** — rotate links to avoid platform-level solicitation fatigue (e.g. not every job → Yelp).
