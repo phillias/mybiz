@@ -32,8 +32,8 @@ export function hasWebsite(p) {
 // title/meta) score high; unknown sites default to "assume thin".
 export function websiteWeakness(p) {
   if (!hasWebsite(p)) return 1.0;
-  const pages = p.pages ?? p.pageCount;
-  const words = p.words ?? p.wordCount;
+  const pages = p.pages !== undefined ? p.pages : p.pageCount;
+  const words = p.words !== undefined ? p.words : p.wordCount;
   if (pages === undefined && words === undefined) return 0.8;
   const pageFactor = pages === undefined ? 0.5 : 1 - clamp(pages / 30, 0, 1);
   const wordFactor = words === undefined ? 0.5 : 1 - clamp(words / 5000, 0, 1);
