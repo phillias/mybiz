@@ -1,6 +1,6 @@
 # U2 — Telnyx Portal Checklist (10DLC + Number)
 
-Status: scaffold ready, webhook stub in `convex/http.ts` (`/telnyx-webhook`).
+Status: live — webhook implemented in `convex/http.ts` (`/telnyx-webhook`) with Ed25519 verification, fail-closed 401, and 5-min replay window.
 Owner: portal actions below are user-side (account + legal info).
 
 ## Current state (verified 2026-08-01 via API)
