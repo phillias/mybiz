@@ -1,0 +1,82 @@
+{
+  "city": "Petoskey",
+  "category": "plumber",
+  "prospects": [
+    {
+      "name": "Harbor Plumbing & Drain",
+      "phone": "231-555-0147",
+      "reviewCount": 2,
+      "rating": 4.9,
+      "serp": { "sponsoredCount": 3, "mapPack": true, "inPack": false, "longTailClusters": 8 }
+    },
+    {
+      "name": "Birch Creek Landscaping",
+      "phone": "231-555-0182",
+      "reviewCount": 0,
+      "rating": null,
+      "serp": { "sponsoredCount": 1, "mapPack": true, "inPack": false, "longTailClusters": 5 }
+    },
+    {
+      "name": "Petoskey Electric Co",
+      "phone": "231-555-0121",
+      "website": "petoskeyelectric.example",
+      "pages": 2,
+      "words": 340,
+      "title": "Petoskey Electric Co",
+      "reviewCount": 8,
+      "rating": 4.2,
+      "serp": { "sponsoredCount": 2, "mapPack": true, "inPack": false, "longTailClusters": 7 }
+    },
+    {
+      "name": "Lakeview Roofing",
+      "phone": "231-555-0169",
+      "website": "lakeviewroofing.example",
+      "pages": 1,
+      "words": 150,
+      "meta": "Roofing repairs in Petoskey.",
+      "pagespeed": 32,
+      "reviewCount": 5,
+      "rating": 3.9,
+      "serp": { "sponsoredCount": 1, "mapPack": true, "inPack": false, "longTailClusters": 6 }
+    },
+    {
+      "name": "North Point Heating & Air",
+      "phone": "231-555-0177",
+      "website": "northpointhvac.example",
+      "pages": 12,
+      "words": 4100,
+      "title": "North Point Heating & Air | Petoskey HVAC",
+      "meta": "Heating, cooling and duct cleaning for northern Michigan.",
+      "pagespeed": 58,
+      "reviewCount": 41,
+      "rating": 4.4,
+      "serp": { "sponsoredCount": 2, "mapPack": true, "inPack": false, "longTailClusters": 9 }
+    },
+    {
+      "name": "Emmet County Dental",
+      "phone": "231-555-0153",
+      "website": "emmetdental.example",
+      "pages": 42,
+      "words": 8200,
+      "title": "Emmet County Dental | Family Dentist in Petoskey",
+      "meta": "Family and cosmetic dentistry in Petoskey, MI.",
+      "pagespeed": 85,
+      "reviewCount": 15,
+      "rating": 5.0,
+      "serp": { "sponsoredCount": 0, "mapPack": true, "inPack": true, "longTailClusters": 4 }
+    },
+    {
+      "name": "Bay Harbor Auto Care",
+      "phone": "231-555-0109",
+      "website": "bayharborauto.example",
+      "pages": 61,
+      "words": 12400,
+      "title": "Bay Harbor Auto Care | Car Repair Petoskey",
+      "meta": "Full-service auto repair in Petoskey with loaner cars.",
+      "pagespeed": 92,
+      "reviewCount": 128,
+      "rating": 4.8,
+      "serp": { "sponsoredCount": 0, "mapPack": true, "inPack": true, "longTailClusters": 4 }
+    }
+  ]
+}
