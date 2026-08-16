@@ -50,3 +50,6 @@ content/prospects/*.json
 
 # repo-local tooling (never ships in the production bundle)
 .tools/
+
+# generated telemetry command files (opencode-telemetry plugin rewrites these per-project)
+.opencode/commands/telemetry-*.md
