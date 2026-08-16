@@ -82,7 +82,15 @@ name/email/phone/address identical across all systems** — mismatches are the #
    System** (`mibusinessregistry.lara.state.mi.us`). Fee $50 standard. **DONE — CD-700 Domestic LLC,
    2026-08-15.** Optional articles: none used — kept minimal (purpose, duration, agent, organizer); all
    terms live in the operating agreement (`docs/legal/phillias-federal-llc-operating-agreement.md`).
-   - Get an EIN via **irs.gov → EIN Assistant** (free, instant, PDF) — next step. Mandatory for SAM.gov.
+   - Get an EIN via **irs.gov → Apply for an EIN online (EIN Assistant)** — free, instant PDF. Mandatory
+     for SAM.gov. **Gotchas (learned 2026-08-15):**
+     - Do NOT use the **Business Tax Account** portal for this — it's for *managing existing* accounts and
+       shows "No business entities are associated with your SSN/ITIN" until an EIN exists. The EIN
+       Assistant is a separate, no-login interview flow.
+     - The online EIN application is only available **Mon–Fri 7am–10pm ET** (weekends/evenings = "System
+       Unavailable"). Fallback: fax Form **SS-4** to MI number 855-641-6935 (~4 business days).
+     - Flow: **Business** → **LLC → Single-Member LLC** → responsible party = **Individual** (you), with
+       your SSN; business name must match the LARA filing exactly ("Phillias Federal LLC").
    - File the **FinCEN BOI** report (Corporate Transparency Act) within 90 days of formation — free at
      fincen.gov/boi, needs each beneficial owner's ID details.
 3. **Open a business bank account** in the LLC's exact legal name (SAM.gov validates banking for payments).
