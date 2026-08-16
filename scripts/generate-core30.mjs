@@ -100,11 +100,6 @@ async function main() {
   const city = cityIdx >= 0 ? args[cityIdx + 1] : undefined;
   const outDir = args[args.indexOf("--out-dir") + 1] || "content/drafts/core30";
 
-  if (!process.env.HARBOR_API_KEY) {
-    console.error("HARBOR_API_KEY not set (source .env)");
-    process.exit(1);
-  }
-
   const blueprints = await loadBlueprints(args);
   const targets = blueprints
     .filter((b) => ["service", "location", "supporting", "core"].includes(b.archetype))
@@ -117,6 +112,11 @@ async function main() {
       console.log(`  ${bp.archetype.padEnd(9)} ${toFilename(bp, bp.city)}  <- "${blueprintKeyword(bp, bp.city)}"`);
     }
     return;
+  }
+
+  if (!process.env.HARBOR_API_KEY) {
+    console.error("HARBOR_API_KEY not set (source .env)");
+    process.exit(1);
   }
 
   const account = await api("/account");
