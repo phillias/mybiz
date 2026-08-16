@@ -32,11 +32,13 @@ function slugify(s) {
 
 function blueprintKeyword(bp, city) {
   if (bp.keywordCluster) return bp.keywordCluster;
+  if (!bp.slug) return city ? city : "untitled";
   const base = bp.slug.split("/").pop().split("-").join(" ");
   return city ? `${base} ${city}` : base;
 }
 
 function toFilename(bp, city) {
+  if (!bp.slug) return city ? slugify(city) : "untitled";
   const stem = bp.slug.replace(/^services\//, "").replace(/^locations\//, "");
   const base = slugify(stem);
   return city && !base.includes(slugify(city)) ? `${base}-${slugify(city)}` : base;
@@ -74,7 +76,7 @@ async function generate(bp, outDir) {
   if (article.status !== "completed") throw new Error(`job ${job.id} ended ${article.status}`);
   const dest = `${outDir}/${filename}`;
   writeFileSync(dest, article.content ?? article.html ?? "");
-  return { filename, keyword, status: article.status, bytes: dest.length };
+  return { filename, keyword, status: article.status, bytes: (article.content ?? article.html ?? "").length };
 }
 
 async function loadBlueprints(args) {
