@@ -40,6 +40,11 @@ npm-debug.log*
 # generated content drafts (scripts/generate-article.mjs output)
 content/drafts/
 
+# generated prospect leads (scripts/prospect-score.mjs output; PII — never commit)
+content/prospects/*.tsv
+content/prospects/*.json
+!content/prospects/fixture.json
+
 # harbor key file (never commit)
 .harbor-key
 
