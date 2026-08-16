@@ -14,26 +14,30 @@ Decisions locked in (user-gated, 2026-08-15):
 
 | Question | Decision |
 |---|---|
-| Entity posture | **New standalone LLC** (must be set up — guidance below) |
+| Entity posture | **New standalone LLC** — **Phillias Federal LLC**, formed in **Michigan** (residence state) |
+| Entity structure | **Two entities**: Phillias Federal LLC (govcon) + **White Pines Lodging LLC** (STR brands) — kept separate for CMMC/liability/tax |
 | Entry strategy | **Low-barrier first: xTech + prize competitions**, then SBIR/STTR Phase I |
 | Manufacturing geography | **US-first for security**, cheap offshore for non-critical prototypes |
 | AI CAD budget posture | Free/low-cost first (Zoo free tier + OpenSCAD/LLM + CADAgent) |
+| US ownership | Confirmed — all founders US citizens/entities (hard gate passed, 2026-08-15) |
+| Domain | **philliasfederal.com** purchased at Cloudflare; email routing catch-all → phillias@gmail.com; **admin@philliasfederal.com** is the canonical federal-chain address |
+| LLC status | **Phillias Federal LLC registered at LARA (CD-700)** 2026-08-15; OE drafts in `docs/legal/` |
+| DPOA | 2021 DPOA expired/void — renewing via group legal service (fallback: elder-law attorney Winegarden, Petoskey) before signing management agreement |
 
 ## 2. The brand
 
 - **New LLC** with its own EIN + business bank account, dedicated to govcon. Protects the Harbor/phillias.us
   constellation from federal contracting exposure (CMMC, FAR reps & certs, export-control obligations).
+- **Phillias Federal LLC registered at LARA 2026-08-15** (CD-700 Domestic LLC). Remaining entity steps:
+  EIN (irs.gov), FinCEN BOI (within 90 days), business bank account, sign operating agreement.
 - **Positioning**: "AI-native rapid capability delivery for the DoD" — win on speed and software/design
   automation, not on manufacturing capacity (which is outsourced).
-- **Domain/brand identity — decision point (options)**:
-  1. Own subdomain of `phillias.us` (e.g. `gov.phillias.us` or a named subdomain) — cheap, reuses the Astro→Pages stack, no new cert burden.
-  2. A new dedicated `.com` for the govcon brand — cleaner separation, more brand credibility with DoD evaluators; ~$10/yr + another Cloudflare Pages project.
-  - Recommendation: **option 2** — a dedicated brand name + domain. xTech/SBIR evaluators read the
-    company site; a distinct brand reads as a real company, and the "2/3 of work performed by the SBC"
-    rule means the govcon entity must stand on its own. Ship a minimal Astro site (reuse this repo's
-    stack + design tokens, Impeccable-gated) with: capabilities statement, team, past performance,
-    contact. `sitemap.xml` + `robots.txt` required before registering the site anywhere (same rule as
-    the Harbor registration gotcha).
+- **Domain/brand identity — DECIDED**: `philliasfederal.com` purchased at Cloudflare; Email Routing
+  catch-all forwards to phillias@gmail.com. Canonical address for the federal chain (LARA, SAM.gov,
+  Login.gov, DSIP, bank): **admin@philliasfederal.com** — one address everywhere, no `+` aliasing.
+  Next: minimal Astro capability site (reuse this repo's stack + design tokens, Impeccable-gated) with
+  capabilities statement, team, past performance, contact; `sitemap.xml` + `robots.txt` required before
+  registering the site anywhere (same rule as the Harbor registration gotcha).
 - **Reuse the constellation**: Harbor content pipeline can generate SEO credibility content for the
   brand site; Telnyx voice/SMS + Clerk/Convex can back a simple contact/lead flow if ever needed.
 
@@ -68,15 +72,30 @@ wait for a proposal deadline. Order matters; each step consumes the last one's c
 name/email/phone/address identical across all systems** — mismatches are the #1 cause of delays.
 
 ### 4.1 Set up the LLC (you don't have one yet) — Week 1–2
-1. **Choose the state.** Filing in the state you live/work in is simplest and cheapest for a single-member
-   LLC with no other footprint (Delaware/Wyoming add cost + registered agent fees with no benefit at this stage).
-2. **File the Articles of Organization** — DIY via the secretary of state's site (~$50–$200). Do NOT use a
-   filing-service upsell; the state forms are short. Get an EIN simultaneously via **irs.gov → EIN Assistant**
-   (free, instant, issued as PDF). An EIN is mandatory for SAM.gov.
+
+**Decision: Phillias Federal LLC — Michigan (residence state). REGISTERED at LARA 2026-08-15.**
+
+1. **Choose the state.** Michigan is decided (residence state — simplest, cheapest, no registered-agent fee
+   since you can be your own agent; Wyoming was evaluated and rejected: its tax/privacy benefits don't
+   survive federal SAM.gov transparency + FinCEN BOI filings, and it adds an annual report + agent fee).
+2. **File the Articles of Organization** with Michigan LARA via the **Michigan Business Registration
+   System** (`mibusinessregistry.lara.state.mi.us`). Fee $50 standard. **DONE — CD-700 Domestic LLC,
+   2026-08-15.** Optional articles: none used — kept minimal (purpose, duration, agent, organizer); all
+   terms live in the operating agreement (`docs/legal/phillias-federal-llc-operating-agreement.md`).
+   - Get an EIN via **irs.gov → EIN Assistant** (free, instant, PDF) — next step. Mandatory for SAM.gov.
+   - File the **FinCEN BOI** report (Corporate Transparency Act) within 90 days of formation — free at
+     fincen.gov/boi, needs each beneficial owner's ID details.
 3. **Open a business bank account** in the LLC's exact legal name (SAM.gov validates banking for payments).
    Also register for any state/local business licenses required for your address.
 4. **Confirm US ownership/control** — SBIR requires a US-owned and operated SBC with **no foreign influence**
-   (FAR 52.204-29). If any founder is not a US citizen/entity, stop and reassess; this is a hard gate.
+   (FAR 52.204-29). **Confirmed 2026-08-15** — all founders US citizens/entities.
+
+**STR entities (separate track):** **White Pines Lodging LLC** — the Airbnb + Hipcamp brands
+("Crooked River Log Cabin", "The Rusty Rail Cabin") run as two listings under ONE STR entity. Keep
+separate from Phillias Federal LLC (CMMC/liability/tax isolation). Draft operating agreement +
+cabin management agreement in `docs/legal/`. The management agreement requires a **valid, unexpired
+Michigan durable POA** (2021 DPOA is expired/void) granting real estate + contract + insurance + tax
+authority — being renewed via group legal service; fallback elder-law attorney Winegarden, Petoskey.
 
 ### 4.2 Federal registrations — Week 2–6 (parallel-track what you can)
 1. **Login.gov** account with government-grade MFA (authenticator app or hardware key; identity verification
@@ -254,11 +273,13 @@ Start the LLC **today**; the federal calendar (Release 5 opens Aug 26) is alread
 
 ## 11. Open questions (non-blocking assumptions)
 
-1. **Brand name** — needed for domain + site (assumed: dedicated brand, decided in Phase 0).
-2. **Home state for the LLC** — assumed: founder's residence state.
-3. **US-ownership confirmation** — all founders US citizens/entities (hard gate, §4.1).
-4. **Do we take the commercial "rapid prototype studio" spin-off?** — optional revenue line, later.
-5. **STTR university partner** — only if a natural partnership appears.
+1. ~~**Brand name**~~ — **Phillias Federal, LLC** (locked 2026-08-15); **philliasfederal.com purchased** (`.us`/`.net` still available).
+2. ~~**Home state for the LLC**~~ — **Michigan** (locked 2026-08-15); **registered at LARA CD-700**.
+3. ~~**US-ownership confirmation**~~ — **Confirmed** (2026-08-15).
+4. **STR entity** — **White Pines Lodging LLC** locked as the single operator of both rental brands (name availability at LARA still to confirm).
+5. **DPOA renewal** — via group legal service (or Winegarden); must exist before signing the management agreement.
+6. **Do we take the commercial "rapid prototype studio" spin-off?** — optional revenue line, later.
+7. **STTR university partner** — only if a natural partnership appears.
 
 ## 12. Origin & sources
 
