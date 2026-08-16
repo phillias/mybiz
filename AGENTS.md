@@ -20,6 +20,61 @@ Owned vs consumed — this distinction matters for every decision here:
   Stripe (billing), Resend (email), Cloudflare Pages (hosting), Cloudflare
   Turnstile (bot protection), Telnyx (voice + toll-free SMS), GitHub (CI).
 
+## Portfolio strategy — Harbor content is a tool, not the business
+
+mybiz is not "a content SaaS." The Harbor content/voice stack is the **shared
+engine** that powers a larger umbrella of portfolios. When asked to pick a niche,
+vertical, or lead, first say which portfolio the decision serves — each has its
+own scoring lens:
+
+| Portfolio | What it is | Scoring lens | Durable plan |
+|---|---|---|---|
+| **Harbor product (SaaS)** | The AI-native SEO content workspace we sell (€24/39/83) to agencies/in-house teams; also serves our own agency client work | Keyword-level: `demandSignal` PROCEED + `nicheScore` PASS gate (U3) decides topic winnability | `~/.omo/plans/2026-07-31-001-harbor-ai-business-stack.md` (7 units) |
+| **Local-services (NL Michigan)** | Local SMBs around our area — a bounty of them with severely lacking web presences and no customer-service engagement tech. Content (Core 30/GBP) + **voice SaaS** (Harbor Voice / The Aftercall) is the wedge | **Area-ranked lead selection = JP Middleton's rubric** (proven demand, growing, TAM >10k businesses, high-ticket $500+/transaction or $100+/mo). Upstream of Prospect Radar's per-business scoring | `docs/plans/2026-08-16-001-core-30-gbp-strategy.md` · `-002-vapi-review-outreach.md` · `-004-prospect-radar-leadgen.md` · `docs/evaluations/2026-08-16-jp-middleton-rubric-fit.md` |
+| **Federal / govcon** | **Phillias Federal LLC** (LARA 2026-08-15, `philliasfederal.com`) — wins DoD/xTech prize + SBIR/STTR topics with excellent AI skills and AI-assisted manufacturing (AI-CAD → outsourced fab); ranking opportunities from the grant/topic sites | GovCon weighted rubric (AI-native fit ×5 … timeline ×2) in the plan §5; **monthly sweep** of xTech/DSIP/challenge.gov/grants.gov topic releases (first Wednesday) | `docs/plans/2026-08-15-govcon-brand-plan.md` |
+
+Agent guidance:
+
+- **Local-services niche choice** uses JP Middleton's rubric
+  (`docs/jp-middleton-niche-research-rubric.md`): score a candidate vertical in a
+  geography on the four pillars → ranked leads. This is the **strategic input** to
+  Prospect Radar's business-level scoring; it does NOT replace the keyword-level
+  `checkNiche` gate (that stays the U3 filter for what Harbor generates).
+- **Federal opportunity ranking** uses the govcon plan's rubric; the sweep is
+  monthly, xTech white-paper comps are the lowest-barrier entry, and wins become
+  the "past performance" story for a Phase I SBIR.
+- **Harbor's own pipeline** stays gated by `demandSignal` + `nicheScore` — the
+  portfolio lenses sit *upstream* of that gate and decide what an agent should
+  generate for, in which portfolio.
+
+## Operating model — one pipeline, every portfolio
+
+End state: every portfolio in the constellation runs the same five-stage flow —
+**rank leads → scope & require → approve → implement → verify**. The automated
+stages do the work; the two gates are human checkpoints an agent must stop at and
+never self-approve.
+
+| Stage | What it does | Machinery (existing → planned) |
+|---|---|---|
+| **1. Ranked lead generation** | Surface the best opportunities in a portfolio, ranked by that portfolio's scoring lens | demandSignal harvest (`harvest-ideas.mjs`, daily cron) · Prospect Radar (`prospect-score.mjs` per area+category) · govcon monthly topic sweep (xTech/DSIP/challenge.gov/grants.gov) |
+| **2. Scoped effort & requirements** | Turn a ranked lead into a reviewable work package: the lead, the why, the effort (credits/time), and the requirement | `checkNiche` gate + Harbor topic research → scoped brief (one-screen reviewable) |
+| **3. Approval gate (human)** | The package goes on the table; go/no-go is an explicit user decision | Agent presents the ranked + scoped package and **waits** — no check-ins skipped |
+| **4. Automated implementation** | Execute the approved package end-to-end with no mid-flight stops | Harbor generation (article/landing/rework), Core 30 (`generate-core30.mjs`), The Aftercall, Astro render → Pages deploy, CI |
+| **5. Verification gate** | Prove the shipped work meets the requirement before it counts as done | CI green (codegen → check → typecheck → test → build), `impeccable detect`, deploy check, review pass |
+
+Rules for agents:
+
+- **A lead is only "ranked" if it passed its portfolio's lens** — Middleton for
+  local-services, the govcon rubric for federal, `demandSignal` + `nicheScore`
+  for Harbor's own content.
+- **Stage 2 must be reviewable at a glance**: the lead, why it ranks, the scoped
+  effort, the requirement. No burying the decision in a wall of text.
+- **The gates are consent points, not speed bumps** — blocked at a gate means
+  return to the failing stage and fix, never skip forward.
+- **Where a stage has no machinery yet, build it thin**: a script/action that
+  follows repo conventions (dry-run by default, `--apply` to spend credits,
+  plain ESM, no new deps unless needed).
+
 ## MCPs (project-scoped, in `.opencode/opencode.json`)
 
 | MCP | Type | What it does | Auth |
