@@ -9,8 +9,9 @@ Owner: portal actions below are user-side (account + legal info).
 - [x] Voice connection assigned: **Default Credential Connection** (id `3016892976782640902`)
 - [x] Messaging profile **"mybiz"** assigned with webhook → `https://moonlit-spider-468.convex.site/telnyx-webhook`
 - [x] **Toll-free SMS verification SUBMITTED** (request `e89288f0-ed15-5705-ad1e-f90e34f082d4`, 2026-08-01, via API — business "Harbor", use-case "Conversational / Alerts", volume 1,000). Clock running: ~1–5 business days; approval emails to admin@phillias.us. Draft + curl in `docs/tollfree-verification-draft.md`.
-- [x] Probe (2026-08-01): outbound SMS submits (queued) but **delivery fails with 40329 "Tollfree number is not verified"** — enforcement is at delivery time. Reliable approval signal = GET /v2/messages/{id} → to[].status. **Still PENDING.**
-- [ ] After approval: text **+1-877-445-5580** → `conversations` row lands in Convex (webhook round-trip test)
+- [x] **✅ VERIFIED 2026-08-13** — `GET /v2/messaging_tollfree/verification/requests/e89288f0-...` returns `verificationStatus: "Verified"` (updatedAt 2026-08-13T19:18:53Z). Matches the portal: Account Level all-green + green "Verified" circle. The 40329 "Tollfree number is not verified" delivery failure is cleared — outbound SMS should now deliver.
+- [ ] **After approval, post-verify QA**: text **+1-877-445-5580** → `conversations` row lands in Convex (webhook round-trip test); send one outbound SMS and confirm `GET /v2/messages/{id}` → `to[].status` transitions past queued
+- [ ] ⚠️ **The Aftercall use case**: toll-free verification declares "Conversational / Alerts" (transactional). Review solicitation is marketing-grade — before any Aftercall campaign, confirm this use case covers it or re-file with the review-solicitation use case (see `docs/plans/2026-08-16-002-vapi-review-outreach.md` §4)
 - [x] **Webhook signature verification: DONE** — Ed25519 over `${telnyx-timestamp}|${rawBody}` verified against `TELNYX_PUBLIC_KEY` (fail-closed 401, 5-min replay window). Live-tested.
 
 ## ⚠️ Number type finding
