@@ -31,6 +31,9 @@ npm run dev                 # Astro dev server
 - `npm run check` — Astro type/check
 - `npm run typecheck` — `tsc --noEmit` + `convex typecheck`
 - `npx convex deploy` — deploy Convex functions
+- `node scripts/generate-core30.mjs` — Core 30 article generation (dry-run default)
+- `node scripts/prospect-score.mjs` — local-business SEO-opportunity scoring (dry-run default)
+- `node scripts/aftercall-probe.mjs` — Aftercall voice-payload probe (dry-run default)
 
 ## Structure
 
@@ -56,4 +59,4 @@ src/
 
 ## Status
 
-U1 + U2 scaffold — env keys not yet wired, Telnyx number pending provisioning (user portal), 10DLC decision deferred (toll-free verification path recommended for solo operator).
+U1–U2 scaffold live. Telnyx toll-free +1-877-445-5580 verified 2026-08-13. New modules in this branch: Core 30 GBP strategy (`scripts/generate-core30.mjs`), Prospect Radar lead-gen (`scripts/prospect-score.mjs`), and The Aftercall voice/SMS review layer (`convex/aftercall.ts`).

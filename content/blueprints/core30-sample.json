@@ -1,0 +1,52 @@
+[
+  {
+    "slug": "services/drain-cleaning",
+    "archetype": "service",
+    "template": "service",
+    "intent": "transactional",
+    "keywordCluster": "drain cleaning Alanson",
+    "schemaType": "Service",
+    "internalLinks": ["services/water-heater-replacement", "services/emergency-plumber", "home"],
+    "locationData": { "city": "Alanson", "region": "Michigan", "serviceArea": ["Alanson", "Petoskey", "Harbor Springs"] }
+  },
+  {
+    "slug": "services/water-heater-replacement",
+    "archetype": "service",
+    "template": "service",
+    "intent": "transactional",
+    "keywordCluster": "water heater replacement Alanson",
+    "schemaType": "Service",
+    "internalLinks": ["services/drain-cleaning", "home", "contact"],
+    "locationData": { "city": "Alanson", "region": "Michigan", "serviceArea": ["Alanson", "Petoskey", "Harbor Springs"] }
+  },
+  {
+    "slug": "services/emergency-plumber",
+    "archetype": "service",
+    "template": "service",
+    "intent": "transactional",
+    "keywordCluster": "emergency plumber Alanson",
+    "schemaType": "Service",
+    "internalLinks": ["services/drain-cleaning", "home", "contact"],
+    "locationData": { "city": "Alanson", "region": "Michigan", "serviceArea": ["Alanson", "Petoskey", "Harbor Springs"] }
+  },
+  {
+    "slug": "locations/harbor-springs",
+    "archetype": "location",
+    "template": "location",
+    "intent": "local",
+    "keywordCluster": "plumber Harbor Springs",
+    "schemaType": "LocalBusiness",
+    "internalLinks": ["services/drain-cleaning", "services/water-heater-replacement", "home"],
+    "locationData": { "city": "Harbor Springs", "region": "Michigan", "serviceArea": ["Harbor Springs", "Petoskey", "Alanson"] }
+  },
+  {
+    "slug": "faq/what-does-water-heater-replacement-cost",
+    "archetype": "supporting",
+    "template": "supporting",
+    "intent": "informational",
+    "keywordCluster": "how much does water heater replacement cost Alanson",
+    "schemaType": "FAQPage",
+    "internalLinks": ["services/water-heater-replacement", "services/emergency-plumber"],
+    "locationData": { "city": "Alanson", "region": "Michigan" }
+  }
+]
