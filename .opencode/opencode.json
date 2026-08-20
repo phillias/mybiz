@@ -13,6 +13,23 @@
       "type": "local",
       "command": ["npx", "-y", "convex@latest", "mcp", "start"],
       "enabled": true
+    },
+    "composio": {
+      "type": "remote",
+      "url": "https://connect.composio.dev/mcp",
+      "headers": {
+        "x-consumer-api-key": "{env:COMPOSIO_API_KEY}"
+      },
+      "enabled": true
+    },
+    "bench-studio": {
+      "type": "local",
+      "command": ["node", "{env:HOME}/docker/bench-studio/server/mcp.mjs"],
+      "environment": {
+        "BENCH_URL": "https://bench.phillias.cc",
+        "BENCH_PASSWORD": "{env:BENCH_PASSWORD}"
+      },
+      "enabled": true
     }
   }
 }
