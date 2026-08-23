@@ -1,0 +1,4 @@
+# Project-local node pin - matches CI (.github/workflows/*: node-version 24).
+# System node remains the machine default; this override applies only inside this repo.
+[tools]
+node = "24"
