@@ -192,7 +192,7 @@ const schemas = [
 
   <main class="article">
     <article set:html={content} />
-    <p class="byline">Written by Phileas Fogg. Last updated {updatedAt}.</p>
+    <p class="byline">Written by Phileas Fogg. Last updated ${updatedAt}.</p>
   </main>
 
   <footer class="site-footer">
