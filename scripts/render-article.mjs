@@ -74,9 +74,12 @@ async function localizeImages(html, slug, { log = () => {} } = {}) {
       },
     );
   }
+  const first = replacements[0] ?? null;
   return {
     html,
-    imagePath: replacements[0]?.publicPath ?? null,
+    imagePath: first?.publicPath ?? null,
+    imageWidth: first?.width ?? null,
+    imageHeight: first?.height ?? null,
   };
 }
 
@@ -117,7 +120,18 @@ async function main() {
   const faq = extractFaq(html);
   if (faq.length) console.error(`extracted ${faq.length} FAQ items for FAQPage schema`);
 
-  const page = buildArticlePage({ title, slug, description, publishedAt, updatedAt, imagePath, faq, html });
+  const page = buildArticlePage({
+    title,
+    slug,
+    description,
+    publishedAt,
+    updatedAt,
+    imagePath,
+    imageWidth: result.imageWidth,
+    imageHeight: result.imageHeight,
+    faq,
+    html,
+  });
 
   const dest = `src/pages/articles/${slug}.astro`;
   mkdirSync(dirname(dest), { recursive: true });
