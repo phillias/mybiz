@@ -68,7 +68,7 @@ const jsonLdGraph = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : null;
     {description && <meta name="twitter:description" content={description} />}
     <meta name="twitter:image" content={shareImage} />
 
-    {jsonLdGraph && <script type="application/ld+json" set:html={JSON.stringify(jsonLdGraph)} />}
+    {jsonLdGraph && jsonLdGraph.length > 0 && <script type="application/ld+json" set:html={JSON.stringify(jsonLdGraph)} />}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
