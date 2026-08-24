@@ -4,24 +4,15 @@
 // field required, standard disclosures (frequency, data rates, STOP/HELP,
 // privacy, terms). Part of the Telnyx toll-free verification resubmission.
 import { contactEmail } from "../config/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
 const phoneValue = import.meta.env.PUBLIC_OPTIN_PHONE || "+18774455580";
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SMS opt-in — Phileas Fogg</title>
-    <meta name="robots" content="index" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
+<BaseLayout
+  title="SMS opt-in — Phileas Fogg"
+  description="Get Phileas Fogg content alerts by text message — CTIA-compliant single opt-in with standard disclosures."
+  path="/opt-in/"
+>
     <header class="site-header">
       <a class="wordmark" href="/" aria-label="Phileas Fogg — home">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
@@ -122,7 +113,7 @@ const phoneValue = import.meta.env.PUBLIC_OPTIN_PHONE || "+18774455580";
       });
     </script>
 
-    <style>
+    <style is:global>
       :root {
         --ink: #0b1f33;
         --ink-2: #12314f;
@@ -375,5 +366,4 @@ const phoneValue = import.meta.env.PUBLIC_OPTIN_PHONE || "+18774455580";
         }
       }
     </style>
-  </body>
-</html>
+</BaseLayout>
