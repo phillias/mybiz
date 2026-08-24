@@ -1,119 +1,115 @@
 #!/usr/bin/env node
 // Render a Harbor draft (HTML fragment) into a committed Astro article page at
-// src/pages/articles/<slug>.astro, wrapped in the Phileas Fogg site chrome.
-// This is the "publish" stage: draft -> page -> build -> Pages deploy.
+// src/pages/articles/<slug>.astro, wrapped in the site chrome via
+// src/layouts/BaseLayout. This is the "publish" stage:
+// draft -> page -> build -> Pages deploy.
 //
 //   node scripts/render-article.mjs --draft content/drafts/<file>.html
 //   node scripts/render-article.mjs --draft <file> --slug my-slug --title "My title"
+//   node scripts/render-article.mjs --draft <file> --description "..." --date 2026-08-12
+//   node scripts/render-article.mjs --draft <file> --no-images   # skip image localization
+//
+// AEO upgrades (2026-08-24): meta description (explicit or first <p> trimmed
+// to ~155 chars), publishedAt in frontmatter + BlogPosting schema, a visible
+// "Last updated" stamp, FAQPage JSON-LD from the FAQ section, and image
+// localization — remote (Convex storage) images are downloaded into
+// public/articles/<slug>/, their src rewritten, and width/height stamped
+// (fixes audit F17/F18).
 
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
-import { dirname, basename } from "node:path";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { basename, dirname } from "node:path";
+import {
+  buildArticlePage,
+  extractDescription,
+  extractFaq,
+  extractImageUrls,
+  extractTitle,
+  imageDimensions,
+  imageExtension,
+} from "./lib/article-render.mjs";
 
-function main() {
+function arg(name) {
   const args = process.argv.slice(2);
-  const draft = args[args.indexOf("--draft") + 1];
+  const idx = args.indexOf(`--${name}`);
+  return idx >= 0 ? args[idx + 1] : undefined;
+}
+
+async function localizeImages(html, slug, { log = () => {} } = {}) {
+  const urls = extractImageUrls(html);
+  const replacements = [];
+  let n = 0;
+  for (const url of urls) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const contentType = res.headers.get("content-type") || "";
+      const ext = imageExtension(contentType);
+      if (!ext) throw new Error(`not an image (${contentType || "no content-type"})`);
+      const bytes = Buffer.from(await res.arrayBuffer());
+      const dims = imageDimensions(bytes);
+      n += 1;
+      const fileName = `img-${n}.${ext}`;
+      const publicPath = `/articles/${slug}/${fileName}`;
+      const dest = `public${publicPath}`;
+      mkdirSync(dirname(dest), { recursive: true });
+      writeFileSync(dest, bytes);
+      replacements.push({ url, publicPath, ...dims });
+      log(`localized ${url} -> ${dest}${dims ? ` (${dims.width}x${dims.height})` : ""}`);
+    } catch (err) {
+      // Keep the remote src when a single asset fails — one broken image must
+      // not block publishing the article.
+      log(`kept remote src ${url} (${err.message})`);
+    }
+  }
+  for (const { url, publicPath, width, height } of replacements) {
+    html = html.replace(
+      new RegExp(`(<img\\b[^>]*\\bsrc=")${url.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}("[^>]*>)`, "g"),
+      (_m, before, after) => {
+        let tag = `${before}${publicPath}${after}`;
+        tag = tag.replace(/\s*(width|height|loading|decoding)="[^"]*"/g, "");
+        const attrs = [];
+        if (width && height) attrs.push(`width="${width}"`, `height="${height}"`);
+        attrs.push(`loading="lazy"`, `decoding="async"`);
+        return tag.replace(/<img\b/, `<img ${attrs.join(" ")}`);
+      },
+    );
+  }
+  return {
+    html,
+    imagePath: replacements[0]?.publicPath ?? null,
+  };
+}
+
+async function main() {
+  const draft = arg("draft");
   if (!draft) {
     console.error("--draft <path> is required");
     process.exit(1);
   }
-  const html = readFileSync(draft, "utf8");
+  let html = readFileSync(draft, "utf8");
 
-  const slugIdx = args.indexOf("--slug");
-  const slug = slugIdx >= 0 ? args[slugIdx + 1] : basename(draft).replace(/\.html?$/, "");
-  const titleIdx = args.indexOf("--title");
-  const title = titleIdx >= 0 ? args[titleIdx + 1] : html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1]?.replace(/<[^>]+>/g, "").trim() ?? slug;
-  const dateIdx = args.indexOf("--date");
-  const publishedAt = dateIdx >= 0 ? args[dateIdx + 1] : new Date().toISOString().slice(0, 10);
+  const slug = arg("slug") || basename(draft).replace(/\.html?$/, "");
+  const title = arg("title") || extractTitle(html) || slug;
+  const description = arg("description") || extractDescription(html) || "";
+  const today = new Date().toISOString().slice(0, 10);
+  const publishedAt = arg("date") || today;
+  const updatedAt = today;
 
-  // contactEmail/siteUrl are consumed by the generated page via src/config/site.ts
-  // (PUBLIC_CONTACT_EMAIL / PUBLIC_SITE_URL with codevex.app defaults) — not baked here.
-  const page = `---
-// Generated by scripts/render-article.mjs — do not edit by hand.
-import { contactEmail, siteUrl } from "../../config/site";
-export const frontmatter = {
-  title: ${JSON.stringify(title)},
-  slug: ${JSON.stringify(slug)},
-  publishedAt: ${JSON.stringify(publishedAt)},
-};
-const title = frontmatter.title;
-const content = ${JSON.stringify(html)};
-const slug = frontmatter.slug;
-const canonical = \`\${siteUrl}/articles/\${slug}/\`;
----
+  if (!arg("description") && description) {
+    console.error(`derived description (${description.length} chars): ${description.slice(0, 70)}...`);
+  }
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{\`\${title} — Phileas Fogg\`}</title>
-    <link rel="canonical" href={canonical} />
-    <meta name="robots" content="index" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <header class="site-header">
-      <a class="wordmark" href="/">
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6" /><ellipse cx="12" cy="12" rx="4" ry="9.5" fill="none" stroke="currentColor" stroke-width="1.1" /><line x1="2.5" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.1" /><circle cx="19" cy="6" r="2.2" fill="currentColor" /></svg>
-        <span>Phileas&nbsp;Fogg</span>
-      </a>
-      <nav aria-label="Primary">
-        <a href="/#route">The route</a>
-        <a href="/#everywhere">Everywhere</a>
-        <a href="/opt-in">SMS opt-in</a>
-        <a href={\`mailto:\${contactEmail}\`}>Contact</a>
-      </nav>
-    </header>
+  let imagePath = null;
+  if (!process.argv.includes("--no-images")) {
+    const result = await localizeImages(html, slug, { log: (m) => console.error(m) });
+    html = result.html;
+    imagePath = result.imagePath;
+  }
 
-    <main class="article">
-      <article set:html={content} />
-      <p class="byline">Written by Phileas Fogg. <a href={"/#contact"}>Questions?</a></p>
-    </main>
+  const faq = extractFaq(html);
+  if (faq.length) console.error(`extracted ${faq.length} FAQ items for FAQPage schema`);
 
-    <footer class="site-footer">
-      <span>© 2026 Phileas Fogg</span>
-      <nav aria-label="Footer">
-        <a href="/privacy">Privacy</a>
-        <a href="/terms">Terms</a>
-        <a href={\`mailto:\${contactEmail}\`}>Contact</a>
-      </nav>
-    </footer>
-
-    <style>
-      :root {
-        --ink: #0b1f33; --paper: #f6f2ea; --paper-2: #ece5d7; --text: #18222d;
-        --muted: #5c6671; --accent: #e56b2b; --accent-strong: #b6480f; --line: rgba(11,31,51,0.14);
-        --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-        --font-body: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
-      }
-      * { box-sizing: border-box; }
-      body { margin: 0; font-family: var(--font-body); color: var(--text); background: var(--paper); line-height: 1.75; -webkit-font-smoothing: antialiased; }
-      a { color: var(--accent-strong); text-underline-offset: 3px; }
-      :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-      .site-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 5vw; background: rgba(246,242,234,0.92); border-bottom: 1px solid var(--line); position: sticky; top: 0; }
-      .wordmark { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: var(--ink); text-decoration: none; }
-      .wordmark svg { color: var(--accent); }
-      .site-header nav, .site-footer nav { display: flex; gap: 1.4rem; align-items: center; }
-      .site-header nav a { color: var(--ink); text-decoration: none; font-size: 0.95rem; font-weight: 500; }
-      .site-header nav a:hover { color: var(--accent-strong); }
-      .article { max-width: 760px; margin: 0 auto; padding: clamp(3rem, 8vw, 5rem) 1.25rem; }
-      .article h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 1.4rem; }
-      .article h2 { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; color: var(--ink); margin: 2.4rem 0 0.7rem; }
-      .article h3 { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: var(--ink); margin: 1.8rem 0 0.5rem; }
-      .article p, .article li { color: var(--text); font-size: 1.05rem; }
-      .article img { max-width: 100%; height: auto; border-radius: 12px; margin: 1.2rem 0; }
-      .article ul, .article ol { padding-left: 1.3rem; }
-      .byline { margin-top: 2.6rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
-      .site-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.4rem 5vw; background: var(--ink); color: rgba(246,242,234,0.7); font-size: 0.9rem; }
-      .site-footer nav a { color: rgba(246,242,234,0.7); text-decoration: none; }
-      .site-footer nav a:hover { color: var(--paper); }
-      @media (max-width: 480px) { .site-header { flex-wrap: wrap; } }
-    </style>
-  </body>
-</html>
-`;
+  const page = buildArticlePage({ title, slug, description, publishedAt, updatedAt, imagePath, faq, html });
 
   const dest = `src/pages/articles/${slug}.astro`;
   mkdirSync(dirname(dest), { recursive: true });
@@ -122,7 +118,7 @@ const canonical = \`\${siteUrl}/articles/\${slug}/\`;
 }
 
 try {
-  main();
+  await main();
 } catch (err) {
   console.error(err.message);
   process.exit(1);
