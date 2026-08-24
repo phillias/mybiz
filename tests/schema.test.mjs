@@ -39,13 +39,26 @@ describe("blogPostingSchema", () => {
     expect(post.mainEntityOfPage["@id"]).toBe("https://codevex.app/articles/local-first-memory/");
   });
 
-  it("falls back to the site OG image when the article has none", () => {
+  it("uses updatedAt for dateModified when provided", () => {
+    const post = blogPostingSchema({
+      title: "T",
+      description: "D",
+      path: "/articles/t/",
+      publishedAt: "2026-01-01",
+      updatedAt: "2026-08-24",
+    });
+    expect(post.dateModified).toBe("2026-08-24");
+    expect(post.datePublished).toBe("2026-01-01");
+  });
+
+  it("falls back to publishedAt for dateModified when updatedAt is omitted", () => {
     const post = blogPostingSchema({
       title: "T",
       description: "D",
       path: "/articles/t/",
       publishedAt: "2026-01-01",
     });
+    expect(post.dateModified).toBe("2026-01-01");
     expect(post.image).toBe("https://codevex.app/og-image.png");
   });
 });

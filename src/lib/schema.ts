@@ -46,6 +46,8 @@ export interface BlogPostingInput {
   path: string;
   /** ISO date (YYYY-MM-DD) the article was published. */
   publishedAt: string;
+  /** ISO date (YYYY-MM-DD) the article was last modified. Defaults to publishedAt. */
+  updatedAt?: string;
   /** Site-relative path of the article's lead image, or null for the site OG image. */
   imagePath?: string | null;
 }
@@ -59,7 +61,7 @@ export function blogPostingSchema(input: BlogPostingInput): JsonLdObject {
     headline: input.title,
     description: input.description,
     datePublished: input.publishedAt,
-    dateModified: input.publishedAt,
+    dateModified: input.updatedAt || input.publishedAt,
     image,
     mainEntityOfPage: { "@type": "WebPage", "@id": absoluteUrl(input.path) },
     author: {
