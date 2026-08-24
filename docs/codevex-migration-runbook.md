@@ -18,6 +18,11 @@ Both hostnames serve the **same Pages project**, so the legacy redirect lives in
 middleware (host-scoped) — never add a host-blind catch-all to `public/_redirects`
 (it would infinite-loop codevex.app).
 
+**Audit finding F8 (2026-08-24):** the `/sitemap.xml /sitemap-index.xml 302` rule in
+`public/_redirects` is intentionally retained — it is harmless post-cutover because
+`/sitemap.xml` does not exist as a standalone file, so the 302 to `/sitemap-index.xml`
+is correct fallback behavior.
+
 ---
 
 ## 1. Cloudflare zone + DNS
