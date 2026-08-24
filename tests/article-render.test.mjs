@@ -153,6 +153,8 @@ describe("buildArticlePage", () => {
       publishedAt: "2026-08-12",
       updatedAt: "2026-08-24",
       image: "/articles/test-article/img-1.png",
+      imageWidth: null,
+      imageHeight: null,
       faq: [{ question: "Q?", answer: "A." }],
     });
   });
@@ -274,5 +276,41 @@ describe("buildArticlePage", () => {
     expect(byline).toContain("Last updated");
     expect(byline).toContain("{updatedAt}");
     expect(frontmatter.updatedAt).toBe("2026-08-24");
+  });
+
+  it("passes image dimensions through frontmatter and BaseLayout when provided", () => {
+    const page = buildArticlePage({
+      title: "T",
+      slug: "t",
+      description: "d",
+      publishedAt: "2026-01-01",
+      updatedAt: "2026-01-01",
+      imagePath: "/articles/t/img-1.png",
+      imageWidth: 1376,
+      imageHeight: 768,
+      faq: [],
+      html: "<p>x</p>",
+    });
+    const { frontmatter } = evalPageCode(page);
+    expect(frontmatter.imageWidth).toBe(1376);
+    expect(frontmatter.imageHeight).toBe(768);
+    expect(page).toContain("imageWidth={imageWidth}");
+    expect(page).toContain("imageHeight={imageHeight}");
+  });
+
+  it("defaults imageWidth and imageHeight to null when omitted", () => {
+    const page = buildArticlePage({
+      title: "T",
+      slug: "t",
+      description: "d",
+      publishedAt: "2026-01-01",
+      updatedAt: "2026-01-01",
+      imagePath: "/articles/t/img-1.png",
+      faq: [],
+      html: "<p>x</p>",
+    });
+    const { frontmatter } = evalPageCode(page);
+    expect(frontmatter.imageWidth).toBeNull();
+    expect(frontmatter.imageHeight).toBeNull();
   });
 });
