@@ -40,7 +40,7 @@ async function localizeImages(html, slug, { log = () => {} } = {}) {
   let n = 0;
   for (const url of urls) {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: AbortSignal.timeout(30000) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const contentType = res.headers.get("content-type") || "";
       const ext = imageExtension(contentType);
@@ -88,7 +88,15 @@ async function main() {
   }
   let html = readFileSync(draft, "utf8");
 
-  const slug = arg("slug") || basename(draft).replace(/\.html?$/, "");
+  function sanitizeSlug(raw) {
+    if (!raw) return "";
+    return raw
+      .replace(/[\\/]+/g, "-")
+      .replace(/(^|-)\.+(?=(-|$))/g, "")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  const slug = sanitizeSlug(arg("slug")) || basename(draft).replace(/\.html?$/,"");
   const title = arg("title") || extractTitle(html) || slug;
   const description = arg("description") || extractDescription(html) || "";
   const today = new Date().toISOString().slice(0, 10);
