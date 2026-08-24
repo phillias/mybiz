@@ -9,6 +9,7 @@ import {
   imageDimensions,
   imageExtension,
 } from "../scripts/lib/article-render.mjs";
+import { blogPostingSchema, faqSchema } from "../src/lib/schema";
 
 describe("htmlToText", () => {
   it("strips tags, decodes entities, collapses whitespace", () => {
@@ -116,43 +117,114 @@ describe("imageExtension", () => {
 });
 
 describe("buildArticlePage", () => {
-  const page = buildArticlePage({
-    title: "Test Article",
-    slug: "test-article",
-    description: "A test description.",
-    publishedAt: "2026-08-12",
-    updatedAt: "2026-08-24",
-    imagePath: "/articles/test-article/img-1.png",
-    faq: [{ question: "Q?", answer: "A." }],
-    html: "<h1>Test Article</h1><p>Body.</p>",
+  function evalPageCode(source) {
+    const m = source.match(/---\n([\s\S]*?)\n---/);
+    if (!m) throw new Error("No code fence found");
+    let code = m[1]
+      .replace(/^import\s+.*?from\s+["'][^"']+["'];?\s*$/gm, "")
+      .replace(/export\s+const\s+frontmatter\s*=/, "const frontmatter =");
+    const fn = new Function(
+      "blogPostingSchema", "faqSchema",
+      code + "\nreturn { frontmatter, schemas, content, path };"
+    );
+    return fn(blogPostingSchema, faqSchema);
+  }
+
+  function getTemplate(source) {
+    return source.split("---\n").slice(2).join("---\n");
+  }
+
+  it("produces frontmatter with all article metadata", () => {
+    const page = buildArticlePage({
+      title: "Test Article",
+      slug: "test-article",
+      description: "A test description.",
+      publishedAt: "2026-08-12",
+      updatedAt: "2026-08-24",
+      imagePath: "/articles/test-article/img-1.png",
+      faq: [{ question: "Q?", answer: "A." }],
+      html: "<h1>Test Article</h1><p>Body.</p>",
+    });
+    const { frontmatter } = evalPageCode(page);
+    expect(frontmatter).toEqual({
+      title: "Test Article",
+      slug: "test-article",
+      description: "A test description.",
+      publishedAt: "2026-08-12",
+      updatedAt: "2026-08-24",
+      image: "/articles/test-article/img-1.png",
+      faq: [{ question: "Q?", answer: "A." }],
+    });
   });
 
-  it("uses BaseLayout and the schema builders", () => {
-    expect(page).toContain('import BaseLayout from "../../layouts/BaseLayout.astro"');
-    expect(page).toContain("blogPostingSchema");
-    expect(page).toContain("faqSchema(faq)");
+  it("emits BlogPosting JSON-LD with correct semantic fields", () => {
+    const page = buildArticlePage({
+      title: "Test Article",
+      slug: "test-article",
+      description: "A test description.",
+      publishedAt: "2026-08-12",
+      updatedAt: "2026-08-24",
+      imagePath: "/articles/test-article/img-1.png",
+      faq: [],
+      html: "<p>Body.</p>",
+    });
+    const { schemas } = evalPageCode(page);
+    expect(schemas).toHaveLength(1);
+    expect(schemas[0]).toMatchObject({
+      "@type": "BlogPosting",
+      headline: "Test Article",
+      description: "A test description.",
+      datePublished: "2026-08-12",
+      dateModified: "2026-08-24",
+    });
+    expect(schemas[0].author).toMatchObject({
+      "@type": "Person",
+      name: "Phileas Fogg",
+    });
   });
 
-  it("carries description, dates, image, and FAQ in frontmatter", () => {
-    expect(page).toContain('description: "A test description."');
-    expect(page).toContain('publishedAt: "2026-08-12"');
-    expect(page).toContain('updatedAt: "2026-08-24"');
-    expect(page).toContain('image: "/articles/test-article/img-1.png"');
-    expect(page).toContain('"question":"Q?"');
+  it("emits FAQPage JSON-LD when FAQ items are present", () => {
+    const page = buildArticlePage({
+      title: "T",
+      slug: "t",
+      description: "d",
+      publishedAt: "2026-01-01",
+      updatedAt: "2026-01-01",
+      imagePath: null,
+      faq: [
+        { question: "Q1?", answer: "A1." },
+        { question: "Q2?", answer: "A2." },
+      ],
+      html: "<p>x</p>",
+    });
+    const { schemas } = evalPageCode(page);
+    expect(schemas).toHaveLength(2);
+    expect(schemas[1]).toMatchObject({
+      "@type": "FAQPage",
+      mainEntity: [
+        { "@type": "Question", name: "Q1?" },
+        { "@type": "Question", name: "Q2?" },
+      ],
+    });
   });
 
-  it("stamps a visible Last updated line and article og type", () => {
-    expect(page).toContain("Last updated {updatedAt}.");
-    expect(page).toContain('type="article"');
-    expect(page).toContain("publishedTime={publishedAt}");
+  it("falls back to publishedAt for dateModified when updatedAt is omitted", () => {
+    const page = buildArticlePage({
+      title: "T",
+      slug: "t",
+      description: "d",
+      publishedAt: "2026-01-01",
+      updatedAt: undefined,
+      imagePath: null,
+      faq: [],
+      html: "<p>x</p>",
+    });
+    const { schemas } = evalPageCode(page);
+    expect(schemas[0].dateModified).toBe("2026-01-01");
   });
 
-  it("embeds the body HTML as JSON", () => {
-    expect(page).toContain('"<h1>Test Article</h1>');
-  });
-
-  it("emits null image when no image was localized", () => {
-    const noImg = buildArticlePage({
+  it("sets frontmatter image to null and falls back to OG image in schema when no image is localized", () => {
+    const page = buildArticlePage({
       title: "T",
       slug: "t",
       description: "d",
@@ -162,6 +234,41 @@ describe("buildArticlePage", () => {
       faq: [],
       html: "<p>x</p>",
     });
-    expect(noImg).toContain("image: null");
+    const { frontmatter, schemas } = evalPageCode(page);
+    expect(frontmatter.image).toBeNull();
+    expect(schemas[0].image).toBe("https://codevex.app/og-image.png");
+  });
+
+  it("embeds the body HTML in the rendered template", () => {
+    const body = "<h1>Test Article</h1><p>Body.</p>";
+    const page = buildArticlePage({
+      title: "Test Article",
+      slug: "test-article",
+      description: "d",
+      publishedAt: "2026-01-01",
+      updatedAt: "2026-01-01",
+      imagePath: null,
+      faq: [],
+      html: body,
+    });
+    const { content } = evalPageCode(page);
+    expect(content).toBe(body);
+  });
+
+  it("includes a visible Last updated timestamp in the template", () => {
+    const page = buildArticlePage({
+      title: "T",
+      slug: "t",
+      description: "d",
+      publishedAt: "2026-01-01",
+      updatedAt: "2026-08-24",
+      imagePath: null,
+      faq: [],
+      html: "<p>x</p>",
+    });
+    const { frontmatter } = evalPageCode(page);
+    const template = getTemplate(page);
+    expect(template).toContain("Last updated");
+    expect(frontmatter.updatedAt).toBe("2026-08-24");
   });
 });
