@@ -268,7 +268,11 @@ describe("buildArticlePage", () => {
     });
     const { frontmatter } = evalPageCode(page);
     const template = getTemplate(page);
-    expect(template).toContain("Last updated");
+    const bylineMatch = template.match(/<p class="byline">([\s\S]*?)<\/p>/);
+    expect(bylineMatch).toBeTruthy();
+    const byline = bylineMatch[1];
+    expect(byline).toContain("Last updated");
+    expect(byline).toContain("{updatedAt}");
     expect(frontmatter.updatedAt).toBe("2026-08-24");
   });
 });
