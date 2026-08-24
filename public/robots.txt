@@ -1,3 +1,5 @@
+# AI agents welcome — policy is enforced Cloudflare-side, not robots-side.
+# Machine-readable site summary: https://codevex.app/llms.txt
 User-agent: *
 Allow: /
 
