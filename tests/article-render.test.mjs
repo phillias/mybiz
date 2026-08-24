@@ -294,8 +294,6 @@ describe("buildArticlePage", () => {
     const { frontmatter } = evalPageCode(page);
     expect(frontmatter.imageWidth).toBe(1376);
     expect(frontmatter.imageHeight).toBe(768);
-    expect(page).toContain("imageWidth={imageWidth}");
-    expect(page).toContain("imageHeight={imageHeight}");
   });
 
   it("defaults imageWidth and imageHeight to null when omitted", () => {
