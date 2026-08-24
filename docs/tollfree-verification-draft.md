@@ -3,6 +3,13 @@
 Number: **+1-877-445-5580** · Endpoint: `POST /v2/messaging_tollfree/verification/requests`
 (Fill the `‹FILL›` fields — personal info — then either run the curl below or paste the JSON into Mission Control → Messaging → Toll-free.)
 
+> **2026-08-24 cutover note (captain decision):** this request was submitted with
+> phillias.us values below (`corporateWebsite`, `businessContactEmail`
+> admin@phillias.us; live privacy/terms URLs). The commercial site moved to
+> **codevex.app** — those values now point at codevex.app equivalents and
+> CTIA/Telnyx re-review may be triggered. Steps: `docs/codevex-migration-runbook.md`.
+> The captain owns any Telnyx/CTIA submission. Historical JSON kept verbatim as record.
+
 ## Submission JSON
 
 ```json
@@ -32,7 +39,7 @@ Number: **+1-877-445-5580** · Endpoint: `POST /v2/messaging_tollfree/verificati
 ## Submit via API
 
 ```bash
-TELNYX_API_KEY="REDACTED_TELNYX_API_KEY"
+# TELNYX_API_KEY comes from .env (never commit real key values).
 curl -X POST "https://api.telnyx.com/v2/messaging_tollfree/verification/requests" \
   -H "Authorization: Bearer $TELNYX_API_KEY" -H "Content-Type: application/json" \
   -d '‹paste the JSON above with FILL fields completed›'
