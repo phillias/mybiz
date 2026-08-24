@@ -1,0 +1,103 @@
+---
+// /sign-in — real page embedding Clerk's hosted <SignIn/> UI. Fixes the
+// /app -> /sign-in -> 404 dead-end (audit F13). Auth pages carry no value in
+// search indexes, so this is noindex + excluded from the sitemap.
+import { SignIn } from "@clerk/astro/components";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { contactEmail } from "../config/site";
+---
+
+<BaseLayout
+  title="Sign in — Phileas Fogg"
+  description="Sign in to the Phileas Fogg content workspace."
+  path="/sign-in/"
+  robots="noindex, follow"
+>
+  <main class="signin">
+    <a class="wordmark" href="/" aria-label="Phileas Fogg — home">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+        <ellipse cx="12" cy="12" rx="4" ry="9.5" fill="none" stroke="currentColor" stroke-width="1.1"></ellipse>
+        <line x1="2.5" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.1"></line>
+        <circle cx="19" cy="6" r="2.2" fill="currentColor"></circle>
+      </svg>
+      <span>Phileas&nbsp;Fogg</span>
+    </a>
+    <h1>Sign in to the workspace</h1>
+    <div class="clerk-mount">
+      <SignIn />
+    </div>
+    <p class="help">
+      Trouble signing in? <a href={`mailto:${contactEmail}`}>Email us</a> — or head back to the
+      <a href="/">site</a>.
+    </p>
+  </main>
+</BaseLayout>
+
+<style is:global>
+  :root {
+    --ink: #0b1f33;
+    --paper: #f6f2ea;
+    --text: #18222d;
+    --muted: #5c6671;
+    --accent: #e56b2b;
+    --accent-strong: #b6480f;
+    --line: rgba(11, 31, 51, 0.14);
+    --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Schibsted Grotesk", ui-sans-serif, system-ui, sans-serif;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--text);
+    background: var(--paper);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: var(--accent-strong);
+    text-underline-offset: 3px;
+  }
+  :focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  .signin {
+    max-width: 460px;
+    margin: 0 auto;
+    padding: clamp(3rem, 8vw, 5rem) 1.25rem 4rem;
+  }
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .wordmark svg {
+    color: var(--accent);
+  }
+  .signin h1 {
+    margin: 1.6rem 0 1.4rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 2.1rem);
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .clerk-mount {
+    min-height: 420px;
+    margin: 0 0 1.5rem;
+  }
+  .help {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+</style>
