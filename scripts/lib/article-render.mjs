@@ -159,7 +159,7 @@ const { title, slug, description, publishedAt, updatedAt, image, faq } = frontma
 const content = ${JSON.stringify(html)};
 const path = \`/articles/\${slug}/\`;
 const schemas = [
-  blogPostingSchema({ title, description, path, publishedAt, imagePath: image }),
+  blogPostingSchema({ title, description, path, publishedAt, updatedAt, imagePath: image }),
   faqSchema(faq),
 ].filter(Boolean);
 ---
