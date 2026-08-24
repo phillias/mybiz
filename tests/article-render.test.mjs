@@ -274,7 +274,7 @@ describe("buildArticlePage", () => {
     expect(bylineMatch).toBeTruthy();
     const byline = bylineMatch[1];
     expect(byline).toContain("Last updated");
-    expect(byline).toContain("{updatedAt}");
+    expect(byline).toContain(frontmatter.updatedAt);
     expect(frontmatter.updatedAt).toBe("2026-08-24");
   });
 
