@@ -74,7 +74,7 @@ export function blogPostingSchema(input: BlogPostingInput): JsonLdObject {
 }
 
 export function faqSchema(items: FaqItem[]): JsonLdObject | null {
-  if (!items.length) return null;
+  if (!items?.length) return null;
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
