@@ -39,7 +39,7 @@ jobs:
           if [ -z "$latest" ]; then echo "no draft generated (niche FAIL or none)"; exit 0; fi
           node scripts/render-article.mjs --draft "$latest"
           git config user.name "phileas-fogg-bot"
-          git config user.email "bot@phillias.us"
+          git config user.email "bot@codevex.app"
           git add src/pages/articles
           git commit -m "pipeline: publish $(basename "$latest" .html)" || echo "nothing new to commit"
           git push origin main

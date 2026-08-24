@@ -1,4 +1,4 @@
-# DESIGN.md — Phileas Fogg (phillias.us)
+# DESIGN.md — Phileas Fogg (codevex.app)
 
 Corporate landing design system. Modern Jules Verne "around the world" motif:
 global reach, great-circle routes, waypoints. Deliberately NOT Victorian (no
@@ -37,6 +37,6 @@ anchor. Calm, spacious, typography-led.
 - Keep copy in product language; "around the world" motif, modern, not Victorian
 - Never mention "mybiz"; business moniker is Phileas Fogg; never claim
   harborseo.ai or its domain/mailbox
-- Contact published: admin@phillias.us (CTIA requirement)
+- Contact published: admin@codevex.app (CTIA requirement; `PUBLIC_CONTACT_EMAIL` via src/config/site.ts; mailbox provisioning = docs/codevex-migration-runbook.md §4)
 - WCAG AA contrast; visible `:focus-visible`; semantic elements (header/nav/main/section/ol)
 - No purple-on-white, no Inter/Roboto/Space Grotesk, no em-dash saturation

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Generate an SEO article via the Harbor API (harborseo.ai) for the phillias.us
-// site, saving the finished HTML to a drafts dir. This is the "generate" stage
+// Generate an SEO article via the Harbor API (harborseo.ai) for the commercial
+// site (codevex.app since the 2026-08-24 cutover), saving the finished HTML to
+// a drafts dir. This is the "generate" stage
 // of the U3/U4 pipeline: demandSignal PROCEED -> keyword -> article draft.
 //
 // Usage:
@@ -14,7 +15,10 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 
 const API = "https://outgoing-oyster-428.convex.site/v1";
-const SITE_ID = process.env.HARBOR_SITE_ID || "nd7amxhtnt94bx5er1ygvm4rbx8c97yz"; // phillias.us
+// INTENTIONAL (2026-08-24 cutover): this Harbor site id was registered against
+// phillias.us pre-cutover and stays the default until codevex.app is live and
+// re-registered — see docs/codevex-migration-runbook.md §Harbor. Override with HARBOR_SITE_ID.
+const SITE_ID = process.env.HARBOR_SITE_ID || "nd7amxhtnt94bx5er1ygvm4rbx8c97yz";
 
 async function api(path, opts = {}) {
   const res = await fetch(`${API}${path}`, {

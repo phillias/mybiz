@@ -10,8 +10,10 @@ operational depth; this file is the short version.
 Owned vs consumed — this distinction matters for every decision here:
 
 - **Owned**: this Astro + Convex app (the Harbor product) — this repo (`./`); our
-  homelab at `*.phillias.us` (Cloudflare tunnel, host `kali`); `phillias.us` is
-  our primary domain and the intended CTIA corporate website.
+  homelab at `*.phillias.us` (Cloudflare tunnel, host `kali`). **Commercial/professional
+  domain = `codevex.app`** (captain decision 2026-08-24; brand entity "Phileas");
+  phillias.us stays owned but is NOT used commercially — legacy traffic 301s to
+  codevex.app via `src/middleware.ts` (see `docs/codevex-migration-runbook.md`).
 - **Consumed SaaS — harborseo.ai ("Harbor" the service)**: a THIRD-PARTY AI SEO
   content generator we use, not a property we control. Its domain/mailbox
   (`hamish@harborseo.ai`) must NEVER be claimed as our corporate website or
@@ -110,10 +112,11 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
   `nicheScore.verdict PASS` && `demandSignal.providerVerdict PROCEED` →
   content generation via `scripts/generate-article.mjs` (Harbor API,
   `HARBOR_API_KEY` in `.env`, site id `nd7amxhtnt94bx5er1ygvm4rbx8c97yz` =
-  phillias.us, 1 credit/article, ~3-5 min, output → `content/drafts/`,
-  gitignored) → render as Astro pages → Pages deploy. For the harbor MCP in
-  opencode, `HARBOR_API_KEY` must be in the opencode process env (export it
-  before launch), not just `.env`.
+  pre-cutover phillias.us registration — re-register codevex.app per
+  `docs/codevex-migration-runbook.md` §6, 1 credit/article, ~3-5 min, output →
+  `content/drafts/`, gitignored) → render as Astro pages → Pages deploy. For the
+  harbor MCP in opencode, `HARBOR_API_KEY` must be in the opencode process env
+  (export it before launch), not just `.env`.
 - **Core 30 generation**: `node scripts/generate-core30.mjs --blueprints content/blueprints/core30-sample.json --dry-run` (1 credit/page on `--apply`).
 - **Prospect Radar**: `node scripts/prospect-score.mjs --city <city> --category <cat> --dry-run` (DataForSEO on `--apply`; Maps endpoint is a TODO-verify stub).
 - **The Aftercall probe**: `node scripts/aftercall-probe.mjs --phone ... --service ... --city ... --dry-run` (places real call on `--apply`).
@@ -128,9 +131,10 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
   target where both tools fit (Harbor API/raw-HTML out, Impeccable gate in).
 - **Content flow**: harborseo.ai API (or MCP) generates raw-HTML articles →
   ingest into Convex → render via Astro → deploy to Pages. Site registration
-  requires a reachable `sitemap.xml` (`sitemap_url` is a required field) — so
-  add `@astrojs/sitemap` (`site: https://phillias.us`) + `robots.txt` BEFORE
-  registering phillias.us with Harbor.
+  requires a reachable `sitemap.xml` (`sitemap_url` is a required field) — the
+  sitemap base comes from `astro.config.mjs` `site` (now `https://codevex.app`);
+  Harbor re-registration for codevex.app is a runbook item
+  (`docs/codevex-migration-runbook.md` §6).
 - **Design**: Impeccable (`npx impeccable`) — `init` writes `PRODUCT.md` +
   `DESIGN.md` into the repo; `npx impeccable detect` (60 deterministic rules,
   CI-friendly JSON) is the design quality gate in `.github/workflows/ci.yml`;
@@ -143,7 +147,7 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
 - Convex HTTP actions serve on `.convex.site`, NOT `.convex.cloud` — `PUBLIC_CONVEX_URL` must be the `.convex.site` URL.
 - Telnyx webhooks = Ed25519 over `${telnyx-timestamp}|${rawBody}`, fail-closed 401, 5-min replay window.
 - Clerk → Convex auth via native `convex/auth.config.ts` (`domain: CLERK_JWT_ISSUER_DOMAIN`, `applicationID: "convex"`); no `@convex-dev/auth`.
-- Deploy: `./scripts/deploy-pages.sh` → Cloudflare Pages project `mybiz` (apex custom domain `phillias.us`). Headless: `CLOUDFLARE_API_TOKEN`+`CLOUDFLARE_ACCOUNT_ID` in `.env`, run with `NODE_OPTIONS=--dns-result-order=ipv6first` (token is IPv6-restricted). Adapter@14 is Workers-targeted — the script wraps `dist/_worker.js` + copies client assets to the deploy root to make `wrangler pages deploy` work. CI deploys will need the same handling + an IP-unrestricted token.
+- Deploy: `./scripts/deploy-pages.sh` → Cloudflare Pages project `mybiz` (apex custom domain `codevex.app`; phillias.us 301s via `src/middleware.ts`). Update the Pages secret `PUBLIC_SITE_URL=https://codevex.app` at deploy time (runbook §1.4). Headless: `CLOUDFLARE_API_TOKEN`+`CLOUDFLARE_ACCOUNT_ID` in `.env`, run with `NODE_OPTIONS=--dns-result-order=ipv6first` (token is IPv6-restricted). Adapter@14 is Workers-targeted — the script wraps `dist/_worker.js` + copies client assets to the deploy root to make `wrangler pages deploy` work. CI deploys will need the same handling + an IP-unrestricted token.
 - Secrets: `./scripts/sync-secrets.sh` pushes `.env` → GitHub secrets/variables. Real values live in `.env` (gitignored); never write secret VALUES into code, skills, or memory — record locations only.
 
 ## CTIA toll-free verification

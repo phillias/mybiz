@@ -1,6 +1,7 @@
 ---
-// Published articles index (phillias.us/articles). Lists every rendered
+// Published articles index (/articles on codevex.app). Lists every rendered
 // article page via their exported frontmatter, newest first.
+import { contactEmail } from "../../config/site";
 const articles = (await import.meta.glob("./*.astro", { eager: true })) as Record<
   string,
   { frontmatter?: { title?: string; slug?: string; publishedAt?: string } }
@@ -10,8 +11,6 @@ const list = Object.entries(articles)
   .filter(([, mod]) => mod.frontmatter?.title && mod.frontmatter.slug)
   .map(([path, mod]) => ({ path, ...mod.frontmatter! }))
   .sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
-
-const contactEmail = "admin@phillias.us";
 ---
 
 <!doctype html>
