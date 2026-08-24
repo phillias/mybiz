@@ -68,8 +68,8 @@ export default defineConfig({
       // /app is auth-gated (302 to sign-in) and /sign-in is a thin auth page —
       // neither belongs in a crawler sitemap (audit F12/F13).
       filter: (page) => {
-        const pathname = new URL(page).pathname;
-        return pathname !== "/app/" && pathname !== "/sign-in/";
+        const pathname = new URL(page).pathname.replace(/\/$/, "");
+        return pathname !== "/app" && pathname !== "/sign-in";
       },
       lastmod: new Date(),
       serialize(item) {
