@@ -1,0 +1,83 @@
+---
+// Shared page shell owning the entire <head>: canonical, Open Graph (+image),
+// Twitter card, favicons, and a single JSON-LD injection point. Fixes audit
+// F15 (canonical only on one article) and F16 (no og:image / Twitter cards)
+// wholesale — every page renders through this layout.
+import { absoluteUrl, faviconIcoPath, faviconSvgPath, ogImagePath, siteName } from "../config/site";
+
+interface Props {
+  /** <title> content (page supplies its own "— Phileas Fogg" suffix if wanted). */
+  title: string;
+  /** Meta description (also used for og:description / twitter:description). */
+  description?: string;
+  /** Site-relative canonical path, e.g. "/" or "/articles/my-slug/". */
+  path: string;
+  /** Open Graph object type; "article" adds article:published_time when given. */
+  type?: "website" | "article";
+  /** Robots meta content. Defaults to "index, follow". */
+  robots?: string;
+  /** JSON-LD graph node(s), injected as one application/ld+json script. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** ISO date (YYYY-MM-DD) for og article:published_time. */
+  publishedTime?: string;
+  /** Site-relative override for the share image (default: /og-image.png). */
+  imagePath?: string;
+}
+
+const {
+  title,
+  description,
+  path,
+  type = "website",
+  robots = "index, follow",
+  jsonLd,
+  publishedTime,
+  imagePath,
+} = Astro.props;
+
+const canonical = absoluteUrl(path);
+const shareImage = absoluteUrl(imagePath ?? ogImagePath);
+const jsonLdGraph = Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : null;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical} />
+
+    <link rel="icon" type="image/svg+xml" href={faviconSvgPath} />
+    <link rel="alternate icon" href={faviconIcoPath} />
+
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    {type === "article" && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={shareImage} />
+
+    {jsonLdGraph && <script type="application/ld+json" set:html={JSON.stringify(jsonLdGraph)} />}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
