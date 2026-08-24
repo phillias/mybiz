@@ -27,7 +27,7 @@ sites, event marketing).
 | Layer | Component | Identifiers / notes |
 |---|---|---|
 | Frontend | **Astro 7** + React islands | `src/pages/`, `@astrojs/cloudflare` adapter |
-| Hosting | **Cloudflare Pages** | project `mybiz` (`mybiz-91l.pages.dev`, custom domain `phillias.us`); deploy via `scripts/deploy-pages.sh` (headless via `CLOUDFLARE_API_TOKEN` in `.env`) |
+| Hosting | **Cloudflare Pages** | project `mybiz` (`mybiz-91l.pages.dev`, custom domain `codevex.app`; `phillias.us` legacy-redirects via `src/middleware.ts`); deploy via `scripts/deploy-pages.sh` (headless via `CLOUDFLARE_API_TOKEN` in `.env`) |
 | Backend | **Convex 1.43** (TS) | PROD `moonlit-spider-468.convex.cloud` · dev `sincere-penguin-244` · project `phillias-phog:harbor-seo` |
 | Auth | **Clerk** (`@clerk/astro` v4) → Convex | dev instance `powerful.gibbon-3`; frontend API `powerful.gibbon-3.clerk.accounts.dev`; test user `u1-auth-test@harborseo.ai` |
 | Payments | **Stripe** (EUR) | plans Solo €24 / Growth €39 / Powerhouse €83 in `convex/actions/billing.ts` |
@@ -97,7 +97,7 @@ node scripts/harvest-ideas.mjs --apply --prod  # prod: run `npx convex deploy --
 1. Telnyx toll-free post-verify QA → outbound SMS delivery test + Aftercall use-case re-file (if needed)
 2. Cloudflare `npx wrangler login` → `./scripts/deploy-pages.sh` → first sign-in = auth positive proof
 3. Resend + Stripe keys when email/billing flows start
-4. Placeholder image URL in the toll-free verification — DONE: real `/opt-in-workflow.png` screenshot hosted at phillias.us
+4. Placeholder image URL in the toll-free verification — DONE: real `/opt-in-workflow.png` screenshot hosted at codevex.app
 
 ## Environment / credentials
 

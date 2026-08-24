@@ -26,7 +26,7 @@ Decisions locked in (user-gated, 2026-08-15):
 
 ## 2. The brand
 
-- **New LLC** with its own EIN + business bank account, dedicated to govcon. Protects the Harbor/phillias.us
+- **New LLC** with its own EIN + business bank account, dedicated to govcon. Protects the Harbor/codevex.app
   constellation from federal contracting exposure (CMMC, FAR reps & certs, export-control obligations).
 - **Phillias Federal LLC registered at LARA 2026-08-15** (CD-700 Domestic LLC). Remaining entity steps:
   EIN (irs.gov), FinCEN BOI (within 90 days), business bank account, sign operating agreement.

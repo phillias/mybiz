@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://phillias.us/sitemap-index.xml
+Sitemap: https://codevex.app/sitemap-index.xml

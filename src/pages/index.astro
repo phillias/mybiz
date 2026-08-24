@@ -1,8 +1,9 @@
 ---
-// Phileas Fogg — corporate landing for the phillias.us primary property.
-// Modern "around the world" theme: global reach, great-circle routes, waypoints.
-// CTIA contact is published here (admin@phillias.us); no mybiz/Harbor branding.
-const contactEmail = "admin@phillias.us";
+// Phileas Fogg — corporate landing on codevex.app, the commercial/professional
+// domain (2026-08-24 cutover). Brand entity is "Phileas"; Harbor is a service
+// of the mybiz constellation, not the brand.
+// CTIA contact is published here; no mybiz/Harbor branding.
+import { contactEmail, siteUrl } from "../config/site";
 
 const waypoints = [
   { name: "London", coord: "51.5°N · 0.1°W" },
@@ -30,7 +31,7 @@ const waypoints = [
       content="Real demand. Written to be found. Published everywhere. Your content, around the world."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://phillias.us" />
+    <meta property="og:url" content={siteUrl} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
