@@ -111,8 +111,9 @@ async function main() {
   }
 
   let imagePath = null;
+  let result = null;
   if (!process.argv.includes("--no-images")) {
-    const result = await localizeImages(html, slug, { log: (m) => console.error(m) });
+    result = await localizeImages(html, slug, { log: (m) => console.error(m) });
     html = result.html;
     imagePath = result.imagePath;
   }
