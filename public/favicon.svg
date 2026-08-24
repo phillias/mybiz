@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- Phileas Fogg — wireframe globe + waypoint dot, mirroring the header wordmark. -->
+  <rect width="24" height="24" rx="5.4" fill="#0b1f33"/>
+  <circle cx="12" cy="12" r="8.1" fill="none" stroke="#e56b2b" stroke-width="1.35"/>
+  <ellipse cx="12" cy="12" rx="3.72" ry="8.1" fill="none" stroke="#f6f2ea" stroke-opacity="0.68" stroke-width="0.7"/>
+  <ellipse cx="12" cy="12" rx="8.1" ry="2.92" fill="none" stroke="#f6f2ea" stroke-opacity="0.68" stroke-width="0.7"/>
+  <line x1="3.9" y1="12" x2="20.1" y2="12" stroke="#f6f2ea" stroke-opacity="0.68" stroke-width="0.7"/>
+  <circle cx="17.8" cy="6.2" r="1.25" fill="#f6f2ea"/>
+</svg>
