@@ -128,8 +128,8 @@ async function main() {
     publishedAt,
     updatedAt,
     imagePath,
-    imageWidth: result.imageWidth,
-    imageHeight: result.imageHeight,
+    imageWidth: result?.imageWidth ?? null,
+    imageHeight: result?.imageHeight ?? null,
     faq,
     html,
   });
