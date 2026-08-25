@@ -3,7 +3,9 @@
 // domain (2026-08-24 cutover). Brand entity is "Phileas"; Harbor is a service
 // of the mybiz constellation, not the brand.
 // CTIA contact is published here; no mybiz/Harbor branding.
-import { contactEmail, siteUrl } from "../config/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { contactEmail } from "../config/site";
+import { organizationSchema, websiteSchema } from "../lib/schema";
 
 const waypoints = [
   { name: "London", coord: "51.5°N · 0.1°W" },
@@ -13,33 +15,13 @@ const waypoints = [
   { name: "Sydney", coord: "33.9°S · 151.2°E" },
   { name: "São Paulo", coord: "23.5°S · 46.6°W" },
 ];
+
+const title = "Phileas Fogg — Content that goes around the world";
+const description =
+  "Phileas Fogg researches real demand, writes AI-native content for search intent, and publishes it everywhere your customers are. Content that goes around the world.";
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Phileas Fogg — Content that goes around the world</title>
-    <meta
-      name="description"
-      content="Phileas Fogg researches real demand, writes AI-native content for search intent, and publishes it everywhere your customers are. Content that goes around the world."
-    />
-    <meta property="og:title" content="Phileas Fogg — Content that goes around the world" />
-    <meta
-      property="og:description"
-      content="Real demand. Written to be found. Published everywhere. Your content, around the world."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={siteUrl} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
+<BaseLayout title={title} description={description} path="/" jsonLd={[organizationSchema(), websiteSchema()]}>
     <header class="site-header">
       <a class="wordmark" href="/" aria-label="Phileas Fogg — home">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
@@ -289,7 +271,7 @@ const waypoints = [
       }
     </script>
 
-    <style>
+    <style is:global>
       :root {
         --ink: #0b1f33;
         --ink-2: #12314f;
@@ -796,5 +778,4 @@ const waypoints = [
         }
       }
     </style>
-  </body>
-</html>
+</BaseLayout>
