@@ -46,7 +46,9 @@ convex/          backend functions (schema, http routes, actions)
 src/
   pages/         Astro routes
   components/    Turnstile widget
-  lib/           shared frontend code
+  layouts/       BaseLayout — shared <head> (canonical, OG/Twitter, JSON-LD)
+  lib/           shared frontend code (schema.ts JSON-LD builders)
+  config/        site identity single source of truth (site.ts)
   middleware.ts  Clerk middleware
 ```
 
@@ -59,4 +61,4 @@ src/
 
 ## Status
 
-U1–U2 scaffold live. Telnyx toll-free +1-877-445-5580 verified 2026-08-13. New modules in this branch: Core 30 GBP strategy (`scripts/generate-core30.mjs`), Prospect Radar lead-gen (`scripts/prospect-score.mjs`), and The Aftercall voice/SMS review layer (`convex/aftercall.ts`).
+U1–U2 scaffold live. Telnyx toll-free +1-877-445-5580 verified 2026-08-13. New modules in this branch: Core 30 GBP strategy (`scripts/generate-core30.mjs`), Prospect Radar lead-gen (`scripts/prospect-score.mjs`), and The Aftercall voice/SMS review layer (`convex/aftercall.ts`). AEO/GEO readiness: `public/llms.txt`, favicon + OG image, sitemap hygiene (excludes `/app` and `/sign-in`, per-article `lastmod`), `public/_headers` cache rules, `/sign-in` page, shared `BaseLayout` with JSON-LD (`src/lib/schema.ts`), and `render-article.mjs` pipeline upgrades (meta description, `BlogPosting`/`FAQPage` schema, image localization).
