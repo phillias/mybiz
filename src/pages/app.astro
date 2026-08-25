@@ -4,7 +4,7 @@
 // Auth-gated app surface: noindex and excluded from the sitemap (audit F12).
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const userId = Astro.locals.auth?.userId ?? null;
+const userId = Astro.locals.auth?.().userId ?? null;
 ---
 
 <BaseLayout title="Harbor — App" description="The Phileas Fogg content workspace." path="/app/" robots="noindex, follow">
