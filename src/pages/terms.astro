@@ -3,24 +3,15 @@
 // 2026-08-24 cutover). Part of the CTIA SMS verification record
 // (termsAndConditionURL).
 import { contactEmail } from "../config/site";
+import BaseLayout from "../layouts/BaseLayout.astro";
 const updated = "August 10, 2026";
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Terms of Service — Phileas Fogg</title>
-    <meta name="robots" content="index" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
+<BaseLayout
+  title="Terms of Service — Phileas Fogg"
+  description="The ground rules for using Phileas (codevex.app): accounts, content ownership, acceptable use, and disclaimers."
+  path="/terms/"
+>
     <header class="site-header">
       <a class="wordmark" href="/">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6" /><ellipse cx="12" cy="12" rx="4" ry="9.5" fill="none" stroke="currentColor" stroke-width="1.1" /><line x1="2.5" y1="12" x2="21.5" y2="12" stroke="currentColor" stroke-width="1.1" /><circle cx="19" cy="6" r="2.2" fill="currentColor" /></svg>
@@ -114,7 +105,7 @@ const updated = "August 10, 2026";
       </nav>
     </footer>
 
-    <style>
+    <style is:global>
       :root {
         --ink: #0b1f33; --paper: #f6f2ea; --paper-2: #ece5d7; --text: #18222d;
         --muted: #5c6671; --accent: #e56b2b; --accent-strong: #b6480f; --line: rgba(11,31,51,0.14);
@@ -142,5 +133,4 @@ const updated = "August 10, 2026";
       .site-footer nav a { color: rgba(246,242,234,0.7); text-decoration: none; }
       .site-footer nav a:hover { color: var(--paper); }
     </style>
-  </body>
-</html>
+</BaseLayout>

@@ -1,0 +1,35 @@
+# Phileas Fogg
+
+> AI content & SEO studio. We research real demand, write AI-native content
+> for search intent, and publish it everywhere your customers are. Content
+> that goes around the world.
+
+Phileas Fogg ("Phileas", "we") operates https://codevex.app — the commercial
+domain of the Phileas entity (legacy traffic from phillias.us 301s here). The
+site publishes researched, demand-validated articles on AI-native content,
+SEO, and agent workflows, and offers the AI content & SEO studio behind them.
+
+## How we work
+
+- **Discover**: demand signals from real conversations, ranked — not guesses.
+- **Draft**: AI-native writing tuned for search intent and answer engines.
+- **Ship**: published to the platforms your customers already use.
+
+## Key pages
+
+- [Home](https://codevex.app/): studio overview and contact.
+- [Articles](https://codevex.app/articles/): published, demand-validated writing.
+- [SMS opt-in](https://codevex.app/opt-in/): content alerts by text (CTIA-compliant).
+- [Privacy policy](https://codevex.app/privacy/): what we collect and why.
+- [Terms of service](https://codevex.app/terms/): the ground rules.
+
+## Contact
+
+- Email: admin@codevex.app
+
+## Notes for AI agents
+
+- Articles carry `BlogPosting` + `FAQPage` JSON-LD with `datePublished` and a
+  visible "Last updated" stamp; FAQ sections use verbatim question headings.
+- Facts and opinions in articles are the authors'; statistics are cited in the
+  article bodies. Last site update: 2026-08-24.
