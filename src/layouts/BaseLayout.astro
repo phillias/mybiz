@@ -81,7 +81,7 @@ const ogHeight = hasCustomImage ? imageHeight : 630;
     {description && <meta name="twitter:description" content={description} />}
     <meta name="twitter:image" content={shareImage} />
 
-    {jsonLdGraph && jsonLdGraph.length > 0 && <script type="application/ld+json" set:html={JSON.stringify(jsonLdGraph).replace(/</g, '\\u003c')} />}
+    {jsonLdGraph && jsonLdGraph.length > 0 && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLdGraph).replace(/</g, '\\u003c')} />}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

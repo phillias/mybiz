@@ -1,5 +1,5 @@
 // Pure logic for scripts/render-article.mjs — kept dependency-free and
-// side-effect-free so it is unit-testable (tests/article-render.test.ts).
+// side-effect-free so it is unit-testable (tests/article-render.test.mjs).
 // The CLI owns all I/O (fs, network); everything here takes strings in and
 // returns strings/data out.
 
@@ -90,7 +90,7 @@ export function imageDimensions(buffer) {
     return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) };
   }
   // GIF: "GIF8" + dimensions little-endian at offset 6
-  if (b.slice(0, 4).toString("ascii") === "GIF8") {
+  if (b.subarray(0, 4).toString("ascii") === "GIF8") {
     return { width: b.readUInt16LE(6), height: b.readUInt16LE(8) };
   }
   // JPEG: scan segment markers for SOFn
@@ -108,8 +108,8 @@ export function imageDimensions(buffer) {
     return null;
   }
   // WebP: RIFF....WEBP + VP8/VP8L/VP8X chunk
-  if (b.slice(0, 4).toString("ascii") === "RIFF" && b.slice(8, 12).toString("ascii") === "WEBP") {
-    const chunk = b.slice(12, 16).toString("ascii");
+  if (b.subarray(0, 4).toString("ascii") === "RIFF" && b.subarray(8, 12).toString("ascii") === "WEBP") {
+    const chunk = b.subarray(12, 16).toString("ascii");
     if (chunk === "VP8 ") return { width: b.readUInt16LE(26) & 0x3fff, height: b.readUInt16LE(28) & 0x3fff };
     if (chunk === "VP8L") {
       const bits = b.readUInt32LE(21);
@@ -160,10 +160,9 @@ export const frontmatter = {
 const { title, slug, description, publishedAt, updatedAt, image, imageWidth, imageHeight, faq } = frontmatter;
 const content = ${JSON.stringify(html)};
 const path = \`/articles/\${slug}/\`;
-const schemas = [
-  blogPostingSchema({ title, description, path, publishedAt, updatedAt, imagePath: image }),
-  faqSchema(faq),
-].filter(Boolean);
+const blogPosting = blogPostingSchema({ title, description, path, publishedAt, updatedAt, imagePath: image });
+const faqPage = faqSchema(faq);
+const schemas = [blogPosting, ...(faqPage ? [faqPage] : [])];
 ---
 
 <BaseLayout
