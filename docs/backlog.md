@@ -14,7 +14,7 @@ change on the dashboard, a sibling update re-renders this file.
 | aeo-exa-integrate | done | research | medium | 2026-09-05 | Evaluate Exa API integration to augment DataForSEO for AEO retrieval |
 | prospect-radar | done | feature | high | 2026-08-16 | Lead-gen automation: rank local businesses by SEO opportunity score |
 | core-30-gbp | proposed | strategy | high | 2026-08-16 | Turn Caleb Ulku's Core 30 method into Harbor-ingestible content strategy |
-| aftercall | proposed | feature | high | 2026-08-16 | Harbor Voice — VAPI/Telnyx review outreach layer |
+| aftercall | in_dev | feature | high | 2026-08-16 | Harbor Voice — VAPI + Telnyx review outreach layer |
 | research-signal-companion | queued | feature | medium | 2026-09-05 | Mine media consumption + AI sessions for publishable content (mybiz vs mybrain partition) |
 
 ---
