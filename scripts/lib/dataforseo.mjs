@@ -1,6 +1,6 @@
 // DataForSEO client for the Prospect Radar pipeline. The SERP gate is verified
 // in production (mirrors convex/actions/checkNiche.ts). The Google Maps
-// discovery endpoint below is a STUB pending endpoint verification — see TODO.
+// discovery endpoint uses the SERP Google Maps Advanced Live endpoint.
 //
 // Auth: DATAFORSEO_API_KEY is base64("email:password"), sent as the Basic
 // header (per DataForSEO docs). Never printed; discovery never runs without
@@ -9,13 +9,7 @@
 import { normalizeDomain } from "./scoring.mjs";
 
 const DFS_SERP_ENDPOINT = "https://api.dataforseo.com/v3/serp/google/organic/live/advanced";
-
-// TODO(verify): confirm the Google Maps business-data endpoint + payload
-// against https://docs.dataforseo.com before relying on it. Path, required
-// fields, location_code source and response item shape all need checking — a
-// plausible-but-wrong payload could bill credits. Until verified, discovery
-// runs ONLY under --apply (never dry-run).
-const DFS_MAPS_ENDPOINT = "https://api.dataforseo.com/v3/business_data/google/maps/live/advanced";
+const DFS_MAPS_ENDPOINT = "https://api.dataforseo.com/v3/serp/google/maps/live/advanced";
 
 async function post(apiKey, endpoint, payload) {
   const res = await fetch(endpoint, {

@@ -27,9 +27,27 @@
 // .env for --apply.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join, resolve as pathResolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { scoreProspect, slugify, hasWebsite } from "./lib/scoring.mjs";
 import { discoverBusinesses, fetchSerp, inPack } from "./lib/dataforseo.mjs";
 import { crawlWebsite, fetchPageSpeed } from "./lib/enrich.mjs";
+
+// Load .env manually (no dotenv dependency)
+const __scriptDir = dirname(fileURLToPath(import.meta.url));
+const envPath = pathResolve(__scriptDir, "..", ".env");
+if (existsSync(envPath)) {
+  for (const line of readFileSync(envPath, "utf8").split("\n")) {
+    const t = line.trim();
+    if (!t || t.startsWith("#")) continue;
+    const eq = t.indexOf("=");
+    if (eq > 0) {
+      const k = t.slice(0, eq).trim();
+      const v = t.slice(eq + 1).trim().replace(/^["']|["']$/g, "");
+      if (!process.env[k]) process.env[k] = v;
+    }
+  }
+}
 
 const USAGE = `Prospect Radar — rank local businesses by SEO opportunity (0-100).
 
