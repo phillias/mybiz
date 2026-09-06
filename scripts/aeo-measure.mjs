@@ -10,11 +10,27 @@
 // Requires OPENROUTER_API_KEY for ChatGPT/Gemini (or PERPLEXITY_API_KEY).
 // Results saved to content/aeo-measurements/<date>.json
 
-import { mkdirSync, writeFileSync, existsSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { mkdirSync, writeFileSync, existsSync, readFileSync, read } from "node:fs";
+import { dirname, join, resolve as pathResolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+// Load .env manually
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const envPath = pathResolve(__dirname, "..", ".env");
+if (existsSync(envPath)) {
+  const envContent = readFileSync(envPath, "utf8");
+  for (const line of envContent.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eqIdx = trimmed.indexOf("=");
+    if (eqIdx > 0) {
+      const key = trimmed.slice(0, eqIdx).trim();
+      const value = trimmed.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, "");
+      if (!process.env[key]) process.env[key] = value;
+    }
+  }
+}
+
 const ROOT = join(__dirname, "..");
 
 // Fixed prompts for citation tracking (commercial intent)
@@ -70,7 +86,7 @@ async function queryGemini(prompt, apiKey) {
       "X-Title": "AEO Measurement",
     },
     body: JSON.stringify({
-      model: "google/gemini-2.0-flash-001",
+      model: "google/gemini-3.7-flash",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 500,
     }),
@@ -88,7 +104,7 @@ async function queryPerplexity(prompt, apiKey) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "llama-3.1-sonar-small-128k-online",
+      model: "sonar",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 500,
     }),
