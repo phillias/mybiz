@@ -124,6 +124,22 @@ function checkCitation(response) {
   return { cited, mentions: [...new Set(mentions)] };
 }
 
+/**
+ * Exa /answer endpoint — returns grounded answers with explicit citations.
+ * Checks if codevex.app or Phileas appears in the citations list.
+ */
+async function queryExa(prompt, apiKey) {
+  const Exa = (await import("exa-js")).default;
+  const exa = new Exa(apiKey);
+  const res = await exa.answer(prompt);
+  // Exa returns structured citations — check them directly
+  const citations = res.citations || [];
+  const answerText = res.content || res.answer || "";
+  // Combine answer text + citation URLs for brand matching
+  const allText = answerText + " " + citations.map((c) => c.url + " " + (c.title || "")).join(" ");
+  return allText;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes("--dry-run");
@@ -160,6 +176,7 @@ async function main() {
     ["chatgpt", queryChatGPT, openrouterKey],
     ["gemini", queryGemini, openrouterKey],
     ["perplexity", queryPerplexity, perplexityKey],
+    ["exa", queryExa, process.env.EXA_API_KEY],
   ]) {
     if (!key) {
       console.error(`Skipping ${name} (no API key)`);

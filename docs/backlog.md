@@ -10,8 +10,8 @@ change on the dashboard, a sibling update re-renders this file.
 | aeo-llms-txt | done | feature | high | 2026-09-05 | Add llms.txt to codevex.app root for AI crawler guidance |
 | aeo-answer-blocks | done | feature | high | 2026-09-05 | Implement 40-60 word answer blocks on Core 30 service pages |
 | aeo-schema-enhance | done | feature | medium | 2026-09-05 | Add FAQPage + HowTo schema to Harbor-generated content |
-| aeo-measurement | in_dev | feature | medium | 2026-09-05 | Set up weekly AEO citation tracking (ChatGPT/Gemini/Perplexity) |
-| aeo-exa-integrate | queued | research | medium | 2026-09-05 | Evaluate Exa API integration to augment DataForSEO for AEO retrieval |
+| aeo-measurement | done | feature | medium | 2026-09-05 | Set up weekly AEO citation tracking (ChatGPT/Gemini/Perplexity/Exa) |
+| aeo-exa-integrate | done | research | medium | 2026-09-05 | Evaluate Exa API integration to augment DataForSEO for AEO retrieval |
 | prospect-radar | in_dev | feature | high | 2026-08-16 | Lead-gen automation: rank local businesses by SEO opportunity score |
 | core-30-gbp | proposed | strategy | high | 2026-08-16 | Turn Caleb Ulku's Core 30 method into Harbor-ingestible content strategy |
 | aftercall | proposed | feature | high | 2026-08-16 | Harbor Voice — VAPI/Telnyx review outreach layer |
