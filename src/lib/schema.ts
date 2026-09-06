@@ -87,6 +87,49 @@ export function faqSchema(items: FaqItem[]): JsonLdObject | null {
 }
 
 /**
+ * HowTo schema for procedural content (step-by-step guides, tutorials).
+ * Per Discovered Labs research, HowTo pages show 40% higher citation rates
+ * in answer engines than unstructured procedural content.
+ */
+export interface HowToStep {
+  name: string;
+  text: string;
+  /** Optional site-relative URL for the step's heading anchor. */
+  url?: string;
+  /** Optional site-relative image for the step. */
+  image?: string;
+}
+
+export interface HowToInput {
+  name: string;
+  description?: string;
+  steps: HowToStep[];
+  /** ISO total time (e.g., "PT30M" for 30 minutes). */
+  totalTime?: string;
+  /** Site-relative path for the guide's canonical URL. */
+  path: string;
+}
+
+export function howToSchema(input: HowToInput): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "@id": absoluteUrl(input.path),
+    name: input.name,
+    ...(input.description ? { description: input.description } : {}),
+    ...(input.totalTime ? { totalTime: input.totalTime } : {}),
+    step: input.steps.map((step, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: step.name,
+      text: step.text,
+      ...(step.url ? { url: absoluteUrl(step.url) } : {}),
+      ...(step.image ? { image: absoluteUrl(step.image) } : {}),
+    })),
+  };
+}
+
+/**
  * Service/LocalBusiness schema pattern reserved for Core 30 pages — the page
  * blueprints already carry `schemaType` (content/blueprints/core30-sample.json).
  * Unspecified fields stay undefined (not fabricated) so the generator fills

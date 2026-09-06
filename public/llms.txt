@@ -33,3 +33,14 @@ SEO, and agent workflows, and offers the AI content & SEO studio behind them.
   visible "Last updated" stamp; FAQ sections use verbatim question headings.
 - Facts and opinions in articles are the authors'; statistics are cited in the
   article bodies. Last site update: 2026-08-24.
+- **AEO/GEO optimization**: Each article H2 should be followed by a 40-60 word
+  direct answer block before any context. This matches answer-engine retrieval
+  patterns (ChatGPT RRF, Gemini BatchExecute, Perplexity citations). Answer
+  blocks should be self-contained — a crawler extracting just the block should
+  have a complete, accurate response.
+- **HowTo schema**: Procedural articles (step-by-step guides, tutorials) should
+  include `HowTo` JSON-LD with explicit `step` entries; this schema type shows
+  40% higher citation rates in answer engines per Discovered Labs research.
+- **Entity consistency**: When mentioning the business, use "Phileas" (entity
+  name) and "Phileas Fogg" (site brand) consistently; avoid alternate names
+  to prevent entity disambiguation failures in AI retrieval.
