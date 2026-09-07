@@ -46,8 +46,8 @@ async function vapi(path, opts = {}, key) {
 // --- Commands ---
 
 async function status(env) {
-  const key = env.VAPI_API_KEY;
-  if (!key) { console.log("VAPI_API_KEY not set in .env"); return; }
+  const key = env.VAPI_PRIVATE_KEY;
+  if (!key) { console.log("VAPI_PRIVATE_KEY not set in .env"); return; }
 
   console.log("=== VAPI Setup Status ===\n");
 
@@ -77,8 +77,8 @@ async function status(env) {
 }
 
 async function setup(env) {
-  const key = env.VAPI_API_KEY;
-  if (!key) throw new Error("VAPI_API_KEY not set in .env");
+  const key = env.VAPI_PRIVATE_KEY;
+  if (!key) throw new Error("VAPI_PRIVATE_KEY not set in .env");
 
   console.log("=== Setting up VAPI Aftercall ===\n");
 
@@ -117,7 +117,7 @@ RULES:
       firstMessage: "Hi {{name}}! This is Harper from {{business_name}}. I'm just checking in about your {{service}} today — how did everything go?",
       voicemailMessage: "Hi, this is Harper from {{business_name}}. We just wanted to check in about your recent service. If you'd like to share a review, we can text you a link. Have a great day!",
       endCallMessage: "Thanks for your time! We appreciate your business.",
-      voicemailDetection: { enabled: true },
+      voicemailDetection: { provider: "vapi" },
     }),
   }, key);
   console.log(`   Created: ${assistant.name} (${assistant.id})`);
@@ -129,9 +129,8 @@ RULES:
     console.log("   Add it and re-run --setup, or import manually in Vapi dashboard");
   } else {
     console.log(`\n2. Importing Telnyx number ${telnyxNumber}...`);
-    // For Telnyx, we need to create a credential first
-    // The simplest path is to use the "telnyx" provider directly
     try {
+      // Telnyx requires a credential first
       const credential = await vapi("/credential", {
         method: "POST",
         body: JSON.stringify({
@@ -165,6 +164,10 @@ RULES:
     phoneNumber: telnyxNumber,
     createdAt: new Date().toISOString(),
   };
+  if (!existsSync(OUT_DIR)) {
+    const { mkdirSync } = await import("node:fs");
+    mkdirSync(OUT_DIR, { recursive: true });
+  }
   const configPath = join(OUT_DIR, "vapi-config.json");
   writeFileSync(configPath, JSON.stringify(config, null, 2));
   console.log(`   Saved to ${configPath}`);
@@ -175,8 +178,8 @@ RULES:
 }
 
 async function placeCall(env, args) {
-  const key = env.VAPI_API_KEY;
-  if (!key) throw new Error("VAPI_API_KEY not set in .env");
+  const key = env.VAPI_PRIVATE_KEY;
+  if (!key) throw new Error("VAPI_PRIVATE_KEY not set in .env");
 
   const customerNumber = args.call;
   const isDryRun = args.dryRun;
@@ -223,8 +226,8 @@ async function placeCall(env, args) {
 }
 
 async function runCampaign(env, args) {
-  const key = env.VAPI_API_KEY;
-  if (!key) throw new Error("VAPI_API_KEY not set in .env");
+  const key = env.VAPI_PRIVATE_KEY;
+  if (!key) throw new Error("VAPI_PRIVATE_KEY not set in .env");
 
   const campaignFile = args.campaign;
   if (!existsSync(campaignFile)) throw new Error(`File not found: ${campaignFile}`);

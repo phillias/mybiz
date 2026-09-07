@@ -2,7 +2,9 @@
 // Provides: assistant CRUD, call placement, campaign management, phone number import.
 // Uses Telnyx number imported via SIP trunk or BYO phone number.
 //
-// Env: VAPI_API_KEY (from .env)
+// Env: VAPI_PRIVATE_KEY (from .env)
+
+import { readFileSync } from "node:fs";
 
 const VAPI_BASE = "https://api.vapi.ai";
 
@@ -31,14 +33,6 @@ RULES:
 /** Aftercall assistant first message. */
 export const AFTERCALL_FIRST_MESSAGE =
   "Hi {{name}}! This is Harper from {{business_name}}. I'm just checking in about your {{service}} today — how did everything go?";
-
-/** Tool definition for sending SMS review link during call. */
-export const AFTERCALL_SMS_TOOL = {
-  type: "endCall" as const,
-  // Vapi has native send_message — we configure it per-assistant
-  // For now, we use the function tool to log the SMS request
-  // and the webhook handler sends the actual SMS via Telnyx
-};
 
 async function vapiFetch(path: string, options: RequestInit = {}, apiKey: string) {
   const res = await fetch(`${VAPI_BASE}${path}`, {
@@ -115,39 +109,27 @@ export async function importTelnyxNumber(
     name?: string;
   }
 ) {
-  // Step 1: Create SIP trunk credential for Telnyx
+  // For Telnyx, create a credential first
   const credential = await vapiFetch(
     "/credential",
     {
       method: "POST",
       body: JSON.stringify({
-        provider: "byo-sip-trunk",
-        name: `Telnyx SIP - ${opts.phoneNumber}`,
-        gateways: [
-          {
-            // Telnyx SIP domain for outbound
-            ip: "sip.telnyx.com",
-            port: "5060",
-            inboundEnabled: false,
-          },
-        ],
-        sipAuthentication: {
-          username: opts.phoneNumber.replace("+", ""),
-          password: opts.telnyxApiKey,
-        },
+        provider: "telnyx",
+        name: `Telnyx - ${opts.phoneNumber}`,
+        apiKey: opts.telnyxApiKey,
       }),
     },
     apiKey
   );
 
-  // Step 2: Register the phone number
   const phoneNumberResource = await vapiFetch(
     "/phone-number",
     {
       method: "POST",
       body: JSON.stringify({
-        provider: "byo-phone-number",
-        name: opts.name ?? `Telnyx ${opts.phoneNumber}`,
+        provider: "telnyx",
+        name: opts.name ?? `Aftercall - ${opts.phoneNumber}`,
         number: opts.phoneNumber,
         credentialId: credential.id,
       }),
@@ -292,20 +274,18 @@ export async function getCall(apiKey: string, callId: string) {
   return vapiFetch(`/call/${callId}`, { method: "GET" }, apiKey);
 }
 
-/** Load VAPI_API_KEY from .env. */
+/** Load VAPI_PRIVATE_KEY from .env. */
 export function loadVapiKey(): string {
   const envPath = new URL("../../.env", import.meta.url).pathname;
   try {
     const envContent = readFileSync(envPath, "utf-8");
     for (const line of envContent.split("\n")) {
       const trimmed = line.trim();
-      if (trimmed.startsWith("VAPI_API_KEY=")) {
-        return trimmed.slice("VAPI_API_KEY=".length).trim().replace(/^["']|["']$/g, "");
+      if (trimmed.startsWith("VAPI_PRIVATE_KEY=")) {
+        return trimmed.slice("VAPI_PRIVATE_KEY=".length).trim().replace(/^["']|["']$/g, "");
       }
     }
   } catch {}
-  if (process.env.VAPI_API_KEY) return process.env.VAPI_API_KEY;
-  throw new Error("VAPI_API_KEY not set (add to .env)");
+  if (process.env.VAPI_PRIVATE_KEY) return process.env.VAPI_PRIVATE_KEY;
+  throw new Error("VAPI_PRIVATE_KEY not set (add to .env)");
 }
-
-import { readFileSync } from "node:fs";
