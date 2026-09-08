@@ -15,7 +15,7 @@ change on the dashboard, a sibling update re-renders this file.
 | prospect-radar | done | feature | high | 2026-08-16 | Lead-gen automation: rank local businesses by SEO opportunity score |
 | core-30-gbp | in_dev | strategy | high | 2026-08-16 | Turn Caleb Ulku's Core 30 method into Harbor-ingestible content strategy |
 | aftercall | in_dev | feature | high | 2026-08-16 | Harbor Voice — VAPI + Telnyx review outreach layer |
-| research-signal-companion | queued | feature | medium | 2026-09-05 | Mine media consumption + AI sessions for publishable content (mybiz vs mybrain partition) |
+| research-signal-companion | in_dev | feature | medium | 2026-09-05 | Mine media consumption + AI sessions for publishable content (mybiz vs mybrain partition) |
 
 ---
 
