@@ -46,7 +46,6 @@ Adds:
   - email: contact email from Hunter (if website exists)
   - domain_authority: Moz DA 0-100
   - spam_score: Moz spam risk 0-100
-  - backlinks: total referring domains
 `;
 
 function flag(args, name) {
@@ -66,7 +65,6 @@ async function enrichProspect(p) {
     enriched.email = null;
     enriched.domain_authority = null;
     enriched.spam_score = null;
-    enriched.backlinks = null;
     signals.website = false;
     return { enriched, signals };
   }
