@@ -4,7 +4,7 @@
 // Usage:
 //   node scripts/test-treg.mjs
 
-import { call, hunterFindEmail, mozMetrics, mozBacklinks, balance, catalogSearch } from "./lib/treg.mjs";
+import { call, hunterFindEmail, mozMetrics, mozBacklinksSummary, balance, catalogSearch } from "./lib/treg.mjs";
 
 async function main() {
   console.error("Testing treg connectivity...\n");
@@ -35,28 +35,25 @@ async function main() {
     console.error(`   Error: ${err.message}`);
   }
 
-  // 3. Test Moz metrics
+  // 3. Test Moz metrics (mozMetrics takes an array, returns array)
   console.error("\n3. Testing Moz metrics (moz.com)...");
   try {
-    const moz = await mozMetrics("moz.com");
-    console.log(`   Domain Authority: ${moz.domain_authority}`);
-    console.log(`   Page Authority: ${moz.page_authority}`);
-    console.log(`   Spam Score: ${moz.spam_score}`);
-    console.log(`   Linking Domains: ${moz.linking_domains}`);
+    const moz = await mozMetrics(["moz.com"]);
+    const m = moz[0];
+    console.log(`   Domain Authority: ${m.domain_authority}`);
+    console.log(`   Page Authority: ${m.page_authority}`);
+    console.log(`   Spam Score: ${m.spam_score}`);
+    console.log(`   Linking Domains: ${m.root_domains_to_root_domain}`);
   } catch (err) {
     console.error(`   Error: ${err.message}`);
   }
 
-  // 4. Test Moz backlinks (limited)
-  console.error("\n4. Testing Moz backlinks (moz.com, limit 5)...");
+  // 4. Test Moz backlinks summary
+  console.error("\n4. Testing Moz backlinks summary (moz.com)...");
   try {
-    const links = await mozBacklinks("moz.com", 5);
-    console.log(`   Total backlinks: ${links.total}`);
-    if (links.backlinks?.[0]) {
-      console.log(`   Top link: ${links.backlinks[0].source}`);
-      console.log(`   Anchor: "${links.backlinks[0].anchor}"`);
-      console.log(`   DA: ${links.backlinks[0].domain_authority}`);
-    }
+    const links = await mozBacklinksSummary("moz.com");
+    console.log(`   Backlinks: ${links.backlinks}`);
+    console.log(`   Referring domains: ${links.referring_domains}`);
   } catch (err) {
     console.error(`   Error: ${err.message}`);
   }
