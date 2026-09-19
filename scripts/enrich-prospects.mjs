@@ -13,7 +13,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve as pathResolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { hunterFindEmail, mozMetrics, mozBacklinksSummary } from "./lib/treg.mjs";
+import { enrichWithTreg } from "./lib/treg-enrich.mjs";
 
 // Load .env manually
 const __scriptDir = dirname(fileURLToPath(import.meta.url));
@@ -58,20 +58,10 @@ function hasWebsite(p) {
   return s !== "" && !/^https?:\/\/(www\.)?$/.test(s);
 }
 
-function extractDomain(website) {
-  if (!website) return null;
-  return website
-    .toLowerCase()
-    .replace(/^https?:\/\//, "")
-    .replace(/^www\./, "")
-    .replace(/\/.*$/, "")
-    .trim();
-}
-
 async function enrichProspect(p) {
   const enriched = { ...p };
   const signals = {};
-  
+
   if (!hasWebsite(p)) {
     enriched.email = null;
     enriched.domain_authority = null;
@@ -80,54 +70,14 @@ async function enrichProspect(p) {
     signals.website = false;
     return { enriched, signals };
   }
-  
-  const domain = extractDomain(p.website);
-  signals.domain = domain;
-  
-  // Parallel calls for speed
-  const [emailResult, mozResult, backlinksResult] = await Promise.allSettled([
-    hunterFindEmail(domain, 3),
-    mozMetrics([domain]),
-    mozBacklinksSummary(domain),
-  ]);
-  
-  // Hunter results
-  if (emailResult.status === "fulfilled" && emailResult.value?.emails?.[0]) {
-    const topEmail = emailResult.value.emails[0];
-    enriched.email = topEmail.value;
-    enriched.email_confidence = topEmail.confidence;
-    enriched.email_position = topEmail.position;
-    enriched.email_verified = topEmail.verification?.status === "valid";
-    signals.email = true;
-  } else {
-    enriched.email = null;
-    signals.email = false;
-  }
-  
-  // Moz metrics
-  if (mozResult.status === "fulfilled" && mozResult.value?.[0]) {
-    const moz = mozResult.value[0];
-    enriched.domain_authority = moz.domain_authority;
-    enriched.page_authority = moz.page_authority;
-    enriched.spam_score = moz.spam_score;
-    enriched.linking_domains = moz.root_domains_to_root_domain;
-    signals.moz = true;
-  } else {
-    enriched.domain_authority = null;
-    enriched.spam_score = null;
-    signals.moz = false;
-  }
-  
-  // Backlinks summary
-  if (backlinksResult.status === "fulfilled") {
-    enriched.backlinks = backlinksResult.value.backlinks;
-    enriched.referring_domains = backlinksResult.value.referring_domains;
-    signals.backlinks = true;
-  } else {
-    enriched.backlinks = null;
-    signals.backlinks = false;
-  }
-  
+
+  signals.website = true;
+  const tregData = await enrichWithTreg(p);
+  Object.assign(enriched, tregData);
+
+  signals.email = !!tregData.email;
+  signals.moz = tregData.domain_authority !== undefined;
+
   return { enriched, signals };
 }
 
