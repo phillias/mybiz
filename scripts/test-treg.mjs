@@ -9,6 +9,8 @@ import { call, hunterFindEmail, mozMetrics, mozBacklinksSummary, balance, catalo
 async function main() {
   console.error("Testing treg connectivity...\n");
 
+  let failures = 0;
+
   // 1. Check balance
   console.error("1. Checking balance...");
   try {
@@ -18,6 +20,7 @@ async function main() {
     console.log(`   Spent this month: $${bal.spent_this_month_usd.toFixed(4)}`);
   } catch (err) {
     console.error(`   Error: ${err.message}`);
+    failures++;
     process.exit(1);
   }
 
@@ -33,6 +36,7 @@ async function main() {
     console.log(`   Pattern: ${hunter.pattern || "none"}`);
   } catch (err) {
     console.error(`   Error: ${err.message}`);
+    failures++;
   }
 
   // 3. Test Moz metrics (mozMetrics takes an array, returns array)
@@ -46,6 +50,7 @@ async function main() {
     console.log(`   Linking Domains: ${m.root_domains_to_root_domain}`);
   } catch (err) {
     console.error(`   Error: ${err.message}`);
+    failures++;
   }
 
   // 4. Test Moz backlinks summary
@@ -56,6 +61,7 @@ async function main() {
     console.log(`   Referring domains: ${links.referring_domains}`);
   } catch (err) {
     console.error(`   Error: ${err.message}`);
+    failures++;
   }
 
   // 5. Test catalog search
@@ -68,8 +74,13 @@ async function main() {
     }
   } catch (err) {
     console.error(`   Error: ${err.message}`);
+    failures++;
   }
 
+  if (failures > 0) {
+    console.error(`\n✗ ${failures} endpoint(s) failed`);
+    process.exit(1);
+  }
   console.error("\n✓ treg connectivity verified!");
 }
 

@@ -60,9 +60,10 @@ const result = await jev.evaluate({
     "<id>": {
       "type": "noul" | "choice" | "score",
       "instructions": "string",
-      "true"?: "label", "false"?: "label",      // noul only
-      "options"?: { [key]: "description" },     // choice only
-      "criteria"?: ["level0", "level1", ...]    // score only
+      "criteria": <varies by type>                // ALL question types
+      // noul:    { true: "label", false: "label" }
+      // choice:  { optionKey: "description", ... }
+      // score:   ["level0", "level1", ...]
     }
   }
 }

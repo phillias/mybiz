@@ -7,16 +7,24 @@
 import { hunterFindEmail, mozMetrics } from "./treg.mjs";
 
 /**
- * Extract domain from a website URL.
+ * Extract domain from a website URL using the URL constructor.
+ * Returns null if the URL is invalid or empty.
  */
 function extractDomain(website) {
   if (!website) return null;
-  return String(website)
-    .toLowerCase()
-    .replace(/^https?:\/\//, "")
-    .replace(/^www\./, "")
-    .replace(/\/.*$/, "")
-    .trim();
+  try {
+    const url = new URL(String(website).trim());
+    // URL constructor succeeds even for relative URLs; require a hostname
+    if (!url.hostname) return null;
+    return url.hostname.toLowerCase().replace(/^www\./, "");
+  } catch {
+    // Fall back to raw string if it looks like a bare domain (no protocol)
+    const raw = String(website).trim().toLowerCase();
+    if (/^[a-z0-9.-]+\.[a-z]{2,}$/.test(raw)) {
+      return raw.replace(/^www\./, "").replace(/\/.*$/, "");
+    }
+    return null;
+  }
 }
 
 /**
@@ -39,7 +47,9 @@ export async function enrichWithTreg(p) {
   ]);
 
   // Hunter email
-  if (emailResult.status === "fulfilled" && emailResult.value?.emails?.[0]) {
+  if (emailResult.status === "rejected") {
+    console.error(`[treg-enrich] Hunter failed for ${domain}: ${emailResult.reason?.message ?? emailResult.reason}`);
+  } else if (emailResult.value?.emails?.[0]) {
     const top = emailResult.value.emails[0];
     result.email = top.value;
     result.email_confidence = top.confidence;
@@ -48,7 +58,9 @@ export async function enrichWithTreg(p) {
   }
 
   // Moz metrics
-  if (mozResult.status === "fulfilled" && mozResult.value?.[0]) {
+  if (mozResult.status === "rejected") {
+    console.error(`[treg-enrich] Moz failed for ${domain}: ${mozResult.reason?.message ?? mozResult.reason}`);
+  } else if (mozResult.value?.[0]) {
     const moz = mozResult.value[0];
     result.domain_authority = moz.domain_authority;
     result.page_authority = moz.page_authority;

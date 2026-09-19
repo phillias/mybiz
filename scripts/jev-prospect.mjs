@@ -166,6 +166,18 @@ function jevToOpportunity(jevResult) {
     (sentiment > 3 ? 5 : 0) // bonus for good sentiment (proven demand)
   );
   
+  // Average confidence across all answered questions
+  const confidences = [];
+  for (const key of Object.keys(a)) {
+    const ans = a[key];
+    if (ans && typeof ans.confidence === "number") {
+      confidences.push(ans.confidence);
+    }
+  }
+  const confidence = confidences.length > 0
+    ? confidences.reduce((s, c) => s + c, 0) / confidences.length
+    : 0.5;
+
   return {
     opportunity,
     breakdown: {
@@ -176,8 +188,7 @@ function jevToOpportunity(jevResult) {
       high_ticket: Math.round(highTicket * 10),
       sentiment_bonus: sentiment > 3 ? 5 : 0
     },
-    confidence: a.urgency.type === "noul" ? a.digital_presence.type === "score" ? 
-      (a.digital_presence.confidence + a.growth_potential.confidence) / 2 : 0.5 : 0.5
+    confidence,
   };
 }
 
@@ -220,31 +231,40 @@ async function main() {
   const results = [];
   for (const p of prospects) {
     const start = Date.now();
-    const jevResult = await jevScoreProspect(p);
+    let jevResult, opp, latency_ms, error;
+    try {
+      jevResult = await jevScoreProspect(p);
+      opp = jevToOpportunity(jevResult.jev);
+    } catch (err) {
+      error = err.message;
+      console.error(`  ${p.name}: FAILED — ${err.message}`);
+    }
     const elapsed = Date.now() - start;
-    
-    const opp = jevToOpportunity(jevResult.jev);
-    
+
     // Compare with point-based scoring if requested
     let pointScore = null;
     if (compare) {
       pointScore = scoreProspect(p);
     }
-    
-    results.push({
+
+    const result = {
       name: p.name,
       city: runCity,
       category: runCat,
       website: p.website,
-      jev_opportunity: opp.opportunity,
-      jev_breakdown: opp.breakdown,
-      jev_confidence: opp.confidence,
+      jev_opportunity: opp?.opportunity ?? null,
+      jev_breakdown: opp?.breakdown ?? null,
+      jev_confidence: opp?.confidence ?? null,
       point_opportunity: pointScore?.opportunity ?? null,
       point_breakdown: pointScore ?? null,
-      latency_ms: elapsed
-    });
-    
-    console.error(`  ${p.name}: Jev=${opp.opportunity}${pointScore ? ` Point=${pointScore.opportunity}` : ""} (${elapsed}ms)`);
+      latency_ms: elapsed,
+    };
+    if (error) result.error = error;
+    results.push(result);
+
+    if (!error) {
+      console.error(`  ${p.name}: Jev=${opp.opportunity}${pointScore ? ` Point=${pointScore.opportunity}` : ""} (${elapsed}ms)`);
+    }
   }
   
   // Sort by Jev opportunity
@@ -255,7 +275,7 @@ async function main() {
     city: runCity,
     category: runCat,
     generatedAt: new Date().toISOString(),
-    model: "typesafe/jev-1.13",
+    model: results[0]?.jev_model || "~typesafe/jev-latest",
     compare,
     prospects: results
   };
