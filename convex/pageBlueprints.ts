@@ -19,20 +19,21 @@ export const list = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    let q = ctx.db.query("pageBlueprint");
-    
-    if (args.archetype) {
-      q = q.withIndex("by_archetype", (q) => q.eq("archetype", args.archetype));
-    }
-    
-    const rows = await q.collect();
-    
+    // If archetype filter provided, use index; otherwise full table scan
+    const archetype = args.archetype;
+    const rows = await (archetype
+      ? ctx.db
+          .query("pageBlueprint")
+          .withIndex("by_archetype", (q) => q.eq("archetype", archetype))
+          .collect()
+      : ctx.db.query("pageBlueprint").collect());
+
     // Filter by city if specified (in-memory since locationData.city is nested)
     let filtered = rows;
     if (args.city) {
       filtered = rows.filter((r) => r.locationData?.city === args.city);
     }
-    
+
     // Apply limit
     const limit = args.limit ?? 100;
     return filtered.slice(0, limit);
