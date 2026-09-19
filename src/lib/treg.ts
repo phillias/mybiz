@@ -74,13 +74,24 @@ export async function call(endpoint: string, options: CallOptions = {}): Promise
   }
   
   const maxRetries = 3;
+  // Serialize body once before the retry loop so deterministic
+  // JSON.stringify failures aren't misclassified as network errors.
+  let serializedBody: string | undefined;
+  if (options.body) {
+    try {
+      serializedBody = JSON.stringify(options.body);
+    } catch (err: any) {
+      throw new Error(`treg: failed to serialize request body: ${err.message}`);
+    }
+  }
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     let response: Response;
     try {
       response = await fetch(url.toString(), {
         method: options.method ?? (options.body ? "POST" : "GET"),
         headers,
-        body: options.body ? JSON.stringify(options.body) : undefined,
+        body: serializedBody,
       });
     } catch (err: any) {
       // Network error — retry with backoff
@@ -94,7 +105,7 @@ export async function call(endpoint: string, options: CallOptions = {}): Promise
     // Retry on 429 and 5xx
     if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
       const retryAfter = response.headers.get("Retry-After");
-      const delay = retryAfter ? parseInt(retryAfter, 10) * 1000 : 2 ** attempt * 1000;
+      const delay = parseRetryAfter(retryAfter, 2 ** attempt * 1000);
       await sleep(delay);
       continue;
     }
@@ -113,6 +124,22 @@ export async function call(endpoint: string, options: CallOptions = {}): Promise
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Parse Retry-After header. Supports both delta-seconds and HTTP-date.
+ */
+function parseRetryAfter(header: string | null, fallbackMs: number): number {
+  if (!header) return fallbackMs;
+  const seconds = parseInt(header, 10);
+  if (!isNaN(seconds) && /^[\d\s]+$/.test(header)) {
+    return seconds * 1000;
+  }
+  const date = new Date(header).getTime();
+  if (!isNaN(date)) {
+    return Math.max(0, date - Date.now());
+  }
+  return fallbackMs;
 }
 
 /**
