@@ -80,6 +80,14 @@ export async function evaluate(req) {
   }
 
   const maxRetries = 3;
+  // Serialize body once before the retry loop so deterministic
+  // JSON.stringify failures aren't misclassified as network errors.
+  const serializedBody = JSON.stringify({
+    model: req.model || "~typesafe/jev-latest",
+    state: req.state,
+    questions,
+  });
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     let response;
     try {
@@ -89,11 +97,7 @@ export async function evaluate(req) {
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          model: req.model || "~typesafe/jev-latest",
-          state: req.state,
-          questions,
-        }),
+        body: serializedBody,
       });
     } catch (err) {
       if (attempt < maxRetries) {
@@ -106,7 +110,7 @@ export async function evaluate(req) {
     // Retry on 429 and 5xx
     if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
       const retryAfter = response.headers.get("Retry-After");
-      const delay = retryAfter ? parseInt(retryAfter, 10) * 1000 : 2 ** attempt * 1000;
+      const delay = parseRetryAfter(retryAfter, 2 ** attempt * 1000);
       await sleep(delay);
       continue;
     }
@@ -122,6 +126,22 @@ export async function evaluate(req) {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Parse Retry-After header. Supports both delta-seconds and HTTP-date.
+ */
+function parseRetryAfter(header, fallbackMs) {
+  if (!header) return fallbackMs;
+  const seconds = parseInt(header, 10);
+  if (!isNaN(seconds) && /^[\d\s]+$/.test(header)) {
+    return seconds * 1000;
+  }
+  const date = new Date(header).getTime();
+  if (!isNaN(date)) {
+    return Math.max(0, date - Date.now());
+  }
+  return fallbackMs;
 }
 
 /**
