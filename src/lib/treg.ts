@@ -35,6 +35,7 @@ export interface CallOptions {
 
 /**
  * Call a treg catalog endpoint or proxy a URL with credential injection.
+ * Retries on 429/5xx with exponential backoff.
  * 
  * @param endpoint - Either a catalog id (e.g., "hunter.email.find") or a full URL to proxy
  * @param options - Query params, body, method, idempotency key, meta tags
@@ -72,18 +73,46 @@ export async function call(endpoint: string, options: CallOptions = {}): Promise
     headers["X-Treg-Meta"] = metaStr;
   }
   
-  const response = await fetch(url.toString(), {
-    method: options.method ?? (options.body ? "POST" : "GET"),
-    headers,
-    body: options.body ? JSON.stringify(options.body) : undefined,
-  });
-  
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`treg API error ${response.status}: ${text}`);
+  const maxRetries = 3;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    let response: Response;
+    try {
+      response = await fetch(url.toString(), {
+        method: options.method ?? (options.body ? "POST" : "GET"),
+        headers,
+        body: options.body ? JSON.stringify(options.body) : undefined,
+      });
+    } catch (err: any) {
+      // Network error — retry with backoff
+      if (attempt < maxRetries) {
+        await sleep(2 ** attempt * 1000);
+        continue;
+      }
+      throw new Error(`treg network error: ${err.message}`);
+    }
+
+    // Retry on 429 and 5xx
+    if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
+      const retryAfter = response.headers.get("Retry-After");
+      const delay = retryAfter ? parseInt(retryAfter, 10) * 1000 : 2 ** attempt * 1000;
+      await sleep(delay);
+      continue;
+    }
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`treg API error ${response.status}: ${text}`);
+    }
+    
+    return response.json();
   }
-  
-  return response.json();
+
+  // Unreachable — loop either returns or throws — but TS needs it
+  throw new Error("treg: exhausted retries without response");
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**

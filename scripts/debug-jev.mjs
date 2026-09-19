@@ -39,15 +39,19 @@ const payload = {
     is_urgent: {
       type: "noul",
       instructions: "Does this message convey urgency?",
-      true: "Explicitly time-sensitive",
-      false: "No urgency expressed"
+      criteria: {
+        true: "Explicitly time-sensitive",
+        false: "No urgency expressed"
+      }
     },
     department: {
       type: "choice",
       instructions: "Which team should handle this?",
-      billing: "Payments, invoicing, refunds",
-      technical: "Bugs, outages, integrations",
-      sales: "Pricing, upgrades, new accounts"
+      criteria: {
+        billing: "Payments, invoicing, refunds",
+        technical: "Bugs, outages, integrations",
+        sales: "Pricing, upgrades, new accounts"
+      }
     },
     frustration: {
       type: "score",

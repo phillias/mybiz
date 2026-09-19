@@ -20,7 +20,7 @@
           "prompt": "How do I find an SEO content agency that uses AI workflows?",
           "cited": false,
           "mentions": [],
-          "response": "Finding an SEO content agency that utilizes AI workflows involves a few strategic steps. Here’s a guide to help you in your search:\n\n### 1. **Define Your Goals**\n   - Determine your specific needs (e."
+          "response": "Finding an SEO content agency that utilizes AI workflows involves a few strategic steps. Here\u2019s a guide to help you in your search:\n\n### 1. **Define Your Goals**\n   - Determine your specific needs (e."
         },
         {
           "prompt": "What SEO content studio researches demand signals before writing?",
@@ -42,21 +42,17 @@
         },
         {
           "prompt": "What is Phileas Fogg SEO content studio?",
-          "cited": true,
-          "mentions": [
-            "Phileas",
-            "Phileas Fogg"
-          ],
-          "response": "As of my last knowledge update in October 2021, there is no widely recognized entity or organization explicitly named \"Phileas Fogg SEO Content Studio.\" It's possible that it could refer to a new busi"
+          "cited": false,
+          "mentions": [],
+          "response": "As of my last knowledge update in October 2021, there is no widely recognized entity or organization explicitly named \"Phileas Fogg SEO Content Studio.\" It's possible that it could refer to a new busi",
+          "citation_excluded_reason": "prompt_echo_or_denial"
         },
         {
           "prompt": "How does Phileas Fogg research demand for content?",
-          "cited": true,
-          "mentions": [
-            "Phileas",
-            "Phileas Fogg"
-          ],
-          "response": "Phileas Fogg is a fictional character from Jules Verne's novel \"Around the World in Eighty Days,\" and as such, does not engage in modern practices for researching demand for content. However, if we we"
+          "cited": false,
+          "mentions": [],
+          "response": "Phileas Fogg is a fictional character from Jules Verne's novel \"Around the World in Eighty Days,\" and as such, does not engage in modern practices for researching demand for content. However, if we we",
+          "citation_excluded_reason": "prompt_echo_or_denial"
         },
         {
           "prompt": "AI content SEO studio Michigan",
@@ -83,8 +79,8 @@
           "response": "An **Answer Engine Optimization (AEO)** agency focuses on optimizing content and digital presence to enhance visibility in answer engines, such as search engines and digital assistants (like Siri, Ale"
         }
       ],
-      "cited": 2,
-      "rate": 0.16666666666666666
+      "cited": 0,
+      "rate": 0.0
     },
     "gemini": {
       "prompts": [
@@ -135,11 +131,10 @@
         },
         {
           "prompt": "How does Phileas Fogg research demand for content?",
-          "cited": true,
-          "mentions": [
-            "Phileas"
-          ],
-          "response": "In Jules Verne’s classic novel *Around the World in Eighty Days*, **Phileas F"
+          "cited": false,
+          "mentions": [],
+          "response": "In Jules Verne\u2019s classic novel *Around the World in Eighty Days*, **Phileas F",
+          "citation_excluded_reason": "prompt_echo_or_denial"
         },
         {
           "prompt": "AI content SEO studio Michigan",
@@ -166,8 +161,8 @@
           "response": "An **Answer Engine Optimization (AEO) agency** specializes in making your brand, products, and"
         }
       ],
-      "cited": 2,
-      "rate": 0.16666666666666666
+      "cited": 1,
+      "rate": 0.08333333333333333
     },
     "perplexity": {
       "prompts": [
@@ -185,7 +180,7 @@
           "prompt": "How do I find an SEO content agency that uses AI workflows?",
           "cited": false,
           "mentions": [],
-          "response": "Look for an **SEO content agency** that can show a clear **AI-assisted workflow** across research, briefs, drafting, optimization, publishing, and reporting—not just “we use AI” as a marketing claim.["
+          "response": "Look for an **SEO content agency** that can show a clear **AI-assisted workflow** across research, briefs, drafting, optimization, publishing, and reporting\u2014not just \u201cwe use AI\u201d as a marketing claim.["
         },
         {
           "prompt": "What SEO content studio researches demand signals before writing?",
@@ -207,27 +202,23 @@
         },
         {
           "prompt": "What is Phileas Fogg SEO content studio?",
-          "cited": true,
-          "mentions": [
-            "Phileas",
-            "Phileas Fogg"
-          ],
-          "response": "**Phileas Fogg SEO content studio** does not appear to be a clearly established, widely documented company name in the search results. The term most likely refers either to an *SEO/content marketing s"
+          "cited": false,
+          "mentions": [],
+          "response": "**Phileas Fogg SEO content studio** does not appear to be a clearly established, widely documented company name in the search results. The term most likely refers either to an *SEO/content marketing s",
+          "citation_excluded_reason": "prompt_echo_or_denial"
         },
         {
           "prompt": "How does Phileas Fogg research demand for content?",
-          "cited": true,
-          "mentions": [
-            "Phileas",
-            "Phileas Fogg"
-          ],
-          "response": "If you mean **Phileas Fogg** from *Around the World in Eighty Days*, the premise is off: the provided sources do **not** show him researching demand for content. Instead, he is described as the novel’"
+          "cited": false,
+          "mentions": [],
+          "response": "If you mean **Phileas Fogg** from *Around the World in Eighty Days*, the premise is off: the provided sources do **not** show him researching demand for content. Instead, he is described as the novel\u2019",
+          "citation_excluded_reason": "prompt_echo_or_denial"
         },
         {
           "prompt": "AI content SEO studio Michigan",
           "cited": false,
           "mentions": [],
-          "response": "If you’re looking for an **AI content SEO studio in Michigan**, the search results point to several agencies offering **AI SEO**, **AEO/GEO**, and **AI content optimization** services across the state"
+          "response": "If you\u2019re looking for an **AI content SEO studio in Michigan**, the search results point to several agencies offering **AI SEO**, **AEO/GEO**, and **AI content optimization** services across the state"
         },
         {
           "prompt": "Local business SEO content writing AI",
@@ -239,7 +230,7 @@
           "prompt": "Demand signal research for SEO content",
           "cited": false,
           "mentions": [],
-          "response": "**Demand signal research for SEO content** is the process of using evidence of *real audience interest* to decide what content to create, prioritize, and update—not just relying on keyword volume alon"
+          "response": "**Demand signal research for SEO content** is the process of using evidence of *real audience interest* to decide what content to create, prioritize, and update\u2014not just relying on keyword volume alon"
         },
         {
           "prompt": "Answer engine optimization agency",
@@ -248,8 +239,8 @@
           "response": "An **Answer Engine Optimization (AEO) agency** helps your brand appear as a cited, trusted source inside AI-generated answers from tools like ChatGPT, Google AI Overviews, Gemini, Perplexity, and Micr"
         }
       ],
-      "cited": 2,
-      "rate": 0.16666666666666666
+      "cited": 0,
+      "rate": 0.0
     },
     "exa": {
       "prompts": [
@@ -285,12 +276,10 @@
         },
         {
           "prompt": "What is Phileas Fogg SEO content studio?",
-          "cited": true,
-          "mentions": [
-            "Phileas",
-            "Phileas Fogg"
-          ],
-          "response": "There is no entity known as Phileas Fogg SEO content studio. Phileas is an AI-specialized business unit of the creative agency Darwin and Verne, based in Madrid [1][2]. Founded in 2023, it provides co"
+          "cited": false,
+          "mentions": [],
+          "response": "There is no entity known as Phileas Fogg SEO content studio. Phileas is an AI-specialized business unit of the creative agency Darwin and Verne, based in Madrid [1][2]. Founded in 2023, it provides co",
+          "citation_excluded_reason": "prompt_echo_or_denial"
         },
         {
           "prompt": "How does Phileas Fogg research demand for content?",
@@ -322,13 +311,13 @@
           "error": "Exa is temporarily over capacity. Please retry with exponential backoff."
         }
       ],
-      "cited": 2,
-      "rate": 0.16666666666666666
+      "cited": 1,
+      "rate": 0.14285714285714285
     }
   },
   "summary": {
-    "total": 48,
-    "cited": 8,
-    "rate": 0.16666666666666666
+    "total": 42,
+    "cited": 2,
+    "rate": 0.047619047619047616
   }
 }

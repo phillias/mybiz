@@ -124,25 +124,52 @@ export async function evaluate(req: JevRequest): Promise<JevResult> {
     };
   }
 
-  const response = await fetch(OPENROUTER_DECISIONS_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: req.model || "~typesafe/jev-latest",
-      state: req.state,
-      questions,
-    }),
-  });
+  const maxRetries = 3;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    let response: Response;
+    try {
+      response = await fetch(OPENROUTER_DECISIONS_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: req.model || "~typesafe/jev-latest",
+          state: req.state,
+          questions,
+        }),
+      });
+    } catch (err: any) {
+      if (attempt < maxRetries) {
+        await sleep(2 ** attempt * 1000);
+        continue;
+      }
+      throw new Error(`Jev network error: ${err.message}`);
+    }
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Jev API error ${response.status}: ${text}`);
+    // Retry on 429 and 5xx
+    if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
+      const retryAfter = response.headers.get("Retry-After");
+      const delay = retryAfter ? parseInt(retryAfter, 10) * 1000 : 2 ** attempt * 1000;
+      await sleep(delay);
+      continue;
+    }
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Jev API error ${response.status}: ${text}`);
+    }
+
+    return response.json();
   }
 
-  return response.json();
+  // Unreachable — loop either returns or throws — but TS needs it
+  throw new Error("Jev: exhausted retries without response");
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**

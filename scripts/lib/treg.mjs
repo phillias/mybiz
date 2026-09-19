@@ -43,6 +43,7 @@ function getToken() {
 
 /**
  * Call a treg catalog endpoint or proxy a URL with credential injection.
+ * Retries on 429/5xx with exponential backoff.
  */
 export async function call(endpoint, options = {}) {
   const token = getToken();
@@ -72,18 +73,43 @@ export async function call(endpoint, options = {}) {
     headers["X-Treg-Meta"] = metaStr;
   }
 
-  const response = await fetch(url.toString(), {
-    method: options.method ?? (options.body ? "POST" : "GET"),
-    headers,
-    body: options.body ? JSON.stringify(options.body) : undefined,
-  });
+  const maxRetries = 3;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    let response;
+    try {
+      response = await fetch(url.toString(), {
+        method: options.method ?? (options.body ? "POST" : "GET"),
+        headers,
+        body: options.body ? JSON.stringify(options.body) : undefined,
+      });
+    } catch (err) {
+      // Network error — retry with backoff
+      if (attempt < maxRetries) {
+        await sleep(2 ** attempt * 1000);
+        continue;
+      }
+      throw new Error(`treg network error: ${err.message}`);
+    }
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`treg API error ${response.status}: ${text}`);
+    // Retry on 429 and 5xx
+    if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
+      const retryAfter = response.headers.get("Retry-After");
+      const delay = retryAfter ? parseInt(retryAfter, 10) * 1000 : 2 ** attempt * 1000;
+      await sleep(delay);
+      continue;
+    }
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`treg API error ${response.status}: ${text}`);
+    }
+
+    return response.json();
   }
+}
 
-  return response.json();
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
