@@ -128,18 +128,20 @@ function sleep(ms: number): Promise<void> {
 
 /**
  * Parse Retry-After header. Supports both delta-seconds and HTTP-date.
+ * Caps at Node's max timer delay (2^31-1 ms) to avoid immediate-fire bug.
  */
 function parseRetryAfter(header: string | null, fallbackMs: number): number {
-  if (!header) return fallbackMs;
+  const MAX_TIMER_MS = 2 ** 31 - 1;
+  if (!header) return Math.min(fallbackMs, MAX_TIMER_MS);
   const seconds = parseInt(header, 10);
   if (!isNaN(seconds) && /^[\d\s]+$/.test(header)) {
-    return seconds * 1000;
+    return Math.min(seconds * 1000, MAX_TIMER_MS);
   }
   const date = new Date(header).getTime();
   if (!isNaN(date)) {
-    return Math.max(0, date - Date.now());
+    return Math.min(Math.max(0, date - Date.now()), MAX_TIMER_MS);
   }
-  return fallbackMs;
+  return Math.min(fallbackMs, MAX_TIMER_MS);
 }
 
 /**
