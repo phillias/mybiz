@@ -17,6 +17,7 @@ change on the dashboard, a sibling update re-renders this file.
 | aftercall | in_dev | feature | high | 2026-08-16 | Harbor Voice — VAPI + Telnyx review outreach layer |
 | parabolic-scaling | proposed | strategy | high | 2026-09-07 | Revenue hockey-stick plan: Talivia attribution + supastarter platform |
 | research-signal-companion | in_dev | feature | medium | 2026-09-05 | Mine media consumption + AI sessions for publishable content (mybiz vs mybrain partition) |
+| newsjack-skill | proposed | feature | high | 2026-09-19 | Add newsjacking skill for trending-topic content hooks |
 
 ---
 
@@ -142,3 +143,29 @@ Research Signal Companion browser extension from the mybrain profile
 - LLM classifier for domain + sensitivity
 - Partition router (mybiz vs mybrain vs private)
 - Content generator (transforms extracts into draft posts/articles)
+
+---
+
+## newsjack-skill — proposed, feature (2026-09-19)
+
+Add a newsjacking skill to the mybiz Hermes profile for capitalizing on trending topics
+as content hooks. The skill should monitor trending topics (news, X/Twitter, Reddit, HN),
+match against client/service verticals, and propose rapid-response article/landing page
+angles.
+
+**Scope:**
+- Trending topic ingestion (X/Twitter API, Reddit/r/all, HN frontpage, Google Trends)
+- Vertical matching: map trends to Harbor service categories + active client industries
+- Hook generation: propose 3-5 content angles per trending topic within 30 min of detection
+- Time-to-publish SLA: draft content ready within 2 hours of trend match
+
+**Integration points:**
+- Harbor content pipeline (auto-create draft articles)
+- Prospect Radar (add trending-opportunity field to business scores)
+- AEO measurement (track newsjack content citation rates separately)
+
+**Deliverables:**
+- `~/.hermes/profiles/mybiz/skills/newsjack/SKILL.md`
+- Trend monitoring script or external API integration
+- Vertical match rules (configurable per client/service)
+- Content hook templates
