@@ -26,6 +26,12 @@ jobs:
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
 
+      - name: Ensure DATAFORSEO_API_KEY on Convex prod (idempotent)
+        run: npx convex env set DATAFORSEO_API_KEY "$DATAFORSEO_API_KEY" --prod
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+          DATAFORSEO_API_KEY: ${{ secrets.DATAFORSEO_API_KEY }}
+
       - name: Run pipeline (pick PROCEED signal -> niche gate -> generate)
         run: node scripts/run-pipeline.mjs --auto
         env:
