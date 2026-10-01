@@ -114,7 +114,49 @@ async function queryPerplexity(prompt, apiKey) {
   return data.choices[0].message.content;
 }
 
-function checkCitation(response) {
+// Denial patterns that indicate the response is NOT a real citation —
+// the engine is disclaiming knowledge of the entity or identifying it as
+// a fictional character, which is just a prompt echo, not a citation.
+const DENIAL_PATTERNS = [
+  /no widely recognized entity/i,
+  /does not appear to be/i,
+  /fictional character/i,
+  /not a clearly established/i,
+  /no entity known as/i,
+  /jules verne/i,
+  /around the world in eighty days/i,
+  /does not engage in modern/i,
+  /not show him researching/i,
+  /does not exist/i,
+  /not a real/i,
+  /not an actual/i,
+];
+
+/**
+ * Check if a response constitutes a real citation of our brand.
+ *
+ * A citation requires an affirmative reference to the measured entity.
+ * If the prompt already contains the brand term, a response that merely
+ * echoes the term back — or explicitly denies the entity exists, identifies
+ * it as a fictional character, or describes an unrelated organization —
+ * is NOT a citation.
+ *
+ * @param response - The engine's response text
+ * @param prompt - The original prompt (to detect echo/false-positive)
+ */
+function checkCitation(response, prompt) {
+  const lowerResp = response.toLowerCase();
+  const lowerPrompt = (prompt || "").toLowerCase();
+
+  // If the prompt itself contains the brand term, the response must
+  // affirmatively reference the entity as real, not deny or fictionalize it.
+  const promptHasBrand = /\bphileas\b/i.test(prompt) || /\bphileas fogg\b/i.test(prompt);
+  const isDenial = DENIAL_PATTERNS.some((p) => p.test(response));
+
+  if (promptHasBrand && isDenial) {
+    return { cited: false, mentions: [], citation_excluded_reason: "prompt_echo_or_denial" };
+  }
+
   const cited = BRAND_PATTERNS.some((p) => p.test(response));
   const mentions = [];
   for (const p of BRAND_PATTERNS) {
@@ -189,11 +231,12 @@ async function main() {
     for (const prompt of PROMPTS) {
       try {
         const response = await queryFn(prompt, key);
-        const { cited, mentions } = checkCitation(response);
+        const { cited, mentions, citation_excluded_reason } = checkCitation(response, prompt);
         results.engines[name].prompts.push({
           prompt,
           cited,
           mentions,
+          ...(citation_excluded_reason ? { citation_excluded_reason } : {}),
           response: response.slice(0, 200),
         });
         if (cited) results.engines[name].cited++;

@@ -32,6 +32,7 @@ import { fileURLToPath } from "node:url";
 import { scoreProspect, slugify, hasWebsite } from "./lib/scoring.mjs";
 import { discoverBusinesses, fetchSerp, inPack } from "./lib/dataforseo.mjs";
 import { crawlWebsite, fetchPageSpeed } from "./lib/enrich.mjs";
+import { enrichWithTreg } from "./lib/treg-enrich.mjs";
 
 // Load .env manually (no dotenv dependency)
 const __scriptDir = dirname(fileURLToPath(import.meta.url));
@@ -73,6 +74,7 @@ const TSV_HEADERS = [
   "pages", "words", "review_count", "rating",
   "in_map_pack", "sponsored_count", "long_tail_clusters",
   "w_website", "w_speed", "w_reviews", "w_serp", "w_authority",
+  "email", "email_confidence", "domain_authority", "spam_score",
 ];
 
 function flag(args, name) {
@@ -103,6 +105,17 @@ async function enrichAll({ prospects, category, city, apiKey }) {
         } catch (err) {
           console.error(`psi skip ${p.name}: ${err.message}`);
         }
+        // treg enrichment: Hunter email + Moz DA (fails soft)
+        try {
+          const tregData = await enrichWithTreg(p);
+          if (tregData.errors) {
+            console.error(`treg partial ${p.name}: ${Object.entries(tregData.errors).map(([k, v]) => `${k}=${v}`).join(", ")}`);
+            delete tregData.errors; // don't pollute the prospect row
+          }
+          Object.assign(p, tregData);
+        } catch (err) {
+          console.error(`treg skip ${p.name}: ${err.message}`);
+        }
       }
       if (serp) p.serp = { ...serp, inPack: inPack(serp.packDomains, p.website) };
       out[i] = p;
@@ -129,6 +142,7 @@ function toTsv(rows) {
         p.pages ?? "", p.words ?? "", p.reviewCount ?? "", p.rating ?? "",
         p.serp?.inPack ?? "", p.serp?.sponsoredCount ?? "", p.serp?.longTailClusters ?? "",
         p.sub.website, r3(p.sub.speed), r3(p.sub.reviews), r3(p.sub.serp), r3(p.sub.authority),
+        p.email ?? "", p.email_confidence ?? "", p.domain_authority ?? "", p.spam_score ?? "",
       ].map(esc).join("\t"),
     );
   }
