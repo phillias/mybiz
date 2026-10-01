@@ -17,6 +17,17 @@
 
 const TREG_BASE_URL = "https://treg.to";
 
+// Default request timeout — bounds slow TREG/upstream requests so scoring,
+// enrichment, and diagnostics can't hang until the runtime/network timeout.
+const DEFAULT_TIMEOUT_MS = 30_000;
+
+/**
+ * Shared timeout signal for all TREG fetches. One helper, one default.
+ */
+function timeoutSignal(timeoutMs: number = DEFAULT_TIMEOUT_MS): AbortSignal {
+  return AbortSignal.timeout(timeoutMs);
+}
+
 function getToken(): string {
   const key = process.env.TREG_TOKEN;
   if (!key) {
@@ -85,6 +96,8 @@ export async function call(endpoint: string, options: CallOptions = {}): Promise
     }
   }
 
+  const reqSignal = timeoutSignal();
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     let response: Response;
     try {
@@ -92,6 +105,7 @@ export async function call(endpoint: string, options: CallOptions = {}): Promise
         method: options.method ?? (options.body ? "POST" : "GET"),
         headers,
         body: serializedBody,
+        signal: reqSignal,
       });
     } catch (err: any) {
       // Network error — retry with backoff
@@ -223,6 +237,7 @@ export async function catalogSearch(query: string): Promise<Array<{
   
   const response = await fetch(`${TREG_BASE_URL}/catalog/search?q=${encodeURIComponent(query)}`, {
     headers: { "X-Treg-Token": token },
+    signal: timeoutSignal(),
   });
   
   if (!response.ok) {
@@ -250,6 +265,7 @@ export async function catalogGet(endpointId: string): Promise<{
   
   const response = await fetch(`${TREG_BASE_URL}/catalog/${endpointId}`, {
     headers: { "X-Treg-Token": token },
+    signal: timeoutSignal(),
   });
   
   if (!response.ok) {
@@ -273,6 +289,7 @@ export async function balance(): Promise<{
   
   const response = await fetch(`${TREG_BASE_URL}/balance`, {
     headers: { "X-Treg-Token": token },
+    signal: timeoutSignal(),
   });
   
   if (!response.ok) {
