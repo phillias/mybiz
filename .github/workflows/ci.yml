@@ -85,12 +85,10 @@ jobs:
       - name: Prepare Pages dist (adapter@14 _worker.js workaround)
         run: ./scripts/prepare-pages-dist.sh
 
+      # cloudflare/pages-action was deleted/archived upstream (404) — its own
+      # logs already directed to `wrangler pages deploy`, same arguments.
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: mybiz
-          directory: dist
-          branch: main
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        run: npx wrangler pages deploy dist --project-name=mybiz --branch=main
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
