@@ -6,7 +6,7 @@
 //
 // Requires TREG_TOKEN in .env or environment.
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { dirname, resolve as pathResolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -39,12 +39,31 @@ function timeoutSignal(timeoutMs = DEFAULT_TIMEOUT_MS) {
   return AbortSignal.timeout(timeoutMs);
 }
 
+/**
+ * Non-transient network errors — retrying them wastes latency on a
+ * hopeless request (DNS can't resolve, nothing is listening, or the
+ * request timed out and the caller wants control back).
+ */
+function isNonRetryableNetworkError(err) {
+  if (err?.name === "TimeoutError" || err?.name === "AbortError") return true;
+  const code = err?.cause?.code ?? err?.code;
+  return code === "ENOTFOUND" || code === "ECONNREFUSED" || code === "EAI_AGAIN";
+}
+
 function getToken() {
   // Try TREG_TOKEN first, then check file path from .zshrc pattern
   let key = process.env.TREG_TOKEN;
   if (!key) {
     const tokenPath = process.env.TREG_TOKEN_PATH || `${process.env.HOME}/.agents/keys/default/.treg-token`;
     if (existsSync(tokenPath)) {
+      // Refuse group/world-readable token files — a leaked treg token
+      // spends real money. Matches the 0600 convention of ~/.agents/keys.
+      const mode = statSync(tokenPath).mode & 0o777;
+      if (mode & 0o077) {
+        throw new Error(
+          `treg token file ${tokenPath} must be owner-only (chmod 600), got mode ${mode.toString(8)}`
+        );
+      }
       key = readFileSync(tokenPath, "utf8").trim();
     }
   }
@@ -108,6 +127,11 @@ export async function call(endpoint, options = {}) {
         signal: reqSignal,
       });
     } catch (err) {
+      // Timeouts and non-transient failures (DNS, connection refused) are
+      // hopeless to retry — surface them without burning the backoff budget.
+      if (isNonRetryableNetworkError(err)) {
+        throw new Error(`treg network error (non-retryable): ${err.message ?? err}`);
+      }
       // Network error — retry with backoff
       if (attempt < maxRetries) {
         await sleep(2 ** attempt * 1000);
@@ -116,10 +140,11 @@ export async function call(endpoint, options = {}) {
       throw new Error(`treg network error: ${err.message}`);
     }
 
-    // Retry on 429 and 5xx
+    // Retry on 429 and 5xx — cap the delay so a huge Retry-After can't
+    // outlast the request timeout by orders of magnitude.
     if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
       const retryAfter = response.headers.get("Retry-After");
-      const delay = parseRetryAfter(retryAfter, 2 ** attempt * 1000);
+      const delay = parseRetryAfter(retryAfter, 2 ** attempt * 1000, DEFAULT_TIMEOUT_MS);
       await sleep(delay);
       continue;
     }
@@ -139,20 +164,23 @@ function sleep(ms) {
 
 /**
  * Parse Retry-After header. Supports both delta-seconds and HTTP-date.
- * Caps at Node's max timer delay (2^31-1 ms) to avoid immediate-fire bug.
+ * Caps at the request timeout (a longer server-directed delay is treated
+ * as fail-fast) and at Node's max timer delay (2^31-1 ms) to avoid the
+ * immediate-fire bug.
  */
-function parseRetryAfter(header, fallbackMs) {
+function parseRetryAfter(header, fallbackMs, requestTimeoutMs = fallbackMs) {
   const MAX_TIMER_MS = 2 ** 31 - 1;
-  if (!header) return Math.min(fallbackMs, MAX_TIMER_MS);
+  const cap = Math.min(requestTimeoutMs, MAX_TIMER_MS);
+  if (!header) return Math.min(fallbackMs, cap);
   const seconds = parseInt(header, 10);
   if (!isNaN(seconds) && /^[\d\s]+$/.test(header)) {
-    return Math.min(seconds * 1000, MAX_TIMER_MS);
+    return Math.min(seconds * 1000, cap);
   }
   const date = new Date(header).getTime();
   if (!isNaN(date)) {
-    return Math.min(Math.max(0, date - Date.now()), MAX_TIMER_MS);
+    return Math.min(Math.max(0, date - Date.now()), cap);
   }
-  return Math.min(fallbackMs, MAX_TIMER_MS);
+  return Math.min(fallbackMs, cap);
 }
 
 /**

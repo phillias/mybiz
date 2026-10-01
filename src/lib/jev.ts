@@ -39,6 +39,17 @@ function combinedSignal(signal: AbortSignal | undefined, timeoutMs: number): Abo
   return AbortSignal.timeout(timeoutMs);
 }
 
+/**
+ * Non-transient network errors — retrying them wastes latency on a
+ * hopeless request (DNS can't resolve, nothing is listening, or the
+ * request timed out and the caller wants control back).
+ */
+function isNonRetryableNetworkError(err: any): boolean {
+  if (err?.name === "TimeoutError" || err?.name === "AbortError") return true;
+  const code = err?.cause?.code ?? err?.code;
+  return code === "ENOTFOUND" || code === "ECONNREFUSED" || code === "EAI_AGAIN";
+}
+
 // Question types — all use 'criteria'
 export interface NoulQuestion {
   type: "noul";
@@ -152,6 +163,9 @@ export async function evaluate(req: JevRequest): Promise<JevResult> {
     questions,
   });
 
+  // Fail fast if the caller already cancelled before we started.
+  if (req.signal?.aborted) throw req.signal.reason ?? new Error("Jev: aborted before request");
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     let response: Response;
     try {
@@ -165,8 +179,13 @@ export async function evaluate(req: JevRequest): Promise<JevResult> {
         signal: combinedSignal(req.signal, req.timeoutMs ?? DEFAULT_TIMEOUT_MS),
       });
     } catch (err: any) {
-      // Caller-initiated aborts are not retried — propagate immediately.
+      // Caller-initiated aborts are never retried — propagate immediately.
       if (req.signal?.aborted) throw err;
+      // Timeouts and non-transient failures (DNS, connection refused) are
+      // hopeless to retry — surface them without burning the backoff budget.
+      if (isNonRetryableNetworkError(err)) {
+        throw new Error(`Jev network error (non-retryable): ${err.message ?? err}`);
+      }
       if (attempt < maxRetries) {
         await sleep(2 ** attempt * 1000);
         continue;
@@ -174,10 +193,15 @@ export async function evaluate(req: JevRequest): Promise<JevResult> {
       throw new Error(`Jev network error: ${err.message}`);
     }
 
-    // Retry on 429 and 5xx
+    // Retry on 429 and 5xx — cap the delay so a huge Retry-After can't
+    // outlast the request timeout by orders of magnitude.
     if ((response.status === 429 || response.status >= 500) && attempt < maxRetries) {
       const retryAfter = response.headers.get("Retry-After");
-      const delay = parseRetryAfter(retryAfter, 2 ** attempt * 1000);
+      const delay = parseRetryAfter(
+        retryAfter,
+        2 ** attempt * 1000,
+        req.timeoutMs ?? DEFAULT_TIMEOUT_MS
+      );
       await sleep(delay);
       continue;
     }
@@ -200,20 +224,23 @@ function sleep(ms: number): Promise<void> {
 
 /**
  * Parse Retry-After header. Supports both delta-seconds and HTTP-date.
- * Caps at Node's max timer delay (2^31-1 ms) to avoid immediate-fire bug.
+ * Caps at the request timeout (a longer server-directed delay is treated
+ * as fail-fast: we don't park the process for an hour on one 429) and at
+ * Node's max timer delay (2^31-1 ms) to avoid the immediate-fire bug.
  */
-function parseRetryAfter(header: string | null, fallbackMs: number): number {
+function parseRetryAfter(header: string | null, fallbackMs: number, requestTimeoutMs: number = fallbackMs): number {
   const MAX_TIMER_MS = 2 ** 31 - 1;
-  if (!header) return Math.min(fallbackMs, MAX_TIMER_MS);
+  const cap = Math.min(requestTimeoutMs, MAX_TIMER_MS);
+  if (!header) return Math.min(fallbackMs, cap);
   const seconds = parseInt(header, 10);
   if (!isNaN(seconds) && /^[\d\s]+$/.test(header)) {
-    return Math.min(seconds * 1000, MAX_TIMER_MS);
+    return Math.min(seconds * 1000, cap);
   }
   const date = new Date(header).getTime();
   if (!isNaN(date)) {
-    return Math.min(Math.max(0, date - Date.now()), MAX_TIMER_MS);
+    return Math.min(Math.max(0, date - Date.now()), cap);
   }
-  return Math.min(fallbackMs, MAX_TIMER_MS);
+  return Math.min(fallbackMs, cap);
 }
 
 /**
