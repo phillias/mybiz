@@ -18,15 +18,27 @@ jobs:
 
       - run: npm ci
 
+      # GitHub App actors (dependabot) don't receive Actions secrets on
+      # pull_request events, so CONVEX_DEPLOY_KEY is empty for their runs.
+      # Codegen only needs a deployment to generate convex/_generated/ types;
+      # skip it (and the typecheck that depends on it) when the key is absent.
       - name: Convex codegen (generates _generated types)
-        run: npx convex codegen
+        run: |
+          if [ -z "${CONVEX_DEPLOY_KEY:-}" ]; then
+            echo "CONVEX_DEPLOY_KEY not set (GitHub App pull_request run) — skipping codegen"
+            echo "codegen_skipped=true" >> "$GITHUB_ENV"
+          else
+            npx convex codegen
+          fi
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
 
       - name: Astro check
+        if: env.codegen_skipped != 'true'
         run: npm run check
 
       - name: Typecheck (tsc + convex)
+        if: env.codegen_skipped != 'true'
         run: npm run typecheck
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
