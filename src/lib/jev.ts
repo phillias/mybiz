@@ -24,6 +24,21 @@
 
 const OPENROUTER_DECISIONS_URL = "https://openrouter.ai/api/alpha/decisions";
 
+// Default request timeout — bounds a slow/stalled OpenRouter request so
+// callers (Convex actions, server routes) can't hang indefinitely.
+const DEFAULT_TIMEOUT_MS = 30_000;
+
+/**
+ * Combine the caller's AbortSignal (if any) with a default timeout into one
+ * signal. Either firing aborts the fetch; caller aborts propagate as-is.
+ */
+function combinedSignal(signal: AbortSignal | undefined, timeoutMs: number): AbortSignal {
+  if (signal) {
+    return AbortSignal.any([signal, AbortSignal.timeout(timeoutMs)]);
+  }
+  return AbortSignal.timeout(timeoutMs);
+}
+
 // Question types — all use 'criteria'
 export interface NoulQuestion {
   type: "noul";
@@ -65,6 +80,10 @@ export interface JevRequest {
   state: string | object;
   questions: Record<string, JevQuestion>;
   model?: string;
+  /** Caller-provided cancellation signal (aborts propagate, no retry). */
+  signal?: AbortSignal;
+  /** Per-request timeout override in ms (default 30s). */
+  timeoutMs?: number;
 }
 
 export interface NoulAnswer {
@@ -143,8 +162,11 @@ export async function evaluate(req: JevRequest): Promise<JevResult> {
           "Content-Type": "application/json",
         },
         body: serializedBody,
+        signal: combinedSignal(req.signal, req.timeoutMs ?? DEFAULT_TIMEOUT_MS),
       });
     } catch (err: any) {
+      // Caller-initiated aborts are not retried — propagate immediately.
+      if (req.signal?.aborted) throw err;
       if (attempt < maxRetries) {
         await sleep(2 ** attempt * 1000);
         continue;

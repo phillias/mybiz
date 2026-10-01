@@ -119,7 +119,8 @@ async function main() {
     if (signals.email) status.push(`email:${e.email}`);
     if (signals.moz) status.push(`DA:${e.domain_authority}`);
     if (e.email_verified) status.push("verified");
-    
+    if (e.errors) status.push(`errors:${Object.keys(e.errors).join("/")}`);
+
     console.error(`  ${e.name}: ${status.length > 0 ? status.join(", ") : "no enrichment"} (${elapsed}ms)`);
   }
   

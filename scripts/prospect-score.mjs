@@ -108,6 +108,10 @@ async function enrichAll({ prospects, category, city, apiKey }) {
         // treg enrichment: Hunter email + Moz DA (fails soft)
         try {
           const tregData = await enrichWithTreg(p);
+          if (tregData.errors) {
+            console.error(`treg partial ${p.name}: ${Object.entries(tregData.errors).map(([k, v]) => `${k}=${v}`).join(", ")}`);
+            delete tregData.errors; // don't pollute the prospect row
+          }
           Object.assign(p, tregData);
         } catch (err) {
           console.error(`treg skip ${p.name}: ${err.message}`);

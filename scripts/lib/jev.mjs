@@ -28,6 +28,21 @@ if (existsSync(envPath)) {
 
 const OPENROUTER_DECISIONS_URL = "https://openrouter.ai/api/alpha/decisions";
 
+// Default request timeout — bounds a slow/stalled OpenRouter request so CLI
+// workflows (jev-prospect, test-jev, debug-jev) can't hang indefinitely.
+const DEFAULT_TIMEOUT_MS = 30_000;
+
+/**
+ * Combine the caller's AbortSignal (if any) with a default timeout into one
+ * signal. Caller signal aborts take precedence (either firing aborts fetch).
+ */
+function combinedSignal(signal, timeoutMs) {
+  if (signal) {
+    return AbortSignal.any([signal, AbortSignal.timeout(timeoutMs)]);
+  }
+  return AbortSignal.timeout(timeoutMs);
+}
+
 function getApiKey() {
   const key = process.env.OPENROUTER_API_KEY;
   if (!key) throw new Error("OPENROUTER_API_KEY not set (add to .env or export)");
@@ -63,7 +78,7 @@ export function score(instructions, criteria) {
  * All questions see the same state; each evaluated independently.
  * Returns calibrated probabilities and confidence scores.
  *
- * @param {object} req - { state: string|object, questions: {...}, model?: string }
+ * @param {object} req - { state: string|object, questions: {...}, model?: string, signal?: AbortSignal, timeoutMs?: number }
  * @returns {Promise<object>} - { model, answers, usage }
  */
 export async function evaluate(req) {
@@ -98,8 +113,11 @@ export async function evaluate(req) {
           "Content-Type": "application/json",
         },
         body: serializedBody,
+        signal: combinedSignal(req.signal, req.timeoutMs ?? DEFAULT_TIMEOUT_MS),
       });
     } catch (err) {
+      // Caller-initiated aborts are not retried — propagate immediately.
+      if (req.signal?.aborted) throw err;
       if (attempt < maxRetries) {
         await sleep(2 ** attempt * 1000);
         continue;

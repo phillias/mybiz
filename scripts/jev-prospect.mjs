@@ -252,6 +252,7 @@ async function main() {
       city: runCity,
       category: runCat,
       website: p.website,
+      jev_model: jevResult?.jev?.model ?? null,
       jev_opportunity: opp?.opportunity ?? null,
       jev_breakdown: opp?.breakdown ?? null,
       jev_confidence: opp?.confidence ?? null,
@@ -275,7 +276,7 @@ async function main() {
     city: runCity,
     category: runCat,
     generatedAt: new Date().toISOString(),
-    model: results[0]?.jev_model || "~typesafe/jev-latest",
+    model: results.find((r) => r.jev_model)?.jev_model || "~typesafe/jev-latest",
     compare,
     prospects: results
   };

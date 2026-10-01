@@ -2,7 +2,6 @@
 // Debug Jev API request format
 
 import { writeFileSync } from "node:fs";
-import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
@@ -68,13 +67,25 @@ console.log("\n---\n");
 const payloadPath = "/tmp/jev-payload.json";
 writeFileSync(payloadPath, JSON.stringify(payload));
 
-const result = spawnSync("curl", [
-  "-s", "-X", "POST",
-  "https://openrouter.ai/api/alpha/decisions",
-  "-H", `Authorization: Bearer ${apiKey}`,
-  "-H", "Content-Type: application/json",
-  "-d", `@${payloadPath}`
-], { encoding: "utf8", maxBuffer: 10 * 1024 * 1024 });
-
-console.log("Response:");
-console.log(result.stdout || result.stderr);
+// Use fetch so the API key never appears in a child-process command line
+// (visible to local process observers) and the request is time-bounded.
+try {
+  const response = await fetch("https://openrouter.ai/api/alpha/decisions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(30_000),
+  });
+  const text = await response.text();
+  console.log("Response:");
+  console.log(text);
+} catch (err) {
+  if (err.name === "TimeoutError" || err.name === "AbortError") {
+    console.error("Request timed out after 30s");
+    process.exit(1);
+  }
+  throw err;
+}
