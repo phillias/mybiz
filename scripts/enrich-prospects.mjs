@@ -123,6 +123,14 @@ async function main() {
 
     console.error(`  ${e.name}: ${status.length > 0 ? status.join(", ") : "no enrichment"} (${elapsed}ms)`);
   }
+
+  // End-of-run summary — distinguishes "no data" from "endpoint failed"
+  const failed = enriched.filter((e) => e.errors);
+  if (failed.length > 0) {
+    const hunter = failed.filter((e) => e.errors.hunter).length;
+    const moz = failed.filter((e) => e.errors.moz).length;
+    console.error(`\n${enriched.length} prospect(s) enriched, ${failed.length} with endpoint errors (hunter:${hunter}, moz:${moz})`);
+  }
   
   // Output
   const output = {

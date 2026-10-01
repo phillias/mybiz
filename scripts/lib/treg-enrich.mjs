@@ -28,6 +28,11 @@ function extractDomain(website) {
     if (/^[a-z0-9.-]+\.[a-z]{2,}$/.test(bare)) {
       return bare.replace(/^www\./, "").replace(/\/.*$/, "");
     }
+    // Malformed input (URL parse failed AND bare-domain regex failed) —
+    // log at debug so operators can distinguish "no website" from "bad value".
+    if (process.env.DEBUG) {
+      console.error(`[treg-enrich] extractDomain: malformed website value ${JSON.stringify(raw)}`);
+    }
     return null;
   }
 }
