@@ -1,6 +1,6 @@
 # Core 30 GBP Strategy — Harbor-Ingestible
 
-Status: proposed · Date: 2026-08-16 · Source: Caleb Ulku (Core 30 method, themarketingshow.com/seo/core-30-local-seo-method) + AI-citation reaction video (WZrSlgdm5GQ)
+Status: in_dev · Date: 2026-08-16 · Source: Caleb Ulku (Core 30 method, themarketingshow.com/seo/core-30-local-seo-method) + AI-citation reaction video (WZrSlgdm5GQ)
 Owner: Harbor product + agency client work
 Consumes: `convex/pageBlueprint` schema · Harbor API (`POST /v1/articles`) · `scripts/generate-article.mjs`
 Goal: turn the Core 30 method into a repeatable content generation strategy that Harbor can ingest and that partitions by review surface.
@@ -89,9 +89,9 @@ Free tier does the job for strategy; upgrade only when a client cadence exceeds 
 
 ## 6. Open items
 - [x] Build `pageBlueprint` → Harbor generation script — **DONE** `scripts/generate-core30.mjs` (+ `content/blueprints/core30-sample.json`); dry-run by default, `--apply` spends credits
-- [ ] Decide Harbor site-per-client provisioning (one Harbor site per client vs shared site + per-page instructions)
-- [ ] Add `pageBlueprints:list` Convex query (so `--convex` mode works — currently requires a JSON file)
-- [ ] Evaluate GBP API adapter for posts/services/Q&A/review-reply publishing
+- [ ] Decide Harbor site-per-client provisioning (one Harbor site per client vs shared site + per-page instructions) — **the remaining structural decision; pageBlueprint schema has no client/site field yet**
+- [x] Add `pageBlueprints:list` Convex query — **DONE** `convex/pageBlueprints.ts` (`list`/`bySlug`/`stats`, indexes `by_slug`+`by_archetype`); deployed to the local dev backend, table seeded via `npx convex run seed` (19 rows: 8 core / 2 service / 9 supporting); `generate-core30.mjs --convex --dry-run` verified end-to-end
+- [x] Evaluate GBP API adapter for posts/services/Q&A/review-reply publishing — **DONE** `src/lib/gbp.ts` (posts, reviews+replies, Q&A, services read, insights, OAuth helpers) + `scripts/publish-core30-gbp.mjs` wrapper (`--dry-run` default, `--from-blueprint` file or `--convex` via `pageBlueprints:list`). Finding: **services cannot be created via the GBP API v4** (dashboard/bulk-upload only — noted in `gbp.ts`); posts/Q&A/review-replies are API-writable. Remaining operational step: real GBP OAuth token (`GBP_ACCESS_TOKEN` with `business.manage` scope) + one live verified run — untested against a real account.
 - [ ] **Otterly (deferred task)**: prep SPIV prompt encoding now (see `docs/plans/2026-08-16-003-spiv-otterly-prep.md`); purchase + wire Lite→Standard (API/MCP) when approved
 - [ ] Rank maps: Local Falcon dumped → use **GMB Radar** free tier now; revisit BrightLocal only if a client cadence demands grid-rank reporting
 - [ ] The Aftercall (review-request layer) per `docs/plans/2026-08-16-002-vapi-review-outreach.md`

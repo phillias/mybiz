@@ -6,10 +6,17 @@
 //   node scripts/publish-core30-gbp.mjs --dry-run
 //   node scripts/publish-core30-gbp.mjs --apply --account-id <id> --location-id <id>
 //   node scripts/publish-core30-gbp.mjs --apply --from-blueprint content/blueprints/client.json
+//   node scripts/publish-core30-gbp.mjs --dry-run --convex   # blueprints from Convex pageBlueprints:list
 
 import { readFileSync } from "node:fs";
-import { config } from "dotenv";
-config({ path: new URL("../../.env", import.meta.url).pathname });
+import { execFileSync } from "node:child_process";
+
+// Load .env manually (repo convention — no dotenv dependency).
+try {
+  process.loadEnvFile(".env");
+} catch {
+  console.warn("[core30-gbp:env] no .env — falling back to process env");
+}
 
 import { GBPAdapter } from "../src/lib/gbp.ts";
 
@@ -29,8 +36,12 @@ async function main() {
   const gbp = new GBPAdapter({ accessToken: process.env.GBP_ACCESS_TOKEN });
 
   // 1. List accounts if not specified
-  let accountId = args[args.indexOf("--account-id") + 1];
-  let locationId = args[args.indexOf("--location-id") + 1];
+  const flagValue = (name) => {
+    const i = args.indexOf(name);
+    return i >= 0 ? args[i + 1] : undefined;
+  };
+  let accountId = flagValue("--account-id");
+  let locationId = flagValue("--location-id");
 
   if (!accountId) {
     console.log("\n=== GBP Accounts ===");
@@ -53,15 +64,21 @@ async function main() {
     return;
   }
 
-  // 3. Load blueprints (from file or Convex)
-  const blueprintFile = args[args.indexOf("--from-blueprint") + 1];
+  // 3. Load blueprints (from file, or Convex pageBlueprints:list via npx convex run)
+  const blueprintFile = flagValue("--from-blueprint");
   let blueprints = [];
 
   if (blueprintFile) {
     blueprints = JSON.parse(readFileSync(blueprintFile, "utf-8"));
+  } else if (args.includes("--convex")) {
+    const raw = execFileSync(
+      "npx",
+      ["convex", "run", "pageBlueprints:list", "{}"],
+      { encoding: "utf8", stdio: ["pipe", "pipe", "inherit"] }
+    );
+    blueprints = JSON.parse(raw);
   } else {
-    // TODO: Query Convex for pageBlueprint rows
-    console.error("--from-blueprint required (Convex query not yet wired)");
+    console.error("--from-blueprint <file.json> (or --convex) is required");
     process.exit(1);
   }
 

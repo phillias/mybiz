@@ -11,8 +11,6 @@
 //   await gbp.createPost(accountId, locationId, { summary: "..." });
 //   await gbp.replyToReview(accountId, locationId, reviewId, "Thanks for the review!");
 
-import type { z } from "zod";
-
 const GBP_API = "https://mybusiness.googleapis.com/v4";
 
 export interface GBPConfig {
