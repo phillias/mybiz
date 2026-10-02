@@ -1,0 +1,334 @@
+{
+  "date": "2026-09-28",
+  "prompts": 12,
+  "engines": {
+    "chatgpt": {
+      "prompts": [
+        {
+          "prompt": "What is the best AI content SEO studio for agencies in 2026?",
+          "cited": false,
+          "mentions": [],
+          "response": "As of my last knowledge update in October 2023, I can't provide specific recommendations for the best AI content SEO studio for agencies in 2026. However, I can suggest some factors and tools to consi"
+        },
+        {
+          "prompt": "Who offers AI-native SEO content writing for local businesses?",
+          "cited": false,
+          "mentions": [],
+          "response": "There are several companies and platforms that specialize in AI-driven SEO content writing for local businesses. Here are a few options you might consider:\n\n1. **Jasper**: Jasper is an AI content gene"
+        },
+        {
+          "prompt": "How do I find an SEO content agency that uses AI workflows?",
+          "cited": false,
+          "mentions": [],
+          "response": "Finding an SEO content agency that utilizes AI workflows involves a few key steps. Here’s a guide to help you in your search:\n\n1. **Research Agencies:**\n   - Start by searching online for SEO content "
+        },
+        {
+          "prompt": "What SEO content studio researches demand signals before writing?",
+          "cited": false,
+          "mentions": [],
+          "response": "There are several SEO content studios and agencies that focus on researching demand signals before creating content. They often use a combination of keyword research, trend analysis, competitor resear"
+        },
+        {
+          "prompt": "Best agency for AI content that ranks in answer engines?",
+          "cited": false,
+          "mentions": [],
+          "response": "Choosing the best agency for AI-generated content that ranks well in search engines involves several factors such as expertise, ethical practices, and a proven track record. Here are a few well-regard"
+        },
+        {
+          "prompt": "Who provides AI-native blog writing with SEO optimization?",
+          "cited": false,
+          "mentions": [],
+          "response": "There are several companies and platforms that provide AI-native blog writing services with a focus on SEO optimization. Here are a few popular ones:\n\n1. **Jasper (formerly Jarvis)** - Jasper is an AI"
+        },
+        {
+          "prompt": "What is Phileas Fogg SEO content studio?",
+          "cited": false,
+          "mentions": [],
+          "citation_excluded_reason": "prompt_echo_or_denial",
+          "response": "Phileas Fogg SEO Content Studio is a content creation service that focuses on producing high-quality, search-engine-optimized (SEO) content for websites and online platforms. Named after the character"
+        },
+        {
+          "prompt": "How does Phileas Fogg research demand for content?",
+          "cited": false,
+          "mentions": [],
+          "citation_excluded_reason": "prompt_echo_or_denial",
+          "response": "Phileas Fogg is a fictional character from Jules Verne's novel \"Around the World in Eighty Days,\" and he is not involved in content research or modern strategies for understanding content demand. Howe"
+        },
+        {
+          "prompt": "AI content SEO studio Michigan",
+          "cited": false,
+          "mentions": [],
+          "response": "If you're looking for an AI content SEO studio in Michigan, there are several things to consider to find the right fit for your needs. Here are some key points to guide your search:\n\n### 1. **Services"
+        },
+        {
+          "prompt": "Local business SEO content writing AI",
+          "cited": false,
+          "mentions": [],
+          "response": "Creating SEO-friendly content for a local business is essential for increasing visibility and attracting customers in your area. Here’s a step-by-step guide to help you write effective local SEO conte"
+        },
+        {
+          "prompt": "Demand signal research for SEO content",
+          "cited": false,
+          "mentions": [],
+          "response": "Demand signal research in the context of SEO content involves identifying and analyzing signals that indicate what potential customers are interested in and searching for online. This research helps t"
+        },
+        {
+          "prompt": "Answer engine optimization agency",
+          "cited": false,
+          "mentions": [],
+          "response": "An **Answer Engine Optimization (AEO)** agency specializes in helping businesses optimize their content and online presence to meet the needs of users seeking information through voice search, virtual"
+        }
+      ],
+      "cited": 0,
+      "rate": 0
+    },
+    "gemini": {
+      "prompts": [
+        {
+          "prompt": "What is the best AI content SEO studio for agencies in 2026?",
+          "cited": false,
+          "mentions": [],
+          "response": "While the \"best\" platform depends on an agency's specific business model (e"
+        },
+        {
+          "prompt": "Who offers AI-native SEO content writing for local businesses?",
+          "cited": false,
+          "mentions": [],
+          "response": " (formerly Content at Scale) / Cuppa.sh / Jasper:** Great for long-form,"
+        },
+        {
+          "prompt": "How do I find an SEO content agency that uses AI workflows?",
+          "cited": false,
+          "mentions": [],
+          "response": "Human-in-the-loop is mandatory).\n            2. What tools are in your stack"
+        },
+        {
+          "prompt": "What SEO content studio researches demand signals before writing?",
+          "cited": false,
+          "mentions": [],
+          "response": "Several modern SEO and content marketing studios have moved away from traditional \"keyword volume\""
+        },
+        {
+          "prompt": "Best agency for AI content that ranks in answer engines?",
+          "cited": false,
+          "mentions": [],
+          "response": "PullRank\n        *   *B2B SaaS & Growth Content:* Omniscient Digital\n"
+        },
+        {
+          "prompt": "Who provides AI-native blog writing with SEO optimization?",
+          "cited": false,
+          "mentions": [],
+          "response": "Several platforms specialize in **AI-native blog writing combined with built-in SEO"
+        },
+        {
+          "prompt": "What is Phileas Fogg SEO content studio?",
+          "cited": true,
+          "mentions": [
+            "Phileas",
+            "Phileas Fogg"
+          ],
+          "response": "**Phileas Fogg SEO Content Studio** is typically recognized as a **specialized"
+        },
+        {
+          "prompt": "How does Phileas Fogg research demand for content?",
+          "cited": false,
+          "mentions": [],
+          "response": "*Real-world feedback during travel:* Adapts when tracks end (buys an elephant), buys"
+        },
+        {
+          "prompt": "AI content SEO studio Michigan",
+          "cited": false,
+          "mentions": [],
+          "response": " agencies).\n    *   **How to Choose the Right Agency:** What questions the user should ask"
+        },
+        {
+          "prompt": "Local business SEO content writing AI",
+          "cited": false,
+          "mentions": [],
+          "response": "Using AI to write Local SEO content is one of the fastest ways to rank a local business on Google"
+        },
+        {
+          "prompt": "Demand signal research for SEO content",
+          "cited": false,
+          "mentions": [],
+          "response": "**Demand signal research for SEO** is the process of identifying real-time, high-intent user"
+        },
+        {
+          "prompt": "Answer engine optimization agency",
+          "cited": false,
+          "mentions": [],
+          "response": "Perplexity, ChatGPT, SGE monitoring).\n        *   Technical SEO for AI Craw"
+        }
+      ],
+      "cited": 1,
+      "rate": 0.08333333333333333
+    },
+    "perplexity": {
+      "prompts": [
+        {
+          "prompt": "What is the best AI content SEO studio for agencies in 2026?",
+          "cited": false,
+          "mentions": [],
+          "response": "For **agencies**, the best AI content SEO studio in 2026 is most defensibly **Rankability** if your priority is a **multi-client content optimization workflow** and strong price-to-value, because it i"
+        },
+        {
+          "prompt": "Who offers AI-native SEO content writing for local businesses?",
+          "cited": false,
+          "mentions": [],
+          "response": "Several agencies in the results offer **AI-native or AI-assisted SEO content writing** for local businesses, including **Ollo Metrics**, **Machined**, **Stratedia**, **AI Local SEO Expert**, **Thrive "
+        },
+        {
+          "prompt": "How do I find an SEO content agency that uses AI workflows?",
+          "cited": false,
+          "mentions": [],
+          "response": "To find an **SEO content agency that uses AI workflows**, look for one that can show you *how* AI is used across research, briefing, drafting, optimization, and reporting—not just one that says it “us"
+        },
+        {
+          "prompt": "What SEO content studio researches demand signals before writing?",
+          "cited": false,
+          "mentions": [],
+          "response": "An **SEO content studio** typically researches **demand signals** before writing by looking at what people are actually searching for, how they phrase it, and whether the topic is growing or recurring"
+        },
+        {
+          "prompt": "Best agency for AI content that ranks in answer engines?",
+          "cited": false,
+          "mentions": [],
+          "response": "If you want the **best agency for AI content that ranks in answer engines**, the strongest choices from the results are **Searchbloom**, **The SEO Works**, **Tinuiti**, **Digital Authority Partners**,"
+        },
+        {
+          "prompt": "Who provides AI-native blog writing with SEO optimization?",
+          "cited": false,
+          "mentions": [],
+          "response": "Several providers offer **AI-native blog writing with SEO optimization**, but the strongest fits in the results are **Writesonic**, **Surfer SEO**, **Frase**, **Scalenut**, and **Semrush ContentShake "
+        },
+        {
+          "prompt": "What is Phileas Fogg SEO content studio?",
+          "cited": false,
+          "mentions": [],
+          "citation_excluded_reason": "prompt_echo_or_denial",
+          "response": "I couldn’t find evidence that **“Phileas Fogg SEO content studio”** is a clearly established company or brand name in the search results. The only directly relevant result for “Phileas Fogg” is an age"
+        },
+        {
+          "prompt": "How does Phileas Fogg research demand for content?",
+          "cited": false,
+          "mentions": [],
+          "citation_excluded_reason": "prompt_echo_or_denial",
+          "response": "If you mean **how Phileas Fogg conducts research for content** in *Around the World in Eighty Days*, the novel does **not** show him researching content in the modern sense. Phileas Fogg is portrayed "
+        },
+        {
+          "prompt": "AI content SEO studio Michigan",
+          "cited": false,
+          "mentions": [],
+          "response": "If you’re looking for an **AI content SEO studio in Michigan**, the results point to several agencies that offer **AI SEO, AEO/GEO, and AI visibility** services across the state.[1][3][4][5][11][13][1"
+        },
+        {
+          "prompt": "Local business SEO content writing AI",
+          "cited": false,
+          "mentions": [],
+          "response": "For **local business SEO content writing AI**, the most effective approach is to use AI for **drafting localized content** while keeping **human review** for accuracy, local context, and trust signals"
+        },
+        {
+          "prompt": "Demand signal research for SEO content",
+          "cited": false,
+          "mentions": [],
+          "response": "**Demand signal research for SEO content** is the process of identifying which topics people are actively searching for, *why* they are searching, and how strong or emerging that interest is before yo"
+        },
+        {
+          "prompt": "Answer engine optimization agency",
+          "cited": false,
+          "mentions": [],
+          "response": "An **answer engine optimization agency** helps your brand appear inside AI-generated answers from tools like ChatGPT, Perplexity, Google AI Overviews, and Gemini, not just in traditional search result"
+        }
+      ],
+      "cited": 0,
+      "rate": 0
+    },
+    "exa": {
+      "prompts": [
+        {
+          "prompt": "What is the best AI content SEO studio for agencies in 2026?",
+          "cited": false,
+          "mentions": [],
+          "response": "In 2026, the best AI content SEO studio for your agency depends on whether you prioritize white-label scalability, AI citation performance, or all-in-one workflow management.\n\nFor agencies needing whi"
+        },
+        {
+          "prompt": "Who offers AI-native SEO content writing for local businesses?",
+          "cited": false,
+          "mentions": [],
+          "response": "Several platforms offer AI-native SEO content writing specifically designed for local businesses to improve visibility in Google and AI search results. These tools typically automate keyword research,"
+        },
+        {
+          "prompt": "How do I find an SEO content agency that uses AI workflows?",
+          "cited": false,
+          "mentions": [],
+          "response": "To find an SEO agency that uses AI workflows, look for firms that explicitly market themselves as AI-first or offer AI-powered content operations [1][2][3]. These agencies typically replace manual, re"
+        },
+        {
+          "prompt": "What SEO content studio researches demand signals before writing?",
+          "cited": false,
+          "mentions": [],
+          "response": "Several SEO content studios and platforms research demand signals before writing to ensure content is strategically aligned with search intent.\n\nFrase is a content research tool that analyzes ranking "
+        },
+        {
+          "prompt": "Best agency for AI content that ranks in answer engines?",
+          "cited": false,
+          "mentions": [],
+          "response": "Several agencies specialize in Answer Engine Optimization (AEO) and Generative Engine Optimization (GEO) to help brands earn citations in AI models like ChatGPT, Perplexity, Gemini, and Google AI Over"
+        },
+        {
+          "prompt": "Who provides AI-native blog writing with SEO optimization?",
+          "cited": false,
+          "mentions": [],
+          "response": "Several platforms provide AI-native blog writing with integrated SEO optimization, often including automated research, keyword targeting, and direct CMS publishing. Notable providers include:\n\nPerenni"
+        },
+        {
+          "prompt": "What is Phileas Fogg SEO content studio?",
+          "cited": false,
+          "mentions": [],
+          "citation_excluded_reason": "prompt_echo_or_denial",
+          "response": "There is no entity known as Phileas Fogg SEO content studio. Phileas is an AI-specialized business unit of the creative agency Darwin & Verne that focuses on marketing, communication, and content gene"
+        },
+        {
+          "prompt": "How does Phileas Fogg research demand for content?",
+          "cited": true,
+          "mentions": [
+            "Phileas",
+            "Phileas Fogg"
+          ],
+          "response": "Phileas Fogg researches content demand through a dedicated team of discoverers who travel to remote parts of the world to identify new snacking experiences [1]. This ongoing global research is a core "
+        },
+        {
+          "prompt": "AI content SEO studio Michigan",
+          "cited": false,
+          "mentions": [],
+          "response": "Several studios in Michigan specialize in AI-driven SEO, focusing on Answer Engine Optimization (AEO) and Generative Engine Optimization (GEO) to ensure businesses are cited by platforms like ChatGPT,"
+        },
+        {
+          "prompt": "Local business SEO content writing AI",
+          "cited": false,
+          "mentions": [],
+          "response": "AI tools for local business SEO are designed to accelerate content production by generating drafts, outlines, and location-specific pages [1][2][3]. Platforms like Harbor, Local Glyph, and vaza.ai spe"
+        },
+        {
+          "prompt": "Demand signal research for SEO content",
+          "cited": false,
+          "mentions": [],
+          "response": "To research demand for SEO content effectively, you must move beyond traditional search volume, which is a lagging indicator [1]. Instead, triangulate three distinct demand signals:\n\n1. Search Demand:"
+        },
+        {
+          "prompt": "Answer engine optimization agency",
+          "cited": false,
+          "mentions": [],
+          "response": "An answer engine optimization (AEO) agency structures your brand's content, data, and technical architecture so that AI platforms like ChatGPT, Perplexity, Gemini, and Google AI Overviews cite your bu"
+        }
+      ],
+      "cited": 1,
+      "rate": 0.08333333333333333
+    }
+  },
+  "summary": {
+    "total": 48,
+    "cited": 2,
+    "rate": 0.041666666666666664
+  }
+}
