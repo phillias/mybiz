@@ -1,9 +1,28 @@
 // Google Business Profile API adapter for Core 30 publishing.
-// Handles posts, services, Q&A, and review replies via GBP API v4.
+// Handles posts, services, Q&A, and review replies.
+//
+// APIS TO ENABLE (Google Cloud Console → API Library — all free, billing prompt may appear):
+//   REQUIRED for this adapter:
+//   - Google My Business API (v4.9)            — posts (localPosts) + reviews + review replies.
+//                                                GATED: only visible after access-request approval
+//                                                (developers.google.com/my-business/content/basic-setup);
+//                                                file the form first or quota shows 0.
+//   - My Business Account Management API       — accounts list (mybusinessaccountmanagement.googleapis.com/v1)
+//   - My Business Business Information API     — locations get/list (readMask required), attributes,
+//                                                serviceItems (mybusinessbusinessinformation.googleapis.com/v1;
+//                                                path is now locations/{id}, "locationName" renamed "title")
+//   - My Business Q&A API                      — questions/answers (mybusinessqanda.googleapis.com/v1)
+//   OPTIONAL / future:
+//   - Business Profile Performance API         — metrics (v4.9 reportInsights was sunset 2023-03-30;
+//                                                replacement: locations.fetchMultiDailyMetricsTimeSeries)
+//   - My Business Notifications API            — new-review webhooks (Aftercall trigger)
+//   - My Business Verifications API            — only for verifying NEW locations
+//   NOT needed: Lodging API (hotels), Place Actions API (food ordering).
+//   OAuth scope for all: https://www.googleapis.com/auth/business.manage (unchanged across the split).
 //
 // Prerequisites:
 //   1. OAuth2 credentials with https://www.googleapis.com/auth/business.manage scope
-//   2. G Suite admin enabled for Business Profile API
+//   2. The Google account must be an OWNER/MANAGER of the target GBP (client sends a Manager invite)
 //   3. Location verified (required for review replies)
 //
 // Usage:
@@ -72,11 +91,31 @@ export class GBPAdapter {
     return res.json();
   }
 
+  private assertOk(res: Response): boolean {
+    return res.ok;
+  }
+
+  private async errorMessage(res: Response): Promise<string> {
+    return `GBP API ${res.status}: ${await res.text()}`;
+  }
+
   // === ACCOUNTS ===
 
-  /** List all accounts the authenticated user has access to. */
+  /**
+   * List all accounts the authenticated user has access to.
+   * Uses My Business Account Management API (v1) — the v4 `/accounts` path
+   * is no longer served; accounts must be listed there, locations via
+   * the Business Information API.
+   */
   async listAccounts(): Promise<{ name: string; accountName: string; type: string }[]> {
-    const data = await this.request<{ accounts: { name: string; accountName: string; type: string }[] }>("/accounts");
+    const res = await fetch("https://mybusinessaccountmanagement.googleapis.com/v1/accounts", {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!this.assertOk(res)) throw new Error(await this.errorMessage(res));
+    const data = await res.json() as { accounts?: { name: string; accountName: string; type: string }[] };
     return data.accounts || [];
   }
 
@@ -250,22 +289,34 @@ export class GBPAdapter {
 
   // === INSIGHTS ===
 
-  /** Get basic metrics for a location (impressions, searches, actions). */
+  /**
+   * Get daily metrics time series for a location.
+   * Uses Business Profile Performance API v1 — the v4.9 reportInsights path
+   * was sunset 2023-03-30 (localPosts.reportInsights died even earlier, 2023-02-20).
+   */
   async getInsights(
     accountId: string,
     locationId: string,
     startTime: string,
     endTime: string
   ) {
-    return this.request(`/accounts/${accountId}/locations/${locationId}:reportInsights`, {
-      method: "POST",
-      body: JSON.stringify({
-        basicRequest: {
-          metricRequests: [{ metric: "ALL" }],
-          timeRange: { startTime, endTime },
+    const res = await fetch(
+      `https://mybusinessbusinessprofileperformance.googleapis.com/v1/locations/${locationId}:fetchMultiDailyMetricsTimeSeries`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
         },
-      }),
-    });
+        body: JSON.stringify({
+          dailyMetricTimeRanges: [
+            { dailyMetric: "ALL", timeRange: { startTime, endTime } },
+          ],
+        }),
+      }
+    );
+    if (!this.assertOk(res)) throw new Error(await this.errorMessage(res));
+    return res.json();
   }
 }
 
