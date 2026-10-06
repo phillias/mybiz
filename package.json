@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
-    "@clerk/astro": "^4.1.6",
+    "@clerk/astro": "^4.1.9",
     "astro": "^7.1.6",
     "convex": "^1.46.0",
     "exa-js": "^2.19.0",
