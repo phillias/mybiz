@@ -20,7 +20,7 @@
     "convex": "^1.46.0",
     "exa-js": "^2.19.0",
     "resend": "^6.30.0",
-    "stripe": "^22.4.0",
+    "stripe": "^23.0.0",
     "three": "^0.185.1"
   },
   "devDependencies": {
