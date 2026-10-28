@@ -149,6 +149,7 @@ verdict PROCEED/PIVOT/PAUSE) via `convex/actions/importDemandSignal.ts`:
 - Clerk → Convex auth via native `convex/auth.config.ts` (`domain: CLERK_JWT_ISSUER_DOMAIN`, `applicationID: "convex"`); no `@convex-dev/auth`.
 - Deploy: `./scripts/deploy-pages.sh` → Cloudflare Pages project `mybiz` (apex custom domain `codevex.app`; phillias.us 301s via `src/middleware.ts`). Update the Pages secret `PUBLIC_SITE_URL=https://codevex.app` at deploy time (runbook §1.4). Headless: `CLOUDFLARE_API_TOKEN`+`CLOUDFLARE_ACCOUNT_ID` in `.env`, run with `NODE_OPTIONS=--dns-result-order=ipv6first` (token is IPv6-restricted). Adapter@14 is Workers-targeted — the script wraps `dist/_worker.js` + copies client assets to the deploy root to make `wrangler pages deploy` work. CI deploys will need the same handling + an IP-unrestricted token.
 - Secrets: `./scripts/sync-secrets.sh` pushes `.env` → GitHub secrets/variables. Real values live in `.env` (gitignored); never write secret VALUES into code, skills, or memory — record locations only.
+- Env render: `.env` + `.env.local` come from the phillias BWS vault via `./scripts/render-env.sh` (prefix `MYBIZ_`, run from repo root; vault wins over plaintext). `STRIPE_SECRET_KEY`/`STRIPE_WEBHOOK_SECRET` are not in the vault yet (empty in the legacy env) — add them when Stripe is wired.
 
 ## CTIA toll-free verification
 
