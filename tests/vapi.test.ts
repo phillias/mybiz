@@ -1,4 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const { readFileSyncMock } = vi.hoisted(() => ({
+  readFileSyncMock: vi.fn(),
+}));
+
+vi.mock("node:fs", () => ({ readFileSync: readFileSyncMock }));
+
 import {
   AFTERCALL_FIRST_MESSAGE,
   AFTERCALL_SYSTEM_PROMPT,
@@ -282,11 +289,15 @@ describe("simple listings", () => {
 
 describe("loadVapiKey", () => {
   it("falls back to the process env when .env lacks the key", () => {
+    readFileSyncMock.mockReturnValue("OTHER=value\n");
     vi.stubEnv("VAPI_PRIVATE_KEY", "env-secret");
     expect(loadVapiKey()).toBe("env-secret");
   });
 
   it("throws when no key is configured anywhere", () => {
+    readFileSyncMock.mockImplementation(() => {
+      throw new Error("ENOENT");
+    });
     vi.stubEnv("VAPI_PRIVATE_KEY", "");
     expect(() => loadVapiKey()).toThrow("VAPI_PRIVATE_KEY not set (add to .env)");
   });
