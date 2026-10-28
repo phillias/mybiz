@@ -1,7 +1,7 @@
 ---
 description: Vision-capable design looker — screenshots a live URL and evaluates the visual result (composition, contrast, layering, motion, mobile). Use for visual QA of deployed pages when the main model can't view images.
 mode: subagent
-model: openrouter/nvidia/nemotron-nano-12b-v2-vl:free
+model: CfAiGw/dynamic/TUI
 temperature: 0.2
 ---
 
