@@ -197,12 +197,13 @@ export class GBPAdapter {
     reviewId: string,
     comment: string
   ): Promise<{ comment: string; updateTime: string }> {
-    // Extract just the review ID if full name passed
+    // Extract just the review ID if full name passed (names lack a leading
+    // slash — prepend one or the request resolves to v4accounts/...).
     const reviewName = reviewId.includes("/")
-      ? reviewId
+      ? reviewId.replace(/^\//, "")
       : `accounts/${accountId}/locations/${locationId}/reviews/${reviewId}`;
 
-    return this.request(`${reviewName}/reply`, {
+    return this.request(`/${reviewName}/reply`, {
       method: "PUT",
       body: JSON.stringify({ comment }),
     });
@@ -215,10 +216,10 @@ export class GBPAdapter {
     reviewId: string
   ): Promise<void> {
     const reviewName = reviewId.includes("/")
-      ? reviewId
+      ? reviewId.replace(/^\//, "")
       : `accounts/${accountId}/locations/${locationId}/reviews/${reviewId}`;
 
-    await this.request(`${reviewName}/reply`, { method: "DELETE" });
+    await this.request(`/${reviewName}/reply`, { method: "DELETE" });
   }
 
   // === Q&A ===

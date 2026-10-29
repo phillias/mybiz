@@ -30,6 +30,7 @@ npm run dev                 # Astro dev server
 - `npm run build` — production build (Cloudflare Pages output to `dist/`)
 - `npm run check` — Astro type/check
 - `npm run typecheck` — `tsc --noEmit` + `convex typecheck`
+- `npm test` — run the Vitest unit-test suite (network calls mocked)
 - `npx convex deploy` — deploy Convex functions
 - `node scripts/generate-core30.mjs` — Core 30 article generation (dry-run default)
 - `node scripts/prospect-score.mjs` — local-business SEO-opportunity scoring (dry-run default)
