@@ -1,0 +1,23 @@
+# Gitleaks policy for the public Astro/Convex/Cloudflare Pages repository.
+# Keep the built-in detectors enabled and add an explicit Telnyx detector.
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "telnyx-api-key"
+description = "Telnyx API key"
+regex = '''\bKEY[A-Z0-9_]{15,}\b'''
+keywords = ["KEY"]
+secretGroup = 0
+
+[allowlist]
+description = "Intentional placeholders and test-only fake credentials"
+paths = [
+  '''^\.env\.example$''',
+  '''^content/prospects/fixture\.json$''',
+  '''^tests/(vapi|jev|exa|stripe-webhook)\.test\.ts$''',
+  '''^\.agents/skills/.*''',
+  '''^\.github/skills/.*''',
+  '''^docs/tollfree-verification-draft\.md$''',
+]

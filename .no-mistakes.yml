@@ -1,0 +1,22 @@
+# Repository guardrails for the local no-mistakes gate.
+# CI remains authoritative for the full Astro/Convex build and deploy checks.
+allow_repo_commands: false
+
+commands:
+  # Targeted local validation; the complete suite remains in .github/workflows/ci.yml.
+  test: "npm ci && npm test"
+
+auto_fix:
+  # Secret and deployment policy changes require an explicit human decision.
+  review: 0
+
+ignore_patterns:
+  - ".astro/**"
+  - "dist/**"
+  - "node_modules/**"
+  - "content/drafts/**"
+
+protected_paths:
+  - ".github/workflows/**"
+  - ".gitleaks.toml"
+  - ".no-mistakes.yml"
